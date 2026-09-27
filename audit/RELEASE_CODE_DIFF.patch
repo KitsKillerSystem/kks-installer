@@ -1,0 +1,86 @@
+--- rc.1/source/kks_installer/_release.py
++++ 1.0.0/source/kks_installer/_release.py
+@@ -1 +1 @@
+-MANIFEST_SHA256 = '87efd8ba69f9a8a0666adc45c6682b0f81e1b76483839459657fd2e77e49ca45'
++MANIFEST_SHA256 = 'dda35c73a9c1119010a3a7c2d15517df2457b231d894e2b910dd34f1d5afd3e7'
+--- rc.1/source/kks_installer/engine.py
++++ 1.0.0/source/kks_installer/engine.py
+@@ -11,7 +11,7 @@
+ from .ba2 import BA2, hash_file
+ from .platforms import SafetyError, safe_path, operation_lock, game_guard, game_running
+ 
+-STATE = '.kks-installer-1.0.0-rc.1'
++STATE = '.kks-installer-1.0.0'
+ DIGITS = set('0123456789abcdef')
+ 
+ def digest(data): return hashlib.sha256(data).hexdigest()
+--- rc.1/source/kks_installer/profile.py
++++ 1.0.0/source/kks_installer/profile.py
+@@ -1,4 +1,4 @@
+-"""Final QA: exact English SWF/config archive targets and three string tables."""
++"""Released KKS 1.0.0: exact English SWF/config archive targets and three string tables."""
+ import json
+ from .engine import Installer as BaseInstaller
+ from .platforms import SafetyError
+@@ -7,6 +7,7 @@
+ CONFIG_ARCHIVE='Data/SeventySix - Interface.ba2'
+ STRINGS={f'Data/strings/seventysix_en.{ext}' for ext in ['strings','dlstrings','ilstrings']}
+ PRIOR_STATES={
++    '.kks-installer-1.0.0-rc.1':'KKS Installer 1.0.0-rc.1',
+     '.kks-installer-0.1.2':'KKS Installer 0.1.2 (Final QA)',
+     '.kks-installer-0.1.1':'the previous KKS Installer 0.1.1',
+     '.kks-installer':'KKSInstaller.exe from installer 0.1.0',
+@@ -48,8 +49,8 @@
+     def inspect(self):
+         result=super().inspect()
+         result['font_strategy']='Legendary final advances and spacer polished; unchanged UTF-8 custom-renaming fontconfig.'
+-        result['full_package_in_game_verified']=False
+-        result['qa_candidate']=True
++        result['full_package_in_game_verified']=True
++        result['qa_candidate']=False
+         if result['status']=='installed':
+-            result['message']='QA build installed; files verified. Check text, renaming and inventory changes in game.'
++            result['message']='KKS 1.0.0 is installed and verified.'
+         return result
+--- rc.1/source/kks_installer/ui.py
++++ 1.0.0/source/kks_installer/ui.py
+@@ -9,7 +9,7 @@
+ 
+ class App:
+     def __init__(self,release):
+-        self.release=release;self.root=tk.Tk();self.root.title('KKS Installer · 1.0.0-rc.1')
++        self.release=release;self.root=tk.Tk();self.root.title('KKS Installer · 1.0.0')
+         self.root.geometry('940x820');self.root.minsize(880,800);self.root.configure(bg=BG)
+         self.root.option_add('*Font',('Segoe UI',10));self.busy=False;self.events=queue.Queue();self.last_status=None
+         self.root.protocol('WM_DELETE_WINDOW',self.close)
+@@ -19,7 +19,7 @@
+         top=tk.Frame(outer,bg=BG);top.pack(fill='x')
+         logo=tk.Label(top,text='KKS',font=('Segoe UI',31,'bold'),fg=GREEN,bg=BG);logo.pack(side='left')
+         tk.Label(top,text='KIT’S KILLER SYSTEM',font=('Segoe UI',11,'bold'),fg=INK,bg=BG).pack(side='left',padx=20)
+-        tk.Label(top,text='1.0.0-rc.1  /  ENGLISH',font=('Segoe UI',10),fg=MUTED,bg=BG).pack(side='right')
++        tk.Label(top,text='1.0.0  /  ENGLISH',font=('Segoe UI',10),fg=MUTED,bg=BG).pack(side='right')
+         tk.Label(outer,text='Your inventory. Rewritten.',font=('Segoe UI',24,'bold'),fg=INK,bg=BG,anchor='w').pack(fill='x',pady=(18,6))
+         tk.Label(outer,text="Over 1,000 custom glyphs transform Fallout 76's inventory into information you can understand at a glance.",fg=MUTED,bg=BG,anchor='w',justify='left',wraplength=790).pack(fill='x',pady=(0,24))
+         location=tk.Frame(outer,bg=PANEL,highlightbackground=LINE,highlightthickness=1);location.pack(fill='x')
+--- rc.1/source/launcher.py
++++ 1.0.0/source/launcher.py
+@@ -6,7 +6,7 @@
+ from kks_installer.platforms import discover
+ 
+ def main():
+-    parser=argparse.ArgumentParser(description='KKS RC2_1 standalone installer')
++    parser=argparse.ArgumentParser(description='KKS 1.0.0 standalone installer')
+     group=parser.add_mutually_exclusive_group()
+     for name in ['check','install','repair','restore','recover','detect']:group.add_argument('--'+name,action='store_true')
+     parser.add_argument('--game',help='Folder containing Fallout76.exe')
+--- rc.1/source/tests/test_profile.py
++++ 1.0.0/source/tests/test_profile.py
+@@ -41,7 +41,7 @@
+         self.assertFalse((self.game/'Data/interface').exists())
+         self.engine.run('restore');self.assertEqual(self.snapshot(),self.original)
+     def test_check_is_readonly(self):
+-        self.assertTrue(self.engine.inspect()['qa_candidate'])
++        self.assertFalse(self.engine.inspect()['qa_candidate'])
+         self.assertFalse((self.game/STATE).exists())
+     def test_modified_fontconfig_blocks_all_game_writes(self):
+         (self.game/CONFIG_ARCHIVE).write_bytes(b'modified fontconfig');before=self.snapshot()

@@ -1,0 +1,3 @@
+b3bc19c512a9c1a31a1574a645dffc968ca86796e390b4535fe10a809dc4f682  KKS_1.0.0_Installer.zip
+a268b56e497462c88bf5d4f62fd5a2f1c51c1352e33a2627dc0e9d5c383dd94d  KKSInstaller.exe
+dda35c73a9c1119010a3a7c2d15517df2457b231d894e2b910dd34f1d5afd3e7  source/release/manifest.json

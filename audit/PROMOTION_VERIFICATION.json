@@ -1,0 +1,39 @@
+{
+  "release": "KKS 1.0.0",
+  "approved_baseline": "KKS 1.0.0-rc.1",
+  "user_confirmed_final_in_game_qa": true,
+  "all_payload_and_development_files_byte_identical": true,
+  "preserved_sha256": {
+    "source/release/payload/interface/fontconfig_en.txt": "00e6bb8c3db29c0048a66b898150592959af884435301f991fcdf6aaaeeabf5a",
+    "source/release/payload/interface/fonts_en.swf": "e0e830ee804d68a7904b3656e7e750a011f4b55226db147ed798f7ab68acbc18",
+    "source/release/payload/strings/seventysix_en.dlstrings": "2bb6bc97a8da3eeed5d96dceb01154e3b99506264f7982497bb035db7c91b318",
+    "source/release/payload/strings/seventysix_en.ilstrings": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2",
+    "source/release/payload/strings/seventysix_en.strings": "d0f43652a0a9545b9d675c09d601a50d73feafc71871b38322f1744d1e40c8d6",
+    "development/KKS_Final_QA_Codepoint_Codex.html": "ea51c4d9a23f07f40b7c9f36addde781e994e2a40ef596bfb7188fa06841a516",
+    "development/KKS_Final_QA_Codepoint_Codex.json": "0676bcfe311814b2fc0ca78aff6cd87f7e8181c11c741bcab10bdab63f8376ba",
+    "development/KKS_RC2_1.ttf": "f01bdd89abdeb050f6ee05ddd411004c968656e5b54da88f15b1917c4de609df",
+    "development/KKS_RC2_1.vfj": "e1810e65cbc239a83e983328647d9b08002b4d6de2f5a94b8a77c2cc92eca0c7",
+    "development/KKS_RC2_1_Final_QA_Spine.xml": "6b46970762b38f1f15f16cbf690ceecdf516bddfc468a3a3faf6980b28d14216",
+    "development/patches/02_armor_names.json": "a647d4af87e92f69880409e14f2df5afafa3b10ad02db8df733e6a285c1cb663",
+    "development/patches/03_inventory_glyphs.json": "e4ea251efc354b53587154481b6745b44d55aa8879e5e010f146cbcb7a4e512d",
+    "development/patches/04_map_wordmarks.json": "c0c7cd70c9a11946b447c0a58e9378d4f5ced6d62f84abae49d923b0c66185c1",
+    "development/patches/05_food_buffs.json": "078134f15f4c4207b40565065fbb8d7b1a3be08cbc983991da988f1b4af67a71",
+    "development/patches/06_chemistry_fertilizer.json": "36186203c584054a6644c91950150be4b1213bc1546e2ecbf2be2d12775f93bd",
+    "development/patches/07_weapon_glyphs.json": "282c463d017c037ca97bde4e6defd2ee68dc1740cf54a8164b43a30222548fa2",
+    "development/patches/08_wordmark_spacing.json": "44bbbdf4b3d445f4e8748efbd2e2a1ab4cbde4303b699a4204beb0cfaf455c7c",
+    "development/README.md": "ed7b90cfd46b5aab2bb967ed7c5726dcfde93702ef4c453d461109436e761b76"
+  },
+  "manifest_fields_changed": [
+    "in_game_verified",
+    "qa_candidate",
+    "release"
+  ],
+  "manifest_sha256": "dda35c73a9c1119010a3a7c2d15517df2457b231d894e2b910dd34f1d5afd3e7",
+  "archive_operations_detection_and_transaction_algorithms_unchanged": true,
+  "persistent_metadata_schema_unchanged": true,
+  "new_upgrade_feature_added": false,
+  "executable_embedded_payloads_match_approved_rc1": true,
+  "ui_version_labels_only": true,
+  "approved_installer_zip_sha256": "8de4c7debb0d75cf859de6cec363fcda73edf47241b59fea54c2d867a2a9820a",
+  "approved_source_zip_sha256": "39cec76d22c75ff2234cb65059751c304c1b60b4eece9b3609c6deea118a46bd"
+}

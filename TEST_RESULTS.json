@@ -1,0 +1,22 @@
+{
+  "release": "KKS 1.0.0",
+  "executable_sha256": "a268b56e497462c88bf5d4f62fd5a2f1c51c1352e33a2627dc0e9d5c383dd94d",
+  "manifest_sha256": "dda35c73a9c1119010a3a7c2d15517df2457b231d894e2b910dd34f1d5afd3e7",
+  "fixture_tests_passed": 59,
+  "prior_install_refused_without_writes": true,
+  "real_two_archive_crash_recovered_by_executable": true,
+  "both_archives_reopened_and_unrelated_assets_verified": true,
+  "repair_of_config_reset_and_missing_strings_passed": true,
+  "exact_preinstall_files_restored": true,
+  "prior_receipts_retained": true,
+  "no_esm_or_ini_changes": true,
+  "no_loose_font_files_created": true,
+  "in_game_verified": true,
+  "approval_basis": "User approved identical 1.0.0-rc.1 payload after final in-game QA",
+  "updated_exe_esm_localization_and_both_interface_archives_blocked_restore": true,
+  "future_catalog_only_restore_of_real_archives_passed": true,
+  "executable_embedded_payloads_byte_identical_to_approved_rc1": true,
+  "production_transaction_algorithms_unchanged": true,
+  "scope": "Public summary of sealed-release validation; local paths and per-run logs omitted.",
+  "review_snapshot_fixture_tests_passed": 59
+}

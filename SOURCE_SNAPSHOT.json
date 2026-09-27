@@ -1,0 +1,26 @@
+{
+  "release": "KKS 1.0.0",
+  "source": "Sealed KKS 1.0.0 developer bundle",
+  "copied_files_are_byte_identical": true,
+  "files": {
+    "source/kks_installer/__init__.py": "250afd3ba81b551386b1816d0ca31558940b87c5c64d113bfa33800f920e12e7",
+    "source/kks_installer/_release.py": "106a5947ca2abd0af0c2c5d6d0f070b56d0dca763583aa50785c832ea4da3a3e",
+    "source/kks_installer/ba2.py": "65cdd11baafd148dffe22732a589200aceefe20fc25deb1cad70ceb2f2123acb",
+    "source/kks_installer/engine.py": "90fb5681433fc3e52c829d4a692b4deb71afacfb17beb97b791433415a643f90",
+    "source/kks_installer/platforms.py": "c28f17917caefe9d425b30c7b080eec04a1d8a0dda75cb9337dca31dc4340a9d",
+    "source/kks_installer/profile.py": "f4a098127183420ba4b502089c88d3d6422d403fcfb4aa9ef9272a18aa992564",
+    "source/kks_installer/ui.py": "7a4e06ee3e6f0be1f07963301347cb7be0a290fe15b986e5aa0fbd51d4c40b28",
+    "source/tests/test_future_restore.py": "1fd351ee1844baa9d1b5032ae3f798f5d6c1f30d4e33a34c20429e0cb914b8c4",
+    "source/tests/test_installer.py": "194db96bd6edca6f882090c03896a53effbd972329b0bdef8894ef6f11804bb8",
+    "source/tests/test_profile.py": "bb19c66f26d1c1e7b0722754e723b6d434f25b4ee5422b1d32ad9e4c4ee32af7",
+    "source/release/manifest.json": "dda35c73a9c1119010a3a7c2d15517df2457b231d894e2b910dd34f1d5afd3e7",
+    "source/release/payload/interface/fontconfig_en.txt": "00e6bb8c3db29c0048a66b898150592959af884435301f991fcdf6aaaeeabf5a",
+    "source/release/payload/interface/fonts_en.swf": "e0e830ee804d68a7904b3656e7e750a011f4b55226db147ed798f7ab68acbc18",
+    "source/release/payload/strings/seventysix_en.dlstrings": "2bb6bc97a8da3eeed5d96dceb01154e3b99506264f7982497bb035db7c91b318",
+    "source/release/payload/strings/seventysix_en.ilstrings": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2",
+    "source/release/payload/strings/seventysix_en.strings": "d0f43652a0a9545b9d675c09d601a50d73feafc71871b38322f1744d1e40c8d6",
+    "source/launcher.py": "dbb26759034015bb93cadd2425317fd474b49be7b5bc487700b3097e5e6212be",
+    "source/build.ps1": "053ef8f84449d5b5afad50912e7558385a0ff97f539b6be5ca5d4a810e48a421",
+    "source/requirements-build.txt": "4439c693c19271e4b0bdc56c641c36b3b06010b1b22eae6733cd244d752e85d5"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "identity": [
+    {
+      "path": "Fallout76.exe",
+      "sha256": "2d0649b68cb374cc7817eacdb96fb7fb35b0ed0077bfe4c461a5e64a3c09a17a"
+    },
+    {
+      "path": "Data/SeventySix.esm",
+      "sha256": "baecd0c4afb5a12edcb60584c6a8448de9e97c712aca4d1b6d1801a16bec433e"
+    },
+    {
+      "path": "Data/SeventySix - Localization.ba2",
+      "sha256": "51399c60eb601153cdd3d8d288c25fdc576b6b24bcec4adeddb4b721c8c76254"
+    }
+  ],
+  "in_game_verified": true,
+  "language": "en",
+  "qa_candidate": false,
+  "release": "KKS 1.0.0",
+  "schema": 1,
+  "semantics": "Legendary final-segment advance and spacer-only font polish in Interface_en.ba2. Same UTF-8 custom-renaming fontconfig in Interface.ba2. STRINGS removes unnecessary trailing wordmark spacers; all literal names, DLSTRINGS and ILSTRINGS unchanged from QA 0.1.2. No ESM or INI edits; no loose font overrides.",
+  "supported_build": "Steam English Slasher build 25258219",
+  "targets": [
+    {
+      "after_sha256": "800dc027a3f3cc10918be224f08c6423880e5cd37de56594e84966858b08a371",
+      "assets": [
+        {
+          "name": "interface/fonts_en.swf",
+          "payload": "payload/interface/fonts_en.swf",
+          "sha256": "e0e830ee804d68a7904b3656e7e750a011f4b55226db147ed798f7ab68acbc18",
+          "vanilla_sha256": "683e7aafcafad309c84bae742cab55276f8f20c2cd9ede84a240a4d60942fd5d"
+        }
+      ],
+      "kind": "archive",
+      "path": "Data/SeventySix - Interface_en.ba2",
+      "type": "GNRL",
+      "vanilla_sha256": "19589eb720219b0ea0118f954f804355288d24fd65374055bd8b5f87950bc85d",
+      "version": 1
+    },
+    {
+      "after_sha256": "b88754afb06a11f833d8bb240aeeba4e795c4a8ca084fdd567bfc866edd3a6be",
+      "assets": [
+        {
+          "name": "interface/fontconfig_en.txt",
+          "payload": "payload/interface/fontconfig_en.txt",
+          "sha256": "00e6bb8c3db29c0048a66b898150592959af884435301f991fcdf6aaaeeabf5a",
+          "vanilla_sha256": "274018229cfc899a7c8c5587c3c504a1f5460551a6fe62b7a95938d4e482c6b7"
+        }
+      ],
+      "kind": "archive",
+      "path": "Data/SeventySix - Interface.ba2",
+      "type": "GNRL",
+      "vanilla_sha256": "380aeb092911d1f7be532e30524b4e3adadf93a07fa63f1336caebee0eb39908",
+      "version": 1
+    },
+    {
+      "after_sha256": "d0f43652a0a9545b9d675c09d601a50d73feafc71871b38322f1744d1e40c8d6",
+      "kind": "loose",
+      "path": "Data/strings/seventysix_en.strings",
+      "payload": "payload/strings/seventysix_en.strings",
+      "vanilla_sha256": "591b726bf9d045e3d25a37c70175968df7ea6ccc6e34bd09dca7e782e062800b"
+    },
+    {
+      "after_sha256": "2bb6bc97a8da3eeed5d96dceb01154e3b99506264f7982497bb035db7c91b318",
+      "kind": "loose",
+      "path": "Data/strings/seventysix_en.dlstrings",
+      "payload": "payload/strings/seventysix_en.dlstrings",
+      "vanilla_sha256": "6d314d134bff44929eeaba602363b25e7bcc97cbb3ad9b32ad3c4180e23c6365"
+    },
+    {
+      "after_sha256": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2",
+      "kind": "loose",
+      "path": "Data/strings/seventysix_en.ilstrings",
+      "payload": "payload/strings/seventysix_en.ilstrings",
+      "vanilla_sha256": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2"
+    }
+  ]
+}
