@@ -1,0 +1,2 @@
+# Preserve the exact reviewed bytes, especially the pinned JSON and payloads.
+* -text

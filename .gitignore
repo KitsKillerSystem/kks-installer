@@ -1,0 +1,9 @@
+# Generated local build/test files
+__pycache__/
+*.py[cod]
+.venv/
+source/build/
+app/
+*.spec
+check-result.json
+.kks-*/
