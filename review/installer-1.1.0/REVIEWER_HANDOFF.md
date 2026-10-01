@@ -1,6 +1,11 @@
 # KKS independent installer — reviewer handoff
 
 **Status:** prepared for Nexus manual review; source publication authorized by the maintainer. Nexus approval is not established.
+
+**Later compatibility release:** [content 1.0.1](../content-1.0.1/README.md)
+targets Steam build 25636769 using the same installer EXE and the same five mod
+files. The original review pass and hashes below remain historical evidence.
+
 Installer **1.1.0**; content **1.0.0 revision 1**, Steam English build 25258219.
 User accepted the unchanged content in-game on NOIRBLACK before this cleanup.
 This pass leaves that live installation intact. Nexus approval is not established.

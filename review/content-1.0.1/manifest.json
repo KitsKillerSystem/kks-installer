@@ -1,0 +1,143 @@
+{
+  "channel": "release",
+  "content_version": "1.0.1",
+  "created_utc": "2026-10-01T19:10:36Z",
+  "files": [
+    {
+      "path": "payload/interface/fontconfig_en.txt",
+      "sha256": "00e6bb8c3db29c0048a66b898150592959af884435301f991fcdf6aaaeeabf5a",
+      "size": 4960
+    },
+    {
+      "path": "payload/interface/fonts_en.swf",
+      "sha256": "e0e830ee804d68a7904b3656e7e750a011f4b55226db147ed798f7ab68acbc18",
+      "size": 3253476
+    },
+    {
+      "path": "payload/strings/seventysix_en.dlstrings",
+      "sha256": "2bb6bc97a8da3eeed5d96dceb01154e3b99506264f7982497bb035db7c91b318",
+      "size": 3303270
+    },
+    {
+      "path": "payload/strings/seventysix_en.ilstrings",
+      "sha256": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2",
+      "size": 5662443
+    },
+    {
+      "path": "payload/strings/seventysix_en.strings",
+      "sha256": "d0f43652a0a9545b9d675c09d601a50d73feafc71871b38322f1744d1e40c8d6",
+      "size": 7176069
+    }
+  ],
+  "game": {
+    "app_id": 1151340,
+    "baseline_id": "steam-en-25636769",
+    "build_label": "Steam English Slasher hotfix build 25636769",
+    "id": "fallout76",
+    "identity": [
+      {
+        "path": "Data/SeventySix - Localization.ba2",
+        "sha256": "51399c60eb601153cdd3d8d288c25fdc576b6b24bcec4adeddb4b721c8c76254",
+        "size": 217735774
+      },
+      {
+        "path": "Data/SeventySix.esm",
+        "sha256": "baecd0c4afb5a12edcb60584c6a8448de9e97c712aca4d1b6d1801a16bec433e",
+        "size": 925469444
+      },
+      {
+        "path": "Fallout76.exe",
+        "sha256": "9ca9605ef80747b73a83941c5ccac49f061b7c2fcc9c4bfec8102b5bd378f02d",
+        "size": 99650912
+      }
+    ],
+    "language": "en",
+    "platform": "steam"
+  },
+  "installer_api": 1,
+  "minimum_installer_version": "1.1.0",
+  "package_revision": 1,
+  "package_type": "kks-content",
+  "product": "KKS",
+  "profile": "fo76-steam-en-fonts-strings-v1",
+  "qa": {
+    "report_id": "content-1.0.1-compatibility-2026-10-01",
+    "status": "candidate"
+  },
+  "release_sequence": 2,
+  "required_capabilities": [
+    "ba2-v1-gnrl-kks-writer-v1"
+  ],
+  "schema": 1,
+  "targets": [
+    {
+      "after_sha256": "800dc027a3f3cc10918be224f08c6423880e5cd37de56594e84966858b08a371",
+      "after_size": 3253560,
+      "assets": [
+        {
+          "name": "interface/fonts_en.swf",
+          "payload": "payload/interface/fonts_en.swf",
+          "sha256": "e0e830ee804d68a7904b3656e7e750a011f4b55226db147ed798f7ab68acbc18",
+          "size": 3253476,
+          "vanilla_sha256": "683e7aafcafad309c84bae742cab55276f8f20c2cd9ede84a240a4d60942fd5d",
+          "vanilla_size": 743550
+        }
+      ],
+      "kind": "archive",
+      "path": "Data/SeventySix - Interface_en.ba2",
+      "type": "GNRL",
+      "vanilla_sha256": "19589eb720219b0ea0118f954f804355288d24fd65374055bd8b5f87950bc85d",
+      "vanilla_size": 743634,
+      "version": 1,
+      "writer": "ba2-v1-gnrl-kks-writer-v1"
+    },
+    {
+      "after_sha256": "b88754afb06a11f833d8bb240aeeba4e795c4a8ca084fdd567bfc866edd3a6be",
+      "after_size": 119366364,
+      "assets": [
+        {
+          "name": "interface/fontconfig_en.txt",
+          "payload": "payload/interface/fontconfig_en.txt",
+          "sha256": "00e6bb8c3db29c0048a66b898150592959af884435301f991fcdf6aaaeeabf5a",
+          "size": 4960,
+          "vanilla_sha256": "274018229cfc899a7c8c5587c3c504a1f5460551a6fe62b7a95938d4e482c6b7",
+          "vanilla_size": 1715
+        }
+      ],
+      "kind": "archive",
+      "path": "Data/SeventySix - Interface.ba2",
+      "type": "GNRL",
+      "vanilla_sha256": "380aeb092911d1f7be532e30524b4e3adadf93a07fa63f1336caebee0eb39908",
+      "vanilla_size": 119363119,
+      "version": 1,
+      "writer": "ba2-v1-gnrl-kks-writer-v1"
+    },
+    {
+      "after_sha256": "2bb6bc97a8da3eeed5d96dceb01154e3b99506264f7982497bb035db7c91b318",
+      "after_size": 3303270,
+      "kind": "loose",
+      "path": "Data/strings/seventysix_en.dlstrings",
+      "payload": "payload/strings/seventysix_en.dlstrings",
+      "vanilla_sha256": "6d314d134bff44929eeaba602363b25e7bcc97cbb3ad9b32ad3c4180e23c6365",
+      "vanilla_size": 3015235
+    },
+    {
+      "after_sha256": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2",
+      "after_size": 5662443,
+      "kind": "loose",
+      "path": "Data/strings/seventysix_en.ilstrings",
+      "payload": "payload/strings/seventysix_en.ilstrings",
+      "vanilla_sha256": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2",
+      "vanilla_size": 5662443
+    },
+    {
+      "after_sha256": "d0f43652a0a9545b9d675c09d601a50d73feafc71871b38322f1744d1e40c8d6",
+      "after_size": 7176069,
+      "kind": "loose",
+      "path": "Data/strings/seventysix_en.strings",
+      "payload": "payload/strings/seventysix_en.strings",
+      "vanilla_sha256": "591b726bf9d045e3d25a37c70175968df7ea6ccc6e34bd09dca7e782e062800b",
+      "vanilla_size": 5556607
+    }
+  ]
+}

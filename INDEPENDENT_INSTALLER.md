@@ -8,7 +8,7 @@ Keep `KKSInstaller.exe`. Download one complete content ZIP, close Fallout 76, op
 
 Application and content versions appear separately. The app compares the five selected payload hashes with the installed package. Complete packages permit A to E without B, C or D. Repair uses the authenticated cache. Restore needs the signed descriptor and original backups, but neither cached payloads, the downloaded ZIP nor the old EXE. Selecting the exact signed package again repairs damaged cached descriptors/payloads. Mod content cannot reconstruct missing original game backups.
 
-The fixed profile is Fallout 76, Steam, English, five targets, BA2 version 1 GNRL. This package supports Slasher build 25258219. Exact hashes govern compatibility, never display labels. Other platforms/languages and future Bethesda fingerprints need explicit certification/support. There is no network update service or automatic download-folder scanning.
+The fixed profile is Fallout 76, Steam, English, five targets, BA2 version 1 GNRL. The initial content 1.0.0 package supports Slasher build 25258219; the [content 1.0.1 compatibility release](review/content-1.0.1/README.md) certifies build 25636769 with unchanged mod files and the same installer. Exact hashes govern compatibility, never display labels. Other platforms/languages and future Bethesda fingerprints need explicit certification/support. There is no network update service or automatic download-folder scanning.
 
 ## Package and trust contract
 

@@ -1,0 +1,397 @@
+{
+  "status": "PASS",
+  "installer_sha256": "4e79031ef37c83dc730ff49de46cdfb21d8b326b58ba7a8e0fdb259f96baf17d",
+  "package_sha256": "90681dd798e0e5542d88185b70049963a5854485c404ae8047509b56297b7902",
+  "manifest_sha256": "3eadd1098060e5b4e427808aa5147627a7a01812bbac1888adbd6b72cc5ae97d",
+  "content_version": "1.0.1",
+  "checks": [
+    {
+      "name": "all_five_payloads_and_all_expected_target_bytes_identical_to_frozen_1_0",
+      "passed": true
+    },
+    {
+      "name": "compiled_installer_accepts_existing_signing_key",
+      "passed": true,
+      "result": {
+        "status": "verified",
+        "content": "KKS 1.0.1",
+        "manifest": "3eadd1098060e5b4e427808aa5147627a7a01812bbac1888adbd6b72cc5ae97d",
+        "supported_build": "Steam English Slasher hotfix build 25636769",
+        "payload_files": 5
+      }
+    },
+    {
+      "name": "new_build_ready",
+      "passed": true,
+      "result": {
+        "application_version": "1.1.0",
+        "game": "<USERPROFILE>\\Documents\\KKS_TestGames\\Content_1_0_1_20261001\\game",
+        "game_running": false,
+        "status": "ready",
+        "message": "The selected package matches this game and is ready to install.",
+        "selected_content": "KKS 1.0.1",
+        "selected_manifest": "3eadd1098060e5b4e427808aa5147627a7a01812bbac1888adbd6b72cc5ae97d",
+        "supported_build": "Steam English Slasher hotfix build 25636769",
+        "qa_status": "candidate",
+        "activity": [
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "compatibility_check_does_not_modify_game_or_create_state",
+      "passed": true
+    },
+    {
+      "name": "old_package_refused_on_new_game",
+      "passed": true,
+      "result": {
+        "status": "blocked",
+        "message": "Unsupported or changed game build: Fallout76.exe. This release supports Steam English Slasher build 25258219."
+      }
+    },
+    {
+      "name": "tampered_manifest_refused",
+      "passed": true,
+      "result": {
+        "status": "blocked",
+        "message": "The KKS package signature is invalid"
+      }
+    },
+    {
+      "name": "fresh_install",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.0.1 installed and verified.",
+        "content": "KKS 1.0.1",
+        "activity": [
+          "Verified KKS 1.0.1 content package.",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Saving and verifying restoration backups\u2026",
+          "Building and validating SeventySix - Interface_en.ba2\u2026",
+          "Building and validating SeventySix - Interface.ba2\u2026",
+          "Verifying the supported game build\u2026",
+          "Applying verified files\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Reopening and validating installed files\u2026",
+          "Verifying the supported game build\u2026",
+          "KKS installed and verified.",
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "fresh_output_is_exact_released_1_0_content",
+      "passed": true
+    },
+    {
+      "name": "cached_repair",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.0.1 installed and verified.",
+        "content": "KKS 1.0.1",
+        "activity": [
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Saving and verifying restoration backups\u2026",
+          "Verifying the supported game build\u2026",
+          "Applying verified files\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Reopening and validating installed files\u2026",
+          "Verifying the supported game build\u2026",
+          "KKS installed and verified.",
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "restore_without_cached_payload",
+      "passed": true,
+      "result": {
+        "status": "restored",
+        "message": "Verified vanilla files restored. All restoration history is retained.",
+        "activity": [
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Saving and verifying restoration backups\u2026",
+          "Verifying the supported game build\u2026",
+          "Applying verified files\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Reopening and validating installed files\u2026",
+          "Verifying the supported game build\u2026",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "restore_exact_current_vanilla_and_original_loose_absence",
+      "passed": true
+    },
+    {
+      "name": "reinstall_same_sequence_after_restore",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.0.1 installed and verified.",
+        "content": "KKS 1.0.1",
+        "activity": [
+          "Verified KKS 1.0.1 content package.",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Saving and verifying restoration backups\u2026",
+          "Building and validating SeventySix - Interface_en.ba2\u2026",
+          "Building and validating SeventySix - Interface.ba2\u2026",
+          "Verifying the supported game build\u2026",
+          "Applying verified files\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Reopening and validating installed files\u2026",
+          "Verifying the supported game build\u2026",
+          "KKS installed and verified.",
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "second_restore",
+      "passed": true,
+      "result": {
+        "status": "restored",
+        "message": "Verified vanilla files restored. All restoration history is retained.",
+        "activity": [
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Saving and verifying restoration backups\u2026",
+          "Verifying the supported game build\u2026",
+          "Applying verified files\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Reopening and validating installed files\u2026",
+          "Verifying the supported game build\u2026",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "old_content_install_for_transition",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.0.0 installed and verified.",
+        "content": "KKS 1.0.0",
+        "activity": [
+          "Verified KKS 1.0.0 content package.",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Saving and verifying restoration backups\u2026",
+          "Building and validating SeventySix - Interface_en.ba2\u2026",
+          "Building and validating SeventySix - Interface.ba2\u2026",
+          "Verifying the supported game build\u2026",
+          "Applying verified files\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Reopening and validating installed files\u2026",
+          "Verifying the supported game build\u2026",
+          "KKS installed and verified.",
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "updated_executable_with_unverified_archives_refused",
+      "passed": true,
+      "result": {
+        "status": "blocked",
+        "message": "The game update is incomplete or another mod changed an archive. Verify Fallout 76 in Steam before updating KKS: Data/SeventySix - Interface_en.ba2"
+      }
+    },
+    {
+      "name": "new_baseline_reconciliation_ready",
+      "passed": true,
+      "result": {
+        "application_version": "1.1.0",
+        "game": "<USERPROFILE>\\Documents\\KKS_TestGames\\Content_1_0_1_20261001\\upgrade",
+        "game_running": false,
+        "status": "update_available",
+        "selected_content": "KKS 1.0.1",
+        "selected_manifest": "3eadd1098060e5b4e427808aa5147627a7a01812bbac1888adbd6b72cc5ae97d",
+        "installed_content": "KKS 1.0.0",
+        "supported_build": "Steam English Slasher hotfix build 25636769",
+        "restore_available": false,
+        "repair_available": false,
+        "qa_status": "candidate",
+        "message": "The new game baseline is verified. Install will retire 2 old KKS string overrides, preserve the old backups, and install this complete package. No old game archives will be restored.",
+        "activity": [
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "direct_old_to_new_baseline_update",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.0.1 installed and verified.",
+        "content": "KKS 1.0.1",
+        "activity": [
+          "Verified KKS 1.0.1 content package.",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Saving and verifying restoration backups\u2026",
+          "Building and validating SeventySix - Interface_en.ba2\u2026",
+          "Building and validating SeventySix - Interface.ba2\u2026",
+          "Verifying the supported game build\u2026",
+          "Applying verified files\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Reopening and validating installed files\u2026",
+          "Verifying the supported game build\u2026",
+          "KKS installed and verified.",
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "previous_owner_retired_and_history_preserved",
+      "passed": true
+    },
+    {
+      "name": "updated_installation_restores_new_baseline",
+      "passed": true,
+      "result": {
+        "status": "restored",
+        "message": "Verified vanilla files restored. All restoration history is retained.",
+        "activity": [
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Saving and verifying restoration backups\u2026",
+          "Verifying the supported game build\u2026",
+          "Applying verified files\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Verifying the supported game build\u2026",
+          "Reopening and validating installed files\u2026",
+          "Verifying the supported game build\u2026",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "final_readonly_ready_game",
+      "passed": true,
+      "result": {
+        "application_version": "1.1.0",
+        "game": "<USERPROFILE>\\Documents\\KKS_TestGames\\Content_1_0_1_20261001\\game",
+        "game_running": false,
+        "status": "ready",
+        "message": "The selected package matches this game and is ready to install.",
+        "selected_content": "KKS 1.0.1",
+        "selected_manifest": "3eadd1098060e5b4e427808aa5147627a7a01812bbac1888adbd6b72cc5ae97d",
+        "supported_build": "Steam English Slasher hotfix build 25636769",
+        "qa_status": "candidate",
+        "activity": [
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "final_readonly_ready_upgrade",
+      "passed": true,
+      "result": {
+        "application_version": "1.1.0",
+        "game": "<USERPROFILE>\\Documents\\KKS_TestGames\\Content_1_0_1_20261001\\upgrade",
+        "game_running": false,
+        "status": "ready",
+        "message": "The selected package matches this game and is ready to install.",
+        "selected_content": "KKS 1.0.1",
+        "selected_manifest": "3eadd1098060e5b4e427808aa5147627a7a01812bbac1888adbd6b72cc5ae97d",
+        "supported_build": "Steam English Slasher hotfix build 25636769",
+        "qa_status": "candidate",
+        "activity": [
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "final_readonly_ready_live",
+      "passed": true,
+      "result": {
+        "application_version": "1.1.0",
+        "game": "<LOCAL_GAME>",
+        "game_running": false,
+        "status": "ready",
+        "message": "The selected package matches this game and is ready to install.",
+        "selected_content": "KKS 1.0.1",
+        "selected_manifest": "3eadd1098060e5b4e427808aa5147627a7a01812bbac1888adbd6b72cc5ae97d",
+        "supported_build": "Steam English Slasher hotfix build 25636769",
+        "qa_status": "candidate",
+        "activity": [
+          "Verifying the supported game build\u2026"
+        ]
+      }
+    },
+    {
+      "name": "fresh_fixture_and_live_vanilla_upgrade_fixture_matches_new_vanilla_baseline",
+      "passed": true
+    }
+  ],
+  "harness_correction": "Initial assertion incorrectly required every loose table to be absent after a game-baseline transition. Existing current-vanilla ILSTRINGS is retained under the documented policy. Its bytes were independently compared with the current localization archive; the expectation was corrected. No application or package changes.",
+  "new_gameplay_test": false,
+  "payload_bytes_unchanged": true,
+  "live_game_untouched": true,
+  "source_or_installer_modified": false,
+  "live_readonly_check": "ready"
+}
