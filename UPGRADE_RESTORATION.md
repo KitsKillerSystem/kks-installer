@@ -1,5 +1,7 @@
 # Restoring KKS 1.0.0 from a future installer
 
+Implementation update, 1 October 2026: this branch now implements the independent installer candidate described in [INDEPENDENT_INSTALLER.md](INDEPENDENT_INSTALLER.md). The original 1.0.0 contract below is retained as provenance. Its same-baseline restoration sequence is implemented; newly certified Bethesda baselines use separate ownership-checked reconciliation and never receive old archive backups.
+
 ## Decision
 
 No extra persistent metadata is required in 1.0.0. The existing schema-1 receipt, journal and content-addressed backups contain the installation-specific restoration facts. A future installer must ship a trusted compatibility entry for 1.0.0 and restoration code; it must not require the old installer EXE or old KKS font/string payloads. This document specifies that future implementation. It is not an automatic-upgrade feature added to 1.0.0.

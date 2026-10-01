@@ -80,18 +80,19 @@ class Release:
                 for a in t['assets']:self.payload(a['payload'],a['sha256'])
 
 class Installer:
-    def __init__(self, game, release, log=None):
+    def __init__(self, game, release, log=None, *, state_name=None):
         self.root=Path(game).resolve()
         self.release=release
         self.log=log or (lambda message:None)
-        self.state=safe_path(self.root,STATE)
+        self.state_name=state_name or STATE
+        self.state=safe_path(self.root,self.state_name)
         demand(not self.state.exists() or self.state.is_dir(),'Invalid KKS state directory')
-        self.receipt_path=safe_path(self.root,STATE+'/receipt.json',regular=True)
-        self.journal_path=safe_path(self.root,STATE+'/pending.json',regular=True)
+        self.receipt_path=safe_path(self.root,self.state_name+'/receipt.json',regular=True)
+        self.journal_path=safe_path(self.root,self.state_name+'/pending.json',regular=True)
 
     def target(self, relative):return safe_path(self.root,relative,regular=True)
     def executable_hash(self):return next(x['sha256'] for x in self.release.data['identity'] if x['path']=='Fallout76.exe')
-    def state_path(self, relative):return safe_path(self.root,STATE+'/'+relative,regular=True)
+    def state_path(self, relative):return safe_path(self.root,self.state_name+'/'+relative,regular=True)
     def current(self, relative):return file_hash(self.target(relative))
 
     def _identity(self, *, skip_exe=False):
@@ -156,7 +157,7 @@ class Installer:
         return result
 
     def inspect(self):
-        self.release.verify_payloads()
+        # Inspection and restoration require the trusted descriptor, not payloads.
         self._identity()
         if self.journal_path.exists():
             self._read_journal()
@@ -191,6 +192,7 @@ class Installer:
 
     def _recover_locked(self):
         if not self.journal_path.exists():return False
+        self._identity(skip_exe=True)
         j=self._read_journal()
         # Preflight every file first: no partial rollback when an outside writer changed a target.
         for e in j['entries']:
@@ -198,6 +200,7 @@ class Installer:
                    f'Recovery stopped because another program changed {e["path"]}. Backups and the journal are retained.')
         self.log('Recovering the interrupted operation…')
         for e in reversed(j['entries']):
+            self._identity(skip_exe=True)
             path=self.target(e['path']);current=file_hash(path)
             if current==e['before']:continue
             demand(current==e['after'],'Target changed during recovery')
@@ -218,14 +221,15 @@ class Installer:
         return True
 
     def recover(self):
-        self.release.verify_payloads();self._identity()
+        self._identity()
         lock=self.state_path('operation.lock')
         with operation_lock(lock),game_guard(self.target('Fallout76.exe'),self.executable_hash()):
             return {'status':'recovered' if self._recover_locked() else 'no_recovery_needed'}
 
     def run(self, operation):
         demand(operation in ('install','repair','restore'),'Unknown operation')
-        self.release.verify_payloads();self._identity()
+        if operation!='restore':self.release.verify_payloads()
+        self._identity()
         self.state.mkdir(parents=True,exist_ok=True)
         with operation_lock(self.state_path('operation.lock')):
             # Recheck executable before denying all additional opens for the write phase.
@@ -270,13 +274,16 @@ class Installer:
                 demand(hash_file(stage)==after,'Patched archive does not match the verified release output')
             staged[t['path']]=stage
         # All backups and stages exist before any game file changes.
+        self._identity(skip_exe=True)
         for e in entries:demand(self.current(e['path'])==e['before'],'A game file changed during preparation; nothing was installed')
         journal={'schema':1,'manifest':self.release.manifest_digest,'root':str(self.root),'operation':operation,
                  'transaction':tx,'entries':entries,'receipt_before':receipt}
         durable_json(self.journal_path,journal)
+        self._checkpoint('journal_saved')
         try:
             self.log('Applying verified files…')
             for i,e in enumerate(entries):
+                self._identity(skip_exe=True)
                 path=self.target(e['path'])
                 demand(file_hash(path)==e['before'],'A target changed during installation')
                 if e['before']==e['after']:continue
@@ -289,6 +296,7 @@ class Installer:
                 sync_directory(path.parent)
                 self._after_replace(i,e)  # test seam, not exposed by the executable
             self.log('Reopening and validating installed files…')
+            self._identity(skip_exe=True)
             for e in entries:
                 path=self.target(e['path']);demand(file_hash(path)==e['after'],'Post-write file hash mismatch')
                 t=self.release.by_path[e['path']]
@@ -299,8 +307,11 @@ class Installer:
                         demand(digest(archive.extract(a['name']))==expected,'Post-write embedded asset validation failed')
             saved={'schema':1,'manifest':self.release.manifest_digest,'root':str(self.root),
                    'status':'restored' if operation=='restore' else 'installed','release':self.release.name,'files':result_files}
+            self._checkpoint('before_receipt')
             durable_json(self.receipt_path,saved)
+            self._checkpoint('receipt_saved')
             self.journal_path.unlink();sync_directory(self.state)
+            self._checkpoint('journal_retired')
             self.log('Vanilla files restored. Backups retained.' if operation=='restore' else 'KKS installed and verified.')
             return {'status':saved['status'],'release':self.release.name,'game':str(self.root),'managed_files':len(entries),'backups':str(self.state/'backups')}
         except Exception as cause:
@@ -310,4 +321,7 @@ class Installer:
             raise SafetyError(f'Operation failed and was rolled back: {cause}') from cause
 
     def _after_replace(self, index, entry):
+        pass
+
+    def _checkpoint(self, name):
         pass

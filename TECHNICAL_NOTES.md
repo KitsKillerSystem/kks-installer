@@ -1,5 +1,7 @@
 # KKS 1.0.0
 
+Historical release record. The independent installer candidate is described in [INDEPENDENT_INSTALLER.md](INDEPENDENT_INSTALLER.md); it has a separate application version and has not replaced this release.
+
 Promoted from the exact KKS 1.0.0-rc.1 payload that the user approved after final in-game QA. All five game payloads and the complete authoring/codex snapshot are byte-identical. No localization, glyph artwork, metrics, sorting, naming or content changes were made during promotion.
 
 ## Promotion scope

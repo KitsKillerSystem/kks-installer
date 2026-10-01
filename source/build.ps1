@@ -4,7 +4,6 @@ Push-Location $PSScriptRoot
 try {
     & $Python -m unittest discover -s tests -v
     if ($LASTEXITCODE -ne 0) { throw 'Tests failed; executable was not built.' }
-    $ReleaseData = (Join-Path $PSScriptRoot 'release') + ';release'
-    & $Python -m PyInstaller --noconfirm --clean --onefile --windowed --name KKSInstaller --add-data $ReleaseData --distpath $Destination --workpath (Join-Path $BuildDirectory 'pyinstaller') --specpath $BuildDirectory launcher.py
+    & $Python -m PyInstaller --noconfirm --clean --onefile --windowed --name KKSInstaller --distpath $Destination --workpath (Join-Path $BuildDirectory 'pyinstaller') --specpath $BuildDirectory launcher.py
     if ($LASTEXITCODE -ne 0) { throw 'Executable build failed.' }
 } finally { Pop-Location }
