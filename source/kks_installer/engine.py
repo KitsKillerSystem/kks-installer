@@ -7,7 +7,6 @@ never overwritten during recovery.
 """
 
 from pathlib import Path
-from contextlib import nullcontext
 import hashlib, json, os, shutil, uuid
 from .ba2 import BA2, hash_file
 from .platforms import SafetyError, safe_path, operation_lock, game_guard, game_running
@@ -72,6 +71,8 @@ def verified_copy(source, destination, expected):
 
 
 class Release:
+    """Bundled 1.0 reader retained for regression fixtures, not current entry points."""
+
     def __init__(self, folder, expected_manifest):
         self.folder = Path(folder).resolve()
         manifest_path = safe_path(self.folder, "manifest.json", regular=True)

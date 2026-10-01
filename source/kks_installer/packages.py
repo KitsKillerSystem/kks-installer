@@ -54,11 +54,14 @@ def strict_json(raw, limit=MAX_MANIFEST):
             for x in value:
                 depth(x, level + 1)
 
+    def reject_constant(value):
+        raise SafetyError("Invalid JSON number")
+
     try:
         result = json.loads(
             raw.decode("utf-8"),
             object_pairs_hook=pairs,
-            parse_constant=lambda x: (_ for _ in ()).throw(SafetyError("Invalid JSON number")),
+            parse_constant=reject_constant,
         )
         depth(result)
         return result
@@ -225,8 +228,6 @@ def validate_manifest(m):
 
 
 class SignedRelease:
-    descriptor_only_inspection = True
-
     def __init__(self, folder, raw, signature, keys=None):
         self.folder = Path(folder)
         envelope = strict_json(signature, MAX_SIGNATURE)
@@ -288,19 +289,6 @@ class SignedRelease:
         for f in self.files.values():
             self.payload(f["path"], f["sha256"])
 
-    def baseline_fingerprint(self):
-        # The human baseline label is deliberately excluded from this equality test.
-        value = {"identity": sorted(self.data["identity"], key=lambda x: x["path"]), "targets": []}
-        for t in sorted(self.targets, key=lambda x: x["path"]):
-            item = {k: t[k] for k in ("path", "vanilla_sha256", "vanilla_size")}
-            if t["kind"] == "archive":
-                item["assets"] = [
-                    {k: a[k] for k in ("name", "vanilla_sha256", "vanilla_size")}
-                    for a in t["assets"]
-                ]
-            value["targets"].append(item)
-        return digest(json.dumps(value, sort_keys=True).encode())
-
 
 def bounded_file(path, limit):
     with Path(path).open("rb") as f:
@@ -356,15 +344,14 @@ def _container(file):
             or (name in DIRECTORIES and stat.S_ISDIR(mode)),
             "Links and special files are forbidden",
         )
-        limit = (
-            MAX_MANIFEST
-            if name == "manifest.json"
-            else (
-                MAX_SIGNATURE
-                if name == "manifest.sig.json"
-                else 0 if name in DIRECTORIES else MAX_ASSET
-            )
-        )
+        if name == "manifest.json":
+            limit = MAX_MANIFEST
+        elif name == "manifest.sig.json":
+            limit = MAX_SIGNATURE
+        elif name in DIRECTORIES:
+            limit = 0
+        else:
+            limit = MAX_ASSET
         demand(
             i.file_size <= limit and i.compress_size <= MAX_PACKAGE,
             "ZIP entry exceeds the supported size",
@@ -377,7 +364,7 @@ def _container(file):
     # Reject hidden data/local aliases and central/local size disagreement.
     ordered = sorted(infos, key=lambda i: i.header_offset)
     expected = 0
-    for idx, i in enumerate(ordered):
+    for i in ordered:
         demand(i.header_offset == expected, "Overlapping or hidden ZIP entries")
         file.seek(i.header_offset)
         header = file.read(30)

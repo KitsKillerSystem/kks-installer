@@ -1,4 +1,7 @@
-"""Released KKS 1.0.0: exact English SWF/config archive targets and three string tables."""
+"""Historical bundled 1.0 profile, exercised only by regression tests.
+
+The independent runtime uses ManagedEngine and the signed package allowlists.
+"""
 
 import json
 from .engine import Installer as BaseInstaller

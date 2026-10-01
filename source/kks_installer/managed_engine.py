@@ -19,8 +19,6 @@ LEGACY_STATE = ".kks-installer-1.0.0"
 
 
 class LegacyDescriptor:
-    descriptor_only_inspection = True
-
     def __init__(self, raw=None, pin=None):
         raw = _legacy.MANIFEST_BYTES if raw is None else raw
         pin = _legacy.MANIFEST_SHA256 if pin is None else pin
