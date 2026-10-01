@@ -1,0 +1,95 @@
+{
+  "source_commit": "5c6eadf80ebcec84b62a8c5bec71f7679d9f3004",
+  "exe_sha256": "4e79031ef37c83dc730ff49de46cdfb21d8b326b58ba7a8e0fdb259f96baf17d",
+  "source_modules": {
+    "launcher": {
+      "source": "launcher.py",
+      "source_sha256": "d3f8e75a7517cd1e941dc77b21f0fb170abb4205818ef1f0d18f73ec95f97324",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer": {
+      "source": "kks_installer/__init__.py",
+      "source_sha256": "beee3ab64d068abe659c25072f3de67b89dabb966c27063cdaf40bdc8c750378",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer._application": {
+      "source": "kks_installer/_application.py",
+      "source_sha256": "fa3c0dad42a570323ddf4f9acf999086d5d31f13376927ccf2f4127d77e6fdc4",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer._legacy": {
+      "source": "kks_installer/_legacy.py",
+      "source_sha256": "5c68c5e2292da5abbdf8b6c28200bc20adef60e5e71c0caaf6302e704f3aa796",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer.ba2": {
+      "source": "kks_installer/ba2.py",
+      "source_sha256": "b716bc1962ae1d74377e08dac0b505fa7747d0ce2f700365a450ddf173806194",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer.engine": {
+      "source": "kks_installer/engine.py",
+      "source_sha256": "b7d647250d9874a110b48e814ce5d1cd3f3f7a5044346cead68c9855e099e54f",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer.managed_engine": {
+      "source": "kks_installer/managed_engine.py",
+      "source_sha256": "a3791bb5941525a07426ca85e140af99d2c0b52a15b543ce897e17749f82229d",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer.manager": {
+      "source": "kks_installer/manager.py",
+      "source_sha256": "946d0c270458543d195f09a9a4927acf460249f0592f9da8b61b8b618cf09a11",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer.packages": {
+      "source": "kks_installer/packages.py",
+      "source_sha256": "6a82369e2375b3916dd38a77e5e8aa0f01fd36536ef9f1c25009c3243feda8ad",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer.platforms": {
+      "source": "kks_installer/platforms.py",
+      "source_sha256": "67b2f0c907cf800d2f3f419635267a05ca247c498cc20aa573232d749015dc7f",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer.ui": {
+      "source": "kks_installer/ui.py",
+      "source_sha256": "f15d8af48087af0c7b1fd52c2c803852830ae189e6c431fed4fb8534ae17fc30",
+      "embedded_code_equals_compiled_source": true
+    },
+    "kks_installer.windows_drop": {
+      "source": "kks_installer/windows_drop.py",
+      "source_sha256": "df996e15aa5e2001dde17d5380b3f8702fdbe7cd333a3e625ef2bd77844c6a50",
+      "embedded_code_equals_compiled_source": true
+    }
+  },
+  "pe_requested_execution_level": "asInvoker",
+  "authenticode_signed": false,
+  "pe_timestamp": 1790876010,
+  "content_sha256": "cdb2387e90f9ce01b2ef1dd44036bfe0cf0c58e1405a99ea94bbe8970c06191b",
+  "content_manifest_sha256": "86d84fb18ad653a002939830802e3f43be46470075688d61e8e4bb42d442c576",
+  "payload_byte_parity_and_sha256": {
+    "payload/interface/fontconfig_en.txt": "00e6bb8c3db29c0048a66b898150592959af884435301f991fcdf6aaaeeabf5a",
+    "payload/interface/fonts_en.swf": "e0e830ee804d68a7904b3656e7e750a011f4b55226db147ed798f7ab68acbc18",
+    "payload/strings/seventysix_en.dlstrings": "2bb6bc97a8da3eeed5d96dceb01154e3b99506264f7982497bb035db7c91b318",
+    "payload/strings/seventysix_en.ilstrings": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2",
+    "payload/strings/seventysix_en.strings": "d0f43652a0a9545b9d675c09d601a50d73feafc71871b38322f1744d1e40c8d6"
+  },
+  "target_hashes_equal_frozen": true,
+  "legacy_descriptor_byte_equal": true,
+  "frozen_inventory_files_verified": 95,
+  "frozen_changes": [],
+  "pyz_application_modules": [
+    "kks_installer",
+    "kks_installer._application",
+    "kks_installer._legacy",
+    "kks_installer.ba2",
+    "kks_installer.engine",
+    "kks_installer.managed_engine",
+    "kks_installer.manager",
+    "kks_installer.packages",
+    "kks_installer.platforms",
+    "kks_installer.ui",
+    "kks_installer.windows_drop"
+  ]
+}

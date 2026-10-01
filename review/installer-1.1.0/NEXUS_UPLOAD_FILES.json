@@ -1,0 +1,21 @@
+{
+  "application_version": "1.1.0",
+  "content_version": "1.0.0 revision 1",
+  "binary_source_commit": "5c6eadf80ebcec84b62a8c5bec71f7679d9f3004",
+  "executable_sha256": "4e79031ef37c83dc730ff49de46cdfb21d8b326b58ba7a8e0fdb259f96baf17d",
+  "upload_files": {
+    "KKS_1.0.0_Payload_Steam_EN_25258219_r1.zip": {
+      "size": 8870557,
+      "sha256": "cdb2387e90f9ce01b2ef1dd44036bfe0cf0c58e1405a99ea94bbe8970c06191b"
+    },
+    "KKS_Installer_1.1.0.zip": {
+      "size": 15422900,
+      "sha256": "7be53528ee55c9b1c0ea85a60d26f648432b65ee093c7206f6b834cbb2487c62"
+    }
+  },
+  "changed_since_review": "Installer ZIP packaging and documentation only; executable and signed content ZIP unchanged.",
+  "nexus_approval": "not established",
+  "no_nested_archives": true,
+  "no_private_key_material": true,
+  "content_zip_preserved_byte_exact": true
+}

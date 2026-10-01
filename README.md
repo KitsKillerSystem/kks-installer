@@ -1,14 +1,14 @@
 # KKS — Kit's Killer System
 
-## Independent installer candidate — unreleased
+## Independent installer 1.1.0 — manual-review candidate
 
-This branch develops **installer application 1.1.0** with separately signed, complete content ZIPs. Its first package contains the **unchanged KKS 1.0.0** font/configuration/strings. Application and content versions are independent. The original public release linked below is still the bundled 1.0.0 installer; it has not been replaced.
+This branch contains **installer application 1.1.0** with separately signed, complete content ZIPs. Its first package contains the **unchanged KKS 1.0.0** font/configuration/strings. Application and content versions are independent. The original public release linked below is still the bundled 1.0.0 installer; it has not been replaced.
 
 The candidate accepts a ZIP through Choose package, by dropping it on the window, or by dropping it onto the EXE. It verifies the publisher signature, every file, the game baseline and saved installation before enabling installation. Complete packages permit direct jumps over intermediate releases. Repair uses the verified local cache; Restore uses authenticated descriptors and original backups without needing a download or the old EXE.
 
-Reviewers: start with [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for current file/network/process/privilege scope and the source map. Exact new artifact hashes and test/build evidence are supplied with the review candidate; root-level 1.0 hashes remain historical.
+Reviewers: start with the [current handoff and test evidence](review/installer-1.1.0/README.md), then [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for current file/network/process/privilege scope and the source map. Exact new artifact hashes and test/build evidence are supplied with the review candidate; root-level 1.0 hashes remain historical.
 
-See [the implementation and package contract](INDEPENDENT_INSTALLER.md), [current build instructions](BUILD.md), and [the original 1.0 restoration contract](UPGRADE_RESTORATION.md). The candidate is for local validation until separately accepted and published. Nexus approval is not established.
+See [the implementation and package contract](INDEPENDENT_INSTALLER.md), [current build instructions](BUILD.md), and [the original 1.0 restoration contract](UPGRADE_RESTORATION.md). Local validation is complete: 112 automated tests, 29 actual-EXE checks and two byte-identical clean builds. Exact 1.0 content also passed the maintainer's in-game acceptance. Nexus approval is not established.
 
 ## Download the full mod + installer
 
@@ -48,6 +48,6 @@ The original 1.0.0 payload passed the author's final in-game QA. Publication of 
 
 ## Repository contents
 
-`source/kks_installer/` and `source/launcher.py` contain application code. `source/tests/` contains 110 fixture tests, including all 59 original tests. `source/release/` retains the exact 1.0.0 manifest and five inputs for provenance and package creation; **the current build does not embed them**. `source/build_content.py` is a publisher tool, excluded from the runtime. `source/build.ps1` and `source/requirements-build.txt` provide the build entry point and pinned dependencies.
+`source/kks_installer/` and `source/launcher.py` contain application code. `source/tests/` contains 112 fixture tests, including all 59 original tests. `source/release/` retains the exact 1.0.0 manifest and five inputs for provenance and package creation; **the current build does not embed them**. `source/build_content.py` is a publisher tool, excluded from the runtime. `source/build.ps1` and `source/requirements-build.txt` provide the build entry point and pinned dependencies.
 
 The source tree omits the original EXE, Bethesda game archives/executable/ESM, local backups, signing private keys, private workstation logs and optional font-authoring/history tools. They are not required to build the installer. The original EXE is available in the complete installer ZIP linked above. The broader authoring/codex bundle remains a separate release artifact. Frozen 1.0.0 evidence and payload bytes remain unchanged.

@@ -1,0 +1,163 @@
+{
+  "base_commit": "cc1b7e4f5d716a819babd45258d198c5d68c40cc",
+  "formatter": "Black 26.5.1",
+  "line_length": 100,
+  "target": "py312",
+  "safe": true,
+  "files": [
+    {
+      "path": "source/build_content.py",
+      "before_sha256": "4e31e086c10770309220e0f851dc26366d78f182884bfc110b465f640f30bef0",
+      "after_sha256": "c76243a13d3942b49b2c10e0933906c160cfdf896c81cf9ae34460d5c4d1a924",
+      "ast_sha256": "646146d0dbad2e6a1782b7afcbb7ff9f81c9da224b6e4c31281cbff871c0779a",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/__init__.py",
+      "before_sha256": "250afd3ba81b551386b1816d0ca31558940b87c5c64d113bfa33800f920e12e7",
+      "after_sha256": "2ac27f3bce6cec747f897bff222384f4460ab617363084385c37a4cedf3289a1",
+      "ast_sha256": "da07ca24180fb87a67af01557daf11d05a800f860654599cdad2fe52da7cf756",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/_application.py",
+      "before_sha256": "acc0d5d0cc2c0ec35c691ee4eb2df1e4b83eca2431a93cab7905a7f0b0634bc2",
+      "after_sha256": "fa3c0dad42a570323ddf4f9acf999086d5d31f13376927ccf2f4127d77e6fdc4",
+      "ast_sha256": "4e36fd429a69c3f9f93735302377ecbc09f4b85f7fa6333933115de3457ed8a7",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/_legacy.py",
+      "before_sha256": "6dd4d14551fae960435f391fb8bb5caa8b1866ad131a52c82d73079e783ebff5",
+      "after_sha256": "81fbd4c9b9a37f33fd19e281d9431c16a83dbedc9996daaf6f0b17c7b36ad892",
+      "ast_sha256": "5d8de2253c30e9d7186b189bb19aca6a9cc33765464b9d2085d2de48e03cc961",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/_release.py",
+      "before_sha256": "106a5947ca2abd0af0c2c5d6d0f070b56d0dca763583aa50785c832ea4da3a3e",
+      "after_sha256": "c9672045ce249db54ade44e6f9d46e0d965376aec91f8846f14ca3ff0ae0c6d8",
+      "ast_sha256": "739a8001a2fcfb2b09522cd5f265fbd126cea23850abe1e9500a9d9bf415dfcc",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/ba2.py",
+      "before_sha256": "65cdd11baafd148dffe22732a589200aceefe20fc25deb1cad70ceb2f2123acb",
+      "after_sha256": "b716bc1962ae1d74377e08dac0b505fa7747d0ce2f700365a450ddf173806194",
+      "ast_sha256": "18fd992694f018337d21fc05c4a4f72e4fedd0796b2416b3a52ecd6b227af38b",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/engine.py",
+      "before_sha256": "42d87292fb571d85a3de5aa9eb871f7507dc7213553d5047e81e129b91435d2a",
+      "after_sha256": "49379fe6284e23a8345ff4716a5beda2a9c3db0f658a57559db4c9157f1b8ccf",
+      "ast_sha256": "d552f20757b7aee4e4348c870d3d2f7b500c12f6ef60fa148a91d4c2c4d83a88",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/managed_engine.py",
+      "before_sha256": "310fc32c7a020bdd5f729c46efbc48d8ca3578b6794358dae9da2f9cd6e687be",
+      "after_sha256": "bf69e89715ff85ec3995df06eec3049bfc581cd33f2eee6b4ab3368bdc653ec7",
+      "ast_sha256": "391c439fc14fa14859e9e59d22be75f81120ec4540b4e9a66b1e9869cdce6ef2",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/manager.py",
+      "before_sha256": "a5b6a9a358a3b2dfcf2da8a1a8f2e085f2ee0e082eca0df08e08f99487a3ad0d",
+      "after_sha256": "946d0c270458543d195f09a9a4927acf460249f0592f9da8b61b8b618cf09a11",
+      "ast_sha256": "92b3a5d989509fba1a053eeb7e53969f0e004fd8625715c62449f8cdd9ebfbdb",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/packages.py",
+      "before_sha256": "91933125ae0eb283dd4f4d0f274d841126f63834943f99f5e950d2e5814a6fcc",
+      "after_sha256": "679ad054d1d941a958630b91646218142a523ed4721febc9ba6d7603f86bd455",
+      "ast_sha256": "52df9877e8d654d691b38193a3df35eb53fd4fcc7bc277e3434aec9f71d85f5e",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/platforms.py",
+      "before_sha256": "c28f17917caefe9d425b30c7b080eec04a1d8a0dda75cb9337dca31dc4340a9d",
+      "after_sha256": "67b2f0c907cf800d2f3f419635267a05ca247c498cc20aa573232d749015dc7f",
+      "ast_sha256": "e15aaa176deee07ac99d5c93d9698e2aa380dafe6c7e5b5a5215a2849c6f43ae",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/profile.py",
+      "before_sha256": "f4a098127183420ba4b502089c88d3d6422d403fcfb4aa9ef9272a18aa992564",
+      "after_sha256": "968e50d35fdfad754ab0fc59d8741ee824cf0fbf61945d6d14631e39b6d3ea2a",
+      "ast_sha256": "8f1642e2020dea3a7132dbdcaaf58eb211ff9b40d323a0251bbbd437b165b902",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/ui.py",
+      "before_sha256": "3c9a31bab5a0624d53f11add9e8b19ad71a39b2cd4584315d9313ef7d8e59634",
+      "after_sha256": "f15d8af48087af0c7b1fd52c2c803852830ae189e6c431fed4fb8534ae17fc30",
+      "ast_sha256": "b124e5e6dddae2d2c7a4124d7616988ec9ce2d2cd2db425109a8bc86dcb7676a",
+      "ast_equal": true
+    },
+    {
+      "path": "source/kks_installer/windows_drop.py",
+      "before_sha256": "ce76fa0ff45cdd1b47c0a7f26ee93930f9099fa354f2f49e0c96edaca14733c1",
+      "after_sha256": "df996e15aa5e2001dde17d5380b3f8702fdbe7cd333a3e625ef2bd77844c6a50",
+      "ast_sha256": "e795aa6d2287f4582eb40be6ffd5b6ef499f95e134ea3060360655947e5544e0",
+      "ast_equal": true
+    },
+    {
+      "path": "source/launcher.py",
+      "before_sha256": "97ec6386ccf9e719a87efab4c49eba5fcb7d6ef9a2511e2fd881333a17213bfb",
+      "after_sha256": "d3f8e75a7517cd1e941dc77b21f0fb170abb4205818ef1f0d18f73ec95f97324",
+      "ast_sha256": "58d66c0e282d51b12317980ad5a50f7b539b394086ed04b73b8a94fa622bc431",
+      "ast_equal": true
+    },
+    {
+      "path": "source/tests/package_fixture.py",
+      "before_sha256": "92feb02920d82326d75d0a9929424eb4f8ff9d9adee89b4d0d1fe11331ea28a4",
+      "after_sha256": "32916e26661ce084373299a8a2a755e0a657a681a2d92be34adcdbe12b31f82f",
+      "ast_sha256": "104a7f2ccfbba3bb67feea2ecfabdfd74b6bc6edeed1d6f52136175ddcf700cf",
+      "ast_equal": true
+    },
+    {
+      "path": "source/tests/test_future_restore.py",
+      "before_sha256": "1fd351ee1844baa9d1b5032ae3f798f5d6c1f30d4e33a34c20429e0cb914b8c4",
+      "after_sha256": "bc9ff57348dec02d6b45dec30b944cd592c11f343a7af677acdd2dd7a85e08de",
+      "ast_sha256": "d25c93c519bf5eece927d4b5ed0ee7f06a115661d838d5b303821fa465e4d8c8",
+      "ast_equal": true
+    },
+    {
+      "path": "source/tests/test_installer.py",
+      "before_sha256": "194db96bd6edca6f882090c03896a53effbd972329b0bdef8894ef6f11804bb8",
+      "after_sha256": "ae2db327b8ce3ad3341d27ba1721cb98afb31f63740ce520ae79ad7c5fdbf373",
+      "ast_sha256": "8c84a1ba1bc22aad6349cbb3657d345c727b5f54d8580d09e5dd0d66011151e0",
+      "ast_equal": true
+    },
+    {
+      "path": "source/tests/test_manager.py",
+      "before_sha256": "4d8bb3769f1fe2a4e7caa0935ef085bd013f3a288bdf282b171c0e61278a8691",
+      "after_sha256": "d869e3453d9a2f6c8d2d3249e9961f0da660e8dceb200cf246b4c77219c5fb09",
+      "ast_sha256": "dd87f760d04116a291ffa7522e9c5d4a8abda3c38d6d63004e78f022c6255d13",
+      "ast_equal": true
+    },
+    {
+      "path": "source/tests/test_packages.py",
+      "before_sha256": "cac89305eb1f2622fc72a929458cb79a6e766452e665341ad82fbd280fcf792e",
+      "after_sha256": "8e04025d53ff73f69cb1b28e17ccd7a6cb62783eda333803f3f0106a4b404789",
+      "ast_sha256": "9d1a132f19d7ce5571eba583116b5175725955c3297a27dcf110ddcfb95c271e",
+      "ast_equal": true
+    },
+    {
+      "path": "source/tests/test_profile.py",
+      "before_sha256": "bb19c66f26d1c1e7b0722754e723b6d434f25b4ee5422b1d32ad9e4c4ee32af7",
+      "after_sha256": "857975bc01aa657b80df2f51893f4b5b9d91cb5db5797e8ed3161f2589fbc885",
+      "ast_sha256": "50599e4079caed2bc9ac9862e4edb839936a2b0718923463959c81e2e9958df7",
+      "ast_equal": true
+    },
+    {
+      "path": "source/tests/test_reconciliation.py",
+      "before_sha256": "ca9d40eb9a94a5852d32492ad1cc2b3392f0cf5d6c83b9cddbc8273fdd2ed856",
+      "after_sha256": "fdd09554de39b5e82047a46d5190f4052820c21ad47d0d3718c2885ae8141ff0",
+      "ast_sha256": "0ab5cb968ddc929c3fec28721215016d91d540b9947fcadceed0e031716b5530",
+      "ast_equal": true
+    }
+  ]
+}

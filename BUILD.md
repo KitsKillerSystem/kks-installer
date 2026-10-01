@@ -5,6 +5,12 @@ the older bundled installer. This branch's runtime build never includes
 `source/release`, publisher tooling, tests, game files or private signing keys.
 No game installation or publisher key is needed for synthetic tests or building.
 
+The distributed review executable was built from commit
+**5c6eadf80ebcec84b62a8c5bec71f7679d9f3004**. Later commits on this branch update
+review documentation only. To match that executable, check out the exact build
+commit, not the latest documentation revision; the commit timestamp affects the
+reproducible build. See [the handoff](review/installer-1.1.0/REVIEWER_HANDOFF.md).
+
 ## Reproduce the reviewed source
 
 Use Windows x64, Git, Python **3.12.14 x64 with Tk/Tcl**, and a fresh checkout of the
