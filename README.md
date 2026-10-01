@@ -1,22 +1,25 @@
 # KKS — Kit's Killer System
 
-## Download the full mod + installer
+## Download the installer and content
 
-### [CLICK HERE TO DOWNLOAD KKS 1.0.0 (ZIP, 20.5 MB)](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.0.0/KKS_1.0.0_Installer.zip)
+[Current download page: KKS Content 1.0.1 and Installer 1.1.0](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.0.1)
 
-**This is the complete Windows installer with the KKS mod included.** No Python, xTranslator, or separate mod download is needed.
+- [KKS Installer 1.1.0](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.0.1/KKS_Installer_1.1.0.zip): reusable Windows application; extract this ZIP and run KKSInstaller.exe.
+- [KKS Content 1.0.1](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.0.1/KKS_1.0.1_Payload_Steam_EN_25636769_r1.zip): complete signed font/configuration/strings package; keep this ZIP intact.
 
-1. Download **KKS_1.0.0_Installer.zip** using the link above.
-2. Right-click the ZIP, choose **Extract All**, then open the extracted folder and run **KKSInstaller.exe**.
-3. Close Fallout 76, check the game location, and choose **Install KKS**.
+1. Download both ZIPs if you do not already have installer 1.1.0.
+2. Extract only the installer ZIP, close Fallout 76, and open KKSInstaller.exe.
+3. Select the game folder and the intact content ZIP, then choose Install when the compatibility check succeeds.
 
-**Supported game version:** Steam, English, Slasher build **25258219**. The installer checks compatibility before making changes. If you have a prerelease installed, use its **Restore vanilla** first. Keep the **.kks-installer-1.0.0** folder in your game directory for repair and restoration.
+**Supported game version for content 1.0.1:** Steam, English, Slasher hotfix build **25636769**. No artwork, strings, font configuration or installer code changed in this compatibility release. See [package verification and update notes](https://github.com/KitsKillerSystem/kks-installer/blob/release/review-hardening/review/content-1.0.1/README.md).
 
-[Open the download page and release notes](https://github.com/KitsKillerSystem/kks-installer/releases/latest)
+If Bethesda updated the game while KKS was installed, complete Steam's Verify integrity of game files before selecting the new compatible package. The installer requires the current vanilla archives before retiring old KKS overrides across game builds; it will not restore old archives over an unverified new build. Keep the game's **.kks-manager** and any **.kks-installer-1.0.0** records and backups.
 
-On the release page, choose **KKS_1.0.0_Installer.zip**. GitHub's **Source code (zip)** and **Source code (tar.gz)** downloads do not include the ready-to-run installer. The checksum file is optional.
+GitHub's automatic Source code downloads are for developers; use the two named ZIP assets above. Python and xTranslator are not needed. The [original bundled 1.0.0 release](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.0.0) is preserved for history and its older supported game build.
 
-## About KKS
+## Historical v1.0.0 source and review notes
+
+The default branch retains the original bundled installer source. The current independent installer source and review evidence are on [release/review-hardening](https://github.com/KitsKillerSystem/kks-installer/tree/release/review-hardening). The following source notes describe the historical 1.0.0 release; use the current downloads above for Steam build 25636769.
 
 KKS 1.0.0 provides a standalone Fallout 76 installer. This repository also contains its source for review of the released Windows executable.
 
