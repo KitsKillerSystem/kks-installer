@@ -137,12 +137,12 @@
     {
       "label": "clean build A",
       "result": "112 passed",
-      "log": "Build_A/tests.log"
+      "log": "build-a/tests.log"
     },
     {
       "label": "clean build B",
       "result": "112 passed",
-      "log": "Build_B/tests.log"
+      "log": "build-b/tests.log"
     }
   ],
   "actual_exe_check_count": 29,
