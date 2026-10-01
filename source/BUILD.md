@@ -1,5 +1,5 @@
-# Building the independent installer
+# Build the independent installer
 
-Follow [the repository build instructions](../BUILD.md). They cover prerequisites, tests, the existing build script and its equivalent explicit packaging command.
+See [the root build instructions](../BUILD.md) for the locked toolchain, clean-source build, tests, provenance receipt and reproduction limits.
 
-The current app excludes all content payloads. `release/` retains the unchanged 1.0.0 inputs for provenance and publisher package creation. It is not included in the EXE. The original bundled release remains available from the `v1.0.0` snapshot.
+Run `build.ps1` with the chosen Python executable and two new output/work directories. The developer-only `review_build.py` runs all tests before PyInstaller and records the exact source revision. No content payload or private key is bundled.

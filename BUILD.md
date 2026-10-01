@@ -1,35 +1,91 @@
-# Build the independent installer candidate
+# Build installer application 1.1.0
 
-This branch builds installer application **1.1.0**, separate from content version **1.0.0**. Use the `v1.0.0` source snapshot and its original instructions to rebuild the original bundled executable.
+Content version 1.0.0 is independent. Use the original `v1.0.0` source to reproduce
+the older bundled installer. This branch's runtime build never includes
+`source/release`, publisher tooling, tests, game files or private signing keys.
+No game installation or publisher key is needed for synthetic tests or building.
 
-Requirements: Windows x64, Python 3.12 x64 with Tk/Tcl, and the pinned packages in `source/requirements-build.txt`. This candidate uses Python 3.12.14, PyInstaller 6.22.3 and cryptography 50.0.2. Dependencies require internet at build time; the app has no network feature. No game installation or signing private key is required to build or run synthetic tests.
+## Reproduce the reviewed source
 
-From the repository root in PowerShell:
+Use Windows x64, Git, Python **3.12.14 x64 with Tk/Tcl**, and a fresh checkout of the
+full source commit printed in the release's REVIEWER_HANDOFF.md/build-receipt.json.
+The recorded environment used Tcl/Tk **8.6.12**, PyInstaller **6.22.3** and
+cryptography **50.0.2**. The complete Windows/Python-3.12 wheel closure, including
+pip, is pinned with SHA-256 hashes in `source/requirements-build.txt`.
+
+In PowerShell, from the repository root (replace the example commit/path):
 
 ```powershell
-Set-Location source
+git checkout --detach <full-reviewed-commit>
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
-.\.venv\Scripts\python.exe -c "import tkinter; print(tkinter.Tcl().eval('info patchlevel'))"
-.\build.ps1 -Python "$PWD\.venv\Scripts\python.exe"
+.\.venv\Scripts\python.exe -m pip install --require-hashes --only-binary=:all: -r source\requirements-build.txt
+.\.venv\Scripts\python.exe -c "import sys, tkinter; print(sys.version); print(tkinter.Tcl().eval('info patchlevel'))"
+.\source\build.ps1 -Python "$PWD\.venv\Scripts\python.exe" -Destination C:\KKSBuild\run1\app -BuildDirectory C:\KKSBuild\run1\work
 ```
 
-The script runs all 110 tests and stops on failure, then builds `app/KKSInstaller.exe`. Do not accept a build that omits Tk/Tcl. After tests pass, its equivalent packaging command is:
+Both output directories must be new. The script rejects uncommitted/untracked
+source, checks Python/dependency versions, runs all **112** tests, then invokes
+PyInstaller with `--clean --noupx --onefile --windowed`. A failed step stops the
+build. Accept the output only when `build-receipt.json` exists and logs pass;
+a partially created EXE alone is not success. Do not edit source during a build.
+Use a fresh checkout and venv to avoid ignored/local modules or extra packages.
+Git's commit time sets `SOURCE_DATE_EPOCH`, and `PYTHONHASHSEED=1` fixes Python hash
+ordering; the script clears inherited Python import-path overrides in child
+processes. The receipt records the command, source tree and every tracked-file
+hash, interpreter/platform/dependencies, logs and executable hash.
+
+Repeat with new run2 output/work directories and compare:
 
 ```powershell
-.\.venv\Scripts\python.exe -m PyInstaller --noconfirm --clean --onefile --windowed --name KKSInstaller --distpath ..\app --workpath build\pyinstaller --specpath build launcher.py
+Get-FileHash C:\KKSBuild\run1\app\KKSInstaller.exe -Algorithm SHA256
+Get-FileHash C:\KKSBuild\run2\app\KKSInstaller.exe -Algorithm SHA256
 ```
 
-There is no `--add-data release;release`. The app includes its runtime, public verification key and small pinned 1.0 restoration descriptor; no mod payload, game archives or private key. Rebuilding does not guarantee a byte-identical EXE across environments.
+These controls follow [PyInstaller's reproducible-build guidance](https://pyinstaller.org/en/stable/advanced-topics.html#creating-a-reproducible-build).
+The release handoff reports the actual two-build result, rather than promising
+cross-machine identity. It also includes a runtime file inventory (hashes of
+bundled DLLs, Python/Tk data and modules) and source archive for comparison.
 
-Read-only CLI examples (replace paths):
+## Limits of reproduction and provenance
+
+Matching Python's version string alone does not guarantee matching interpreter,
+standard library, Tcl/Tk, OpenSSL or Windows system DLL bytes. This candidate used
+the Python 3.12.14 runtime provided by the local Codex environment (MSC v.1944,
+64 bit); that provenance is disclosed, not assumed equivalent to every Python
+3.12.14 distribution. The release inventory identifies exact bundled bytes.
+Independent builders can compare their inventory/module source and explain any
+remaining differences. Different base runtimes/toolchains, system DLLs or later
+Authenticode signing can change the binary. The current build is unsigned and
+uses no UPX. Build receipts/checksums bind named artifacts to this recorded build;
+they are not independent attestation or a code-signing certificate.
+
+Dependency installation needs access to the Python package index unless wheels
+are supplied locally. For offline building, download the locked wheels on an
+online machine, verify with pip's `--require-hashes`, then install with
+`--no-index --find-links <wheel-directory>`. The build/test/application themselves
+have no dependency download step. Preserve the wheel files if long-term exact
+reproduction matters. `source/review_build.py` is developer tooling and never
+imports into the application.
+
+## Run and check
 
 ```powershell
-.\app\KKSInstaller.exe --version --report .\version.json
-.\app\KKSInstaller.exe --verify-package --package 'D:\Downloads\KKS_Content.zip' --report .\package-check.json
-.\app\KKSInstaller.exe --check --game 'D:\SteamLibrary\steamapps\common\Fallout76' --package 'D:\Downloads\KKS_Content.zip' --report .\game-check.json
+.\KKSInstaller.exe --version --report .\version.json
+.\KKSInstaller.exe --verify-package --package D:\Downloads\KKS_Content.zip --report .\package-check.json
+.\KKSInstaller.exe --check --game D:\SteamLibrary\steamapps\common\Fallout76 --package D:\Downloads\KKS_Content.zip --report .\game-check.json
 ```
 
-`--check` uses temporary verification storage and creates no game-side state. `--install`, `--repair`, `--restore` and `--recover` modify files; test them on disposable copies. Windowed builds write to the explicit JSON report path and return 0 for success or 1 for a blocked operation.
+Windowed builds use the explicit report file and return 0 for success or 1 for a
+blocked operation. `--check` creates no game state (temporary package verification
+and the requested report are still writes). `--install`, `--repair`, `--restore`
+and `--recover` modify game files/state; validate on disposable copies.
 
-See [INDEPENDENT_INSTALLER.md](INDEPENDENT_INSTALLER.md) for package creation, custody, state, compatibility and review boundaries.
+To run only synthetic tests: `python -m unittest discover -s source/tests -v`
+requires `source` on the import path; the simplest invocation is to change into
+`source` and run `python -m unittest discover -s tests -v` with the locked venv.
+
+Source style is Black 26.5.1, Python 3.12 target, line length 100; formatting tools
+are optional development tools, not runtime/build dependencies. The initial
+formatting commit was checked with exact AST equality for all 22 Python files.
+Read [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the security scope and
+[INDEPENDENT_INSTALLER.md](INDEPENDENT_INSTALLER.md) for publisher/package contracts.

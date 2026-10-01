@@ -2,8 +2,6 @@ param([string]$Python = 'python', [string]$Destination = '..\app', [string]$Buil
 $ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot
 try {
-    & $Python -m unittest discover -s tests -v
-    if ($LASTEXITCODE -ne 0) { throw 'Tests failed; executable was not built.' }
-    & $Python -m PyInstaller --noconfirm --clean --onefile --windowed --name KKSInstaller --distpath $Destination --workpath (Join-Path $BuildDirectory 'pyinstaller') --specpath $BuildDirectory launcher.py
-    if ($LASTEXITCODE -ne 0) { throw 'Executable build failed.' }
+    & $Python review_build.py --destination $Destination --build-directory $BuildDirectory
+    if ($LASTEXITCODE -ne 0) { throw 'Tests or build failed; see the output logs. Do not distribute a partial build.' }
 } finally { Pop-Location }

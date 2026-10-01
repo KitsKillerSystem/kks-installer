@@ -6,6 +6,8 @@ This branch develops **installer application 1.1.0** with separately signed, com
 
 The candidate accepts a ZIP through Choose package, by dropping it on the window, or by dropping it onto the EXE. It verifies the publisher signature, every file, the game baseline and saved installation before enabling installation. Complete packages permit direct jumps over intermediate releases. Repair uses the verified local cache; Restore uses authenticated descriptors and original backups without needing a download or the old EXE.
 
+Reviewers: start with [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for current file/network/process/privilege scope and the source map. Exact new artifact hashes and test/build evidence are supplied with the review candidate; root-level 1.0 hashes remain historical.
+
 See [the implementation and package contract](INDEPENDENT_INSTALLER.md), [current build instructions](BUILD.md), and [the original 1.0 restoration contract](UPGRADE_RESTORATION.md). The candidate is for local validation until separately accepted and published. Nexus approval is not established.
 
 ## Download the full mod + installer
