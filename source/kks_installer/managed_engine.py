@@ -11,7 +11,9 @@ from .packages import (
     STRINGS,
     IDENTITIES,
     MAX_MANIFEST,
+    archive_members,
 )
+from ._application import PROFILE
 from .platforms import SafetyError
 from . import _legacy
 
@@ -44,10 +46,11 @@ class ManagedEngine(Installer):
             {i["path"] for i in release.data["identity"]} == IDENTITIES,
             "Invalid managed game identity",
         )
-        for path, name in ARCHIVES.items():
+        catalog = archive_members(getattr(release, "manifest", {}).get("profile", PROFILE))
+        for path, names in catalog.items():
             t = release.by_path[path]
             demand(
-                t["kind"] == "archive" and [a["name"] for a in t["assets"]] == [name],
+                t["kind"] == "archive" and [a["name"] for a in t["assets"]] == list(names),
                 "Forbidden archive operation",
             )
         self.event = event or (lambda *args: None)
@@ -65,9 +68,11 @@ class ManagedEngine(Installer):
             "Data/interface/fonts_en.swf",
             "Data/interface/fontconfig_en.txt",
             "Data/interface/fontconfig.txt",
+            "Data/interface/translate_en.txt",
         ):
             demand(
-                not self.target(path).exists(), "A loose font override conflicts with KKS: " + path
+                not self.target(path).exists(),
+                "A loose interface override conflicts with KKS: " + path,
             )
 
     def _receipt(self):

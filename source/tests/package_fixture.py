@@ -8,8 +8,22 @@ import zipfile
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from kks_installer.ba2 import BA2, hash_file
 from kks_installer.engine import digest
-from kks_installer.packages import DOMAIN, ARCHIVES, STRINGS, IDENTITIES
-from kks_installer._application import PROFILE, WRITER, APP_VERSION
+from kks_installer.packages import (
+    DOMAIN,
+    ARCHIVES,
+    STRINGS,
+    IDENTITIES,
+    CONFIG,
+    TRANSLATION,
+    archive_members,
+)
+from kks_installer._application import (
+    PROFILE,
+    WRITER,
+    APP_VERSION,
+    TRANSLATION_PROFILE,
+    TRANSLATION_CAPABILITIES,
+)
 from kks_installer.manager import Manager
 from kks_installer.managed_engine import LegacyDescriptor
 from test_installer import archive
@@ -30,7 +44,18 @@ class PackageFixture:
                 [
                     (name, ("vanilla " + name).encode(), True),
                     ("untouched.dat", b"unrelated payload", False),
-                ],
+                ]
+                + (
+                    [
+                        (
+                            TRANSLATION,
+                            b"\xff\xfe" + "$Known\t(Known)\r\n$Keep\tKeep\r\n".encode("utf-16le"),
+                            True,
+                        )
+                    ]
+                    if path == CONFIG
+                    else []
+                ),
             )
         (self.game / "Fallout76.ini").write_bytes(b"INI MUST NOT CHANGE")
         self.loose = {p: ("vanilla " + p).encode() for p in STRINGS}
@@ -62,12 +87,24 @@ class PackageFixture:
     def manager(self, event=None):
         return Manager(self.game, keys=self.keys, legacy=self.legacy, event=event)
 
-    def build(self, sequence, *, version=None, revision=1, one_change=False, mutate=None):
+    def build(
+        self,
+        sequence,
+        *,
+        version=None,
+        revision=1,
+        one_change=False,
+        mutate=None,
+        include_translation=False,
+    ):
         payloads = {}
         targets = []
-        for idx, (path, name) in enumerate(ARCHIVES.items()):
-            payload = "payload/" + name
-            payloads[payload] = (f"KKS asset {name} v{1 if one_change else sequence}").encode()
+        profile = TRANSLATION_PROFILE if include_translation else PROFILE
+        for idx, (path, names) in enumerate(archive_members(profile).items()):
+            for name in names:
+                payloads["payload/" + name] = (
+                    f"KKS asset {name} v{1 if one_change else sequence}"
+                ).encode()
             src = self.base / f"vanilla-{sequence}-{idx}.ba2"
             src.write_bytes(
                 self.raw_originals[path]
@@ -75,8 +112,21 @@ class PackageFixture:
                 else (self.game / path).read_bytes()
             )
             out = self.base / f"output-{sequence}-{idx}.ba2"
-            BA2(src).replace_to(out, {name: payloads[payload]})
-            vanilla = BA2(src).extract(name)
+            BA2(src).replace_to(out, {name: payloads["payload/" + name] for name in names})
+            assets = []
+            for name in names:
+                payload = "payload/" + name
+                vanilla = BA2(src).extract(name)
+                assets.append(
+                    {
+                        "name": name,
+                        "payload": payload,
+                        "vanilla_sha256": digest(vanilla),
+                        "vanilla_size": len(vanilla),
+                        "sha256": digest(payloads[payload]),
+                        "size": len(payloads[payload]),
+                    }
+                )
             targets.append(
                 {
                     "path": path,
@@ -88,16 +138,7 @@ class PackageFixture:
                     "vanilla_size": src.stat().st_size,
                     "after_sha256": hash_file(out),
                     "after_size": out.stat().st_size,
-                    "assets": [
-                        {
-                            "name": name,
-                            "payload": payload,
-                            "vanilla_sha256": digest(vanilla),
-                            "vanilla_size": len(vanilla),
-                            "sha256": digest(payloads[payload]),
-                            "size": len(payloads[payload]),
-                        }
-                    ],
+                    "assets": assets,
                 }
             )
         for idx, path in enumerate(sorted(STRINGS)):
@@ -126,8 +167,8 @@ class PackageFixture:
             "created_utc": "2026-10-01T12:00:00Z",
             "installer_api": 1,
             "minimum_installer_version": APP_VERSION,
-            "required_capabilities": [WRITER],
-            "profile": PROFILE,
+            "required_capabilities": TRANSLATION_CAPABILITIES if include_translation else [WRITER],
+            "profile": profile,
             "game": {
                 "id": "fallout76",
                 "platform": "steam",

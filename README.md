@@ -1,14 +1,16 @@
 # KKS — Kit's Killer System
 
-## Independent installer 1.1.0 — manual-review candidate
+## Installer 1.2.0 — local playtest candidate
 
-This branch contains **installer application 1.1.0** with separately signed, complete content ZIPs. **Content 1.0.1** certifies the unchanged KKS 1.0 font/configuration/strings for Steam English build **25636769**. Application and content versions are independent. The installer EXE is unchanged from the reviewed 1.1.0 build.
+This branch adds authenticated English translation support, repairs Windows file-drop handling, and gives the installer a compact field-manual layout. It still supports existing 1.1.0 content packages and their saved installations. The original 1.1.0 executable and review evidence remain unchanged.
 
-The candidate accepts a ZIP through Choose package, by dropping it on the window, or by dropping it onto the EXE. It verifies the publisher signature, every file, the game baseline and saved installation before enabling installation. Complete packages permit direct jumps over intermediate releases. Repair uses the verified local cache; Restore uses authenticated descriptors and original backups without needing a download or the old EXE.
+Translation-enabled packages require **Installer 1.2.0**. Their sixth signed payload is exactly `interface/translate_en.txt`, installed inside the existing Interface archive. Signature, game-version, backup, repair, restore and interrupted-update checks cover it. No arbitrary extra files or executable hooks are accepted. Package selection never installs automatically.
 
-Reviewers: start with the [current handoff and test evidence](review/installer-1.1.0/README.md), then [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for current file/network/process/privilege scope and the source map. Exact new artifact hashes and test/build evidence are supplied with the review candidate; root-level 1.0 hashes remain historical.
+The drop handler uses a managed Windows subclass and queues filenames for the normal Tk event loop, keeping native callbacks alive until teardown. Both window drops and ZIP-at-launch remain supported. Repeated drops, spaces and Unicode paths have native Windows regression coverage.
 
-See [the implementation and package contract](INDEPENDENT_INSTALLER.md), [current build instructions](BUILD.md), and [the original 1.0 restoration contract](UPGRADE_RESTORATION.md). Local validation is complete: 112 automated tests, 29 actual-EXE checks and two byte-identical clean builds. Exact 1.0 content also passed the maintainer's in-game acceptance. Nexus approval is not established.
+This candidate awaits the owner's in-game check. Do not treat it as a published release or Nexus-approved executable. Publication is gated on that check; updated executables belong on GitHub, with content only on Nexus.
+
+See [the package contract](INDEPENDENT_INSTALLER.md), [build instructions](BUILD.md), and [security scope](SECURITY_REVIEW.md). Historical 1.1.0 evidence is preserved in [its review folder](review/installer-1.1.0/README.md). The existing download links below still identify the prior published release.
 
 ## Download the installer and content
 
@@ -49,6 +51,6 @@ The original 1.0.0 payload passed the author's final in-game QA. Publication of 
 
 ## Repository contents
 
-`source/kks_installer/` and `source/launcher.py` contain application code. `source/tests/` contains 112 fixture tests, including all 59 original tests. `source/release/` retains the exact 1.0.0 manifest and five inputs for provenance and package creation; **the current build does not embed them**. `source/build_content.py` is a publisher tool, excluded from the runtime. `source/build.ps1` and `source/requirements-build.txt` provide the build entry point and pinned dependencies.
+`source/kks_installer/` and `source/launcher.py` contain application code. `source/tests/` contains 126 fixture tests, including all 59 original tests. `source/release/` retains the exact 1.0.0 manifest and five inputs for provenance and package creation; **the current build does not embed them**. `source/build_content.py` is a publisher tool, excluded from the runtime. `source/build.ps1` and `source/requirements-build.txt` provide the build entry point and pinned dependencies.
 
 The source tree omits the original EXE, Bethesda game archives/executable/ESM, local backups, signing private keys, private workstation logs and optional font-authoring/history tools. They are not required to build the installer. The original EXE is available in the complete installer ZIP linked above. The broader authoring/codex bundle remains a separate release artifact. Frozen 1.0.0 evidence and payload bytes remain unchanged.

@@ -1,15 +1,14 @@
-# Build installer application 1.1.0
+# Build installer application 1.2.0
 
 Content version 1.0.0 is independent. Use the original `v1.0.0` source to reproduce
 the older bundled installer. This branch's runtime build never includes
 `source/release`, publisher tooling, tests, game files or private signing keys.
 No game installation or publisher key is needed for synthetic tests or building.
 
-The distributed review executable was built from commit
-**5c6eadf80ebcec84b62a8c5bec71f7679d9f3004**. Later commits on this branch update
-review documentation only. To match that executable, check out the exact build
-commit, not the latest documentation revision; the commit timestamp affects the
-reproducible build. See [the handoff](review/installer-1.1.0/REVIEWER_HANDOFF.md).
+The 1.2.0 candidate's `build-receipt.json` identifies its exact source commit,
+tree, executable and tests. Historical 1.1.0 was built from
+`5c6eadf80ebcec84b62a8c5bec71f7679d9f3004`; its executable and review evidence
+remain frozen. Use the receipt for the candidate you intend to reproduce.
 
 ## Reproduce the reviewed source
 
@@ -30,7 +29,7 @@ python -m venv .venv
 ```
 
 Both output directories must be new. The script rejects uncommitted/untracked
-source, checks Python/dependency versions, runs all **112** tests, then invokes
+source, checks Python/dependency versions, runs all **126** tests, then invokes
 PyInstaller with `--clean --noupx --onefile --windowed`. A failed step stops the
 build. Accept the output only when `build-receipt.json` exists and logs pass;
 a partially created EXE alone is not success. Do not edit source during a build.

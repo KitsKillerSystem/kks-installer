@@ -1,10 +1,9 @@
-# Independent installer 1.1.0 — reviewer entry point
+# Independent installer 1.2.0 — security scope
 
-Application and content have separate versions. The first signed package contains
-unchanged KKS 1.0.0. This branch is an unpublished review candidate. Historical
-root-level 1.0 reports/checksums describe the original bundled release; the new
-release's REVIEWER_HANDOFF.md, SHA256SUMS.txt and build-receipt.json identify its
-exact source and binary. No Nexus approval is claimed.
+Application and content have separate versions. Installer 1.2.0 is a local,
+unpublished playtest candidate. Its build receipt identifies exact source and
+binary. Frozen 1.1.0 review evidence and root-level 1.0 historical fingerprints
+remain unchanged. No Nexus approval or executable upload is claimed.
 
 ## Read the code in this order
 
@@ -29,7 +28,7 @@ select that bundled-package reader; legacy restoration uses the pinned public
 The only game assets the signed-package profile can replace are:
 
 - `Data/SeventySix - Interface_en.ba2`: only `interface/fonts_en.swf` changes.
-- `Data/SeventySix - Interface.ba2`: only `interface/fontconfig_en.txt` changes.
+- `Data/SeventySix - Interface.ba2`: `interface/fontconfig_en.txt`, plus exactly `interface/translate_en.txt` for the translation profile.
 - `Data/strings/seventysix_en.strings`, `.dlstrings`, `.ilstrings`.
 
 The EXE, `Data/SeventySix.esm` and `Data/SeventySix - Localization.ba2` are identity
@@ -67,7 +66,8 @@ needed for the chosen game folder.
 
 ## Package trust and integrity
 
-Exactly five assets plus `manifest.json` and `manifest.sig.json` are permitted;
+Exactly five assets (original profile) or six (translation profile), plus
+`manifest.json` and `manifest.sig.json`, are permitted;
 three empty structural directory entries are optional. No scripts, DLLs, EXEs,
 nested archives, arbitrary operations or install hooks are accepted. Ed25519
 verifies a domain-separated signature of the exact manifest bytes against a key
@@ -84,13 +84,25 @@ identity, original-member and completed-file hashes are checked at write/recover
 boundaries. Game support is currently Steam English with certified exact file
 fingerprints, not just a display version string.
 
-The installer treats font SWF/configuration/strings as bytes and never evaluates
+The installer treats font SWF/configuration/translation/strings as bytes and never evaluates
 them, invokes them or imports them as code. The game consumes these formats; a
 publisher signature authenticates the author, not the safety of arbitrary font
 content or the absence of bugs in the game's parsers. New data within the current
 profile can ship without rebuilding the app; new executable behavior, formats or
 trust keys require a new app. Complete packages allow skipping intermediate
 content versions. Downgrades and conflicting reused release identities fail.
+
+Translation is capped at 4 MiB and bound to the fixed English archive member,
+signed payload size/hash, original member size/hash and complete before/after
+archive hashes. Extra, missing, reordered or aliased members fail validation.
+Both old and new profiles remain closed allowlists; payloads cannot add paths.
+Loose translation overrides block installation to avoid an ambiguous result.
+
+Windows drop handling uses `SetWindowSubclass` with pointer-width-correct ctypes
+signatures and explicit lifetime/teardown. `WM_DROPFILES` copies one bounded
+filename, releases the native drop handle and queues delivery; it never calls
+Tk/Tcl inside native dispatch. Selection/authentication runs on the ordinary
+application path and never triggers installation by itself.
 
 ## Network, processes and privileges
 

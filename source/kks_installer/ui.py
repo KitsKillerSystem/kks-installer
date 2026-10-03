@@ -8,24 +8,26 @@ from .manager import Manager
 from .platforms import discover
 from .windows_drop import enable_file_drop
 
-BG = "#111b18"
-PANEL = "#1b2923"
-PANEL2 = "#24362d"
-INK = "#ecf1e9"
-MUTED = "#acbdb0"
-GREEN = "#b7f36c"
-LINE = "#3c5143"
-RED = "#ffb89a"
+BG = "#e8e2d4"
+PANEL = "#f5f0e5"
+PANEL2 = "#d9d2c2"
+INK = "#252d2b"
+MUTED = "#59625c"
+GREEN = "#536b3e"
+LINE = "#afa997"
+RED = "#a4402c"
+ACCENT = "#ce653c"
+DARK = "#27312e"
 
 
 class App:
     def __init__(self, package=None, game=None):
         self.root = tk.Tk()
         self.root.title("KKS Installer · " + APP_VERSION)
-        width = min(980, self.root.winfo_screenwidth() - 60)
-        height = min(860, self.root.winfo_screenheight() - 80)
+        width = min(1080, self.root.winfo_screenwidth() - 60)
+        height = min(790, self.root.winfo_screenheight() - 80)
         self.root.geometry(f"{width}x{height}")
-        self.root.minsize(min(840, width), min(680, height))
+        self.root.minsize(min(900, width), min(700, height))
         self.root.configure(bg=BG)
         self.root.option_add("*Font", ("Segoe UI", 10))
         self.busy = False
@@ -37,120 +39,194 @@ class App:
         style.theme_use("clam")
         style.configure(
             "KKS.Horizontal.TProgressbar",
-            troughcolor=PANEL,
-            bordercolor=PANEL,
+            troughcolor=PANEL2,
+            bordercolor=PANEL2,
             background=GREEN,
             lightcolor=GREEN,
             darkcolor=GREEN,
+            thickness=5,
         )
-        outer = tk.Frame(self.root, bg=BG)
-        outer.pack(fill="both", expand=True, padx=24, pady=12)
-        top = tk.Frame(outer, bg=BG)
-        top.pack(fill="x")
-        tk.Label(top, text="KKS", font=("Segoe UI", 26, "bold"), fg=GREEN, bg=BG).pack(side="left")
+
+        # A compact field-manual layout: a fixed identity spine and one clear
+        # working surface. Native controls retain keyboard focus and resizing.
+        spine = tk.Frame(self.root, bg=DARK, width=170)
+        spine.pack(side="left", fill="y")
+        spine.pack_propagate(False)
+        tk.Frame(spine, bg=ACCENT, height=9).pack(fill="x")
         tk.Label(
-            top, text="KIT’S KILLER SYSTEM", font=("Segoe UI", 11, "bold"), fg=INK, bg=BG
-        ).pack(side="left", padx=20)
-        tk.Label(top, text="INSTALLER " + APP_VERSION, fg=MUTED, bg=BG).pack(side="right")
+            spine, text="KKS", font=("Bahnschrift", 48, "bold"), fg=BG, bg=DARK, anchor="w"
+        ).pack(fill="x", padx=18, pady=(22, 0))
+        tk.Label(
+            spine,
+            text="KIT’S\nKILLER\nSYSTEM",
+            font=("Bahnschrift", 15),
+            fg=BG,
+            bg=DARK,
+            justify="left",
+            anchor="w",
+        ).pack(fill="x", padx=22)
+        tk.Frame(spine, bg="#65716a", height=1).pack(fill="x", padx=22, pady=23)
+        tk.Label(
+            spine,
+            text="CONTENT\nINSTALLER",
+            font=("Consolas", 10),
+            fg="#b4bfb5",
+            bg=DARK,
+            justify="left",
+            anchor="w",
+        ).pack(fill="x", padx=22)
+        tk.Label(
+            spine, text="v" + APP_VERSION, font=("Consolas", 10), fg="#b4bfb5", bg=DARK, anchor="w"
+        ).pack(fill="x", padx=22, pady=(6, 0))
+        tk.Label(
+            spine,
+            text="FALLOUT 76\nSTEAM / ENGLISH",
+            font=("Consolas", 9),
+            fg="#b4bfb5",
+            bg=DARK,
+            justify="left",
+            anchor="w",
+        ).pack(side="bottom", fill="x", padx=22, pady=24)
+
+        outer = tk.Frame(self.root, bg=BG)
+        outer.pack(side="left", fill="both", expand=True, padx=28, pady=16)
         tk.Label(
             outer,
-            text="Choose a complete KKS content ZIP. You can jump straight to a newer compatible release.",
+            text="A BETTER-ORDERED WASTELAND.",
+            font=("Consolas", 10, "bold"),
+            fg=RED,
+            bg=BG,
+            anchor="w",
+        ).pack(fill="x")
+        tk.Label(
+            outer,
+            text="Make yourself at home.",
+            font=("Bahnschrift", 25),
+            fg=INK,
+            bg=BG,
+            anchor="w",
+        ).pack(fill="x", pady=(5, 8))
+        tk.Label(
+            outer,
+            text="Choose your game folder and a complete KKS content ZIP.",
             fg=MUTED,
             bg=BG,
             anchor="w",
-            wraplength=840,
-            justify="left",
-        ).pack(fill="x", pady=(8, 12))
-        location = self.panel(outer)
-        location.pack(fill="x")
-        self.label(location, "FALLOUT 76 LOCATION").pack(fill="x", padx=16, pady=(12, 6))
-        row = tk.Frame(location, bg=PANEL)
-        row.pack(fill="x", padx=16, pady=(0, 13))
+        ).pack(fill="x")
+        tk.Frame(outer, bg=INK, height=2).pack(fill="x", pady=(12, 10))
+
+        self.label(outer, "01  /  GAME DIRECTORY", BG).pack(fill="x", pady=(0, 7))
+        row = tk.Frame(outer, bg=BG)
+        row.pack(fill="x")
         self.path = tk.StringVar()
         self.entry = tk.Entry(
-            row, textvariable=self.path, bg=PANEL2, fg=INK, insertbackground=INK, relief="flat"
+            row,
+            textvariable=self.path,
+            bg=PANEL,
+            fg=INK,
+            insertbackground=INK,
+            relief="flat",
+            highlightthickness=1,
+            highlightbackground=LINE,
+            highlightcolor=GREEN,
         )
-        self.entry.pack(side="left", fill="x", expand=True, ipady=9)
+        self.entry.pack(side="left", fill="x", expand=True, ipady=7)
         self.browse = self.button(row, "Browse…", self.choose_game)
-        self.browse.pack(side="left", padx=(10, 0))
+        self.browse.pack(side="left", padx=(8, 0))
         self.check = self.button(row, "Check", lambda: self.start("check"))
-        self.check.pack(side="left", padx=(8, 0))
-        package_panel = self.panel(outer)
-        package_panel.pack(fill="x", pady=(12, 0))
-        self.label(package_panel, "CONTENT PACKAGE").pack(fill="x", padx=16, pady=(12, 5))
-        package_row = tk.Frame(package_panel, bg=PANEL)
-        package_row.pack(fill="x", padx=16, pady=(0, 13))
+        self.check.pack(side="left", padx=(6, 0))
+
+        self.label(outer, "02  /  CONTENT PACKAGE", BG).pack(fill="x", pady=(12, 7))
+        package_row = tk.Frame(outer, bg=PANEL, highlightbackground=LINE, highlightthickness=1)
+        package_row.pack(fill="x")
         self.package_text = tk.StringVar(
-            value="Drop a ZIP here or choose a package. Keep the ZIP unopened."
+            value="Drop one content ZIP onto this window, or choose it below."
         )
-        tk.Label(
+        self.package_label = tk.Label(
             package_row,
             textvariable=self.package_text,
             fg=INK,
             bg=PANEL,
             anchor="w",
             justify="left",
-            wraplength=590,
-        ).pack(side="left", fill="x", expand=True)
+            wraplength=480,
+        )
+        self.package_label.pack(fill="x", padx=13, pady=(8, 5))
         self.package_button = self.button(package_row, "Choose package…", self.choose_package)
-        self.package_button.pack(side="right", padx=(10, 0))
-        status = self.panel(outer)
-        status.pack(fill="x", pady=12)
+        self.package_button.pack(anchor="w", padx=12, pady=(0, 8))
+        self.label(outer, "03  /  INSTALLATION STATUS", BG).pack(fill="x", pady=(12, 7))
+        status = tk.Frame(outer, bg=PANEL)
+        status.pack(fill="x")
         self.status_title = tk.Label(
             status,
             text="Ready when you are.",
-            font=("Segoe UI", 18, "bold"),
+            font=("Bahnschrift", 19),
             fg=INK,
             bg=PANEL,
             anchor="w",
         )
-        self.status_title.pack(fill="x", padx=16, pady=(14, 5))
-        self.status_message = tk.Label(
-            status,
-            text="Choose your game folder and a content package to begin.",
+        self.status_title.pack(fill="x", padx=13, pady=(8, 5))
+        message_row = tk.Frame(status, bg=PANEL)
+        message_row.pack(fill="x", padx=13, pady=(0, 8))
+        self.status_message = tk.Text(
+            message_row,
+            height=3,
+            width=1,
+            wrap="word",
             fg=MUTED,
             bg=PANEL,
-            anchor="w",
-            justify="left",
-            wraplength=820,
+            relief="flat",
+            borderwidth=0,
+            highlightthickness=0,
+            font=("Segoe UI", 10),
+            state="disabled",
         )
-        self.status_message.pack(fill="x", padx=16, pady=(0, 14))
+        message_scroll = ttk.Scrollbar(message_row, command=self.status_message.yview)
+        self.status_message.configure(yscrollcommand=message_scroll.set)
+        message_scroll.pack(side="right", fill="y")
+        self.status_message.pack(side="left", fill="x", expand=True)
+        self.status_text("Select a package to check compatibility.")
         self.progress = ttk.Progressbar(
             outer, style="KKS.Horizontal.TProgressbar", mode="indeterminate"
         )
-        self.progress.pack(fill="x", pady=(0, 12))
+        self.progress.pack(fill="x", pady=(0, 13))
         actions = tk.Frame(outer, bg=BG)
         actions.pack(fill="x")
         self.primary = self.button(actions, "Install content", self.primary_action, True)
         self.primary.pack(side="left")
         self.repair = self.button(actions, "Repair", lambda: self.start("repair"))
-        self.repair.pack(side="left", padx=10)
+        self.repair.pack(side="left", padx=8)
         self.restore = self.button(actions, "Restore vanilla", lambda: self.start("restore"))
         self.restore.pack(side="left")
-        for b in (self.primary, self.repair, self.restore):
-            b.configure(state="disabled")
+        for button in (self.primary, self.repair, self.restore):
+            button.configure(state="disabled")
         self.label(outer, "ACTIVITY", BG).pack(fill="x", pady=(10, 6))
         self.log = tk.Text(
             outer,
-            height=5,
+            height=4,
             bg=PANEL,
             fg=MUTED,
             relief="flat",
-            font=("Consolas", 10),
+            font=("Consolas", 9),
             wrap="word",
-            padx=12,
-            pady=10,
+            padx=11,
+            pady=8,
             state="disabled",
         )
         tk.Label(
             outer,
-            text="Works offline · Backups remain in your game folder · No xTranslator required",
+            text="Offline by design.  Your vanilla backups stay with your game.",
             fg=MUTED,
             bg=BG,
             font=("Segoe UI", 9),
             anchor="w",
-        ).pack(side="bottom", fill="x", pady=(10, 0))
+        ).pack(side="bottom", fill="x", pady=(12, 0))
         self.log.pack(fill="both", expand=True)
+
+        def resize_labels(event):
+            self.package_label.configure(wraplength=max(360, event.width - 30))
+
+        outer.bind("<Configure>", resize_labels)
         self.path.trace_add("write", self.path_changed)
         candidates = discover() if not game else []
         if game or candidates:
@@ -181,16 +257,23 @@ class App:
             command=command,
             font=("Segoe UI", 11, "bold" if primary else "normal"),
             bg=GREEN if primary else PANEL2,
-            fg=BG if primary else INK,
-            activebackground="#cafb90" if primary else LINE,
-            activeforeground=BG if primary else INK,
-            disabledforeground="#758677",
+            fg="#ffffff" if primary else INK,
+            activebackground="#415631" if primary else "#c6beab",
+            activeforeground="#ffffff" if primary else INK,
+            disabledforeground="#8b9282",
             relief="flat",
             borderwidth=0,
             padx=17,
-            pady=10,
+            pady=8,
             cursor="hand2",
         )
+
+    def status_text(self, text):
+        self.status_message.configure(state="normal")
+        self.status_message.delete("1.0", "end")
+        self.status_message.insert("1.0", text)
+        self.status_message.configure(state="disabled")
+        self.status_message.yview_moveto(0)
 
     def append(self, text):
         self.log.configure(state="normal")
@@ -248,6 +331,10 @@ class App:
                 "Wait for the operation to finish. If it is interrupted, KKS keeps the recovery journal and backups.",
             )
         else:
+            if self.drop_binding is not None:
+                self.drop_binding.close()
+            for timer in self.root.tk.call("after", "info"):
+                self.root.after_cancel(timer)
             self.root.destroy()
 
     def start(self, action, zip_path=None):
@@ -278,8 +365,8 @@ class App:
             ),
             fg=INK,
         )
-        self.status_message.configure(
-            text="KKS is verifying the package, game files and restoration data. Keep Fallout 76 closed during changes."
+        self.status_text(
+            "KKS is verifying the package, game files and restoration data. Keep Fallout 76 closed during changes."
         )
         selected = self.selected
         self.append(
@@ -303,7 +390,9 @@ class App:
                 )
                 if action == "select":
                     release = manager.select(zip_path)
-                    self.events.put(("selected", (release.manifest_digest, release.name)))
+                    self.events.put(
+                        ("selected", (release.manifest_digest, release.name, len(release.files)))
+                    )
                     result = manager.inspect(release)
                 elif action == "check":
                     result = manager.inspect(release)
@@ -327,8 +416,10 @@ class App:
                     self.append(data)
                     continue
                 if kind == "selected":
-                    self.selected, name = data
-                    self.package_text.set(name + " · signature and all five files verified")
+                    self.selected, name, file_count = data
+                    self.package_text.set(
+                        name + f" · signature and all {file_count} files verified"
+                    )
                     continue
                 self.busy = False
                 self.progress.stop()
@@ -337,7 +428,7 @@ class App:
                     w.configure(state="normal")
                 if kind == "error":
                     self.status_title.configure(text="Needs attention before continuing", fg=RED)
-                    self.status_message.configure(text=data[:600])
+                    self.status_text(data)
                     self.append(data)
                 else:
                     status = data["status"]
@@ -358,8 +449,8 @@ class App:
                     if data.get("installed_content"):
                         message += " Installed: " + data["installed_content"] + "."
                     if "changed_payload_files" in data:
-                        message += f' {data["changed_payload_files"]} of 5 content files differ.'
-                    self.status_message.configure(text=message)
+                        message += f' {data["changed_payload_files"]} of {data["payload_file_count"]} content files differ.'
+                    self.status_text(message)
                     self.append(message)
                     self.primary.configure(
                         text=(

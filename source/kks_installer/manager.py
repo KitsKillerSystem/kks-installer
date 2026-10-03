@@ -49,7 +49,15 @@ def fingerprint(release):
             [
                 t["path"],
                 t["vanilla_sha256"],
-                sorted((a["name"], a["vanilla_sha256"]) for a in t.get("assets", [])),
+                # Preserve the 1.1.0 fingerprint across an expanded member set.
+                # The complete vanilla archive hash above already authenticates
+                # translate_en; the original member pins must stay byte-stable
+                # for saved baselines and pending recovery from older installers.
+                sorted(
+                    (a["name"], a["vanilla_sha256"])
+                    for a in t.get("assets", [])
+                    if a["name"] == ARCHIVES.get(t["path"])
+                ),
             ]
         )
     return digest(json.dumps(original, sort_keys=True).encode())
@@ -551,7 +559,7 @@ class Manager:
                     != getattr(self._release(active), "files", {}).get(p, {}).get("sha256")
                     for p, a in selected.files.items()
                 )
-                result.update(changed_payload_files=changed)
+                result.update(changed_payload_files=changed, payload_file_count=len(selected.files))
                 if active["kind"] == "legacy" or active["manifest"] != selected.manifest_digest:
                     result.update(
                         status="update_available",

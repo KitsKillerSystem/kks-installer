@@ -16,7 +16,13 @@ import tempfile
 import zipfile
 
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-from kks_installer._application import APP_VERSION, PROFILE, WRITER
+from kks_installer._application import (
+    APP_VERSION,
+    PROFILE,
+    WRITER,
+    TRANSLATION_PROFILE,
+    TRANSLATION_CAPABILITIES,
+)
 from kks_installer.ba2 import BA2, hash_file
 from kks_installer.engine import demand, digest
 from kks_installer.packages import (
@@ -28,6 +34,8 @@ from kks_installer.packages import (
     validate_manifest,
     import_package,
     strict_json,
+    archive_members,
+    profile_payloads,
 )
 
 
@@ -139,6 +147,7 @@ def build(
     build_label,
     report_id,
     expected_legacy=None,
+    include_translation=False,
 ):
     game = Path(game)
     payload = Path(payload)
@@ -146,7 +155,9 @@ def build(
     demand(not output.exists(), "Refusing to replace an existing package")
     files = []
     targets = []
-    for p in sorted(PAYLOADS):
+    profile = TRANSLATION_PROFILE if include_translation else PROFILE
+    catalog = archive_members(profile)
+    for p in sorted(profile_payloads(profile)):
         src = payload / p.removeprefix("payload/")
         files.append({"path": p, "sha256": hash_file(src), "size": src.stat().st_size})
     byfile = {f["path"]: f for f in files}
@@ -155,14 +166,26 @@ def build(
         for p in sorted(IDENTITIES)
     ]
     with tempfile.TemporaryDirectory(prefix="kks-content-certify-") as temporary:
-        for idx, (path, name) in enumerate(ARCHIVES.items()):
+        for idx, (path, names) in enumerate(catalog.items()):
             src = game / path
             before = hash_file(src)
             archive = BA2(src)
-            original = archive.extract(name)
-            f = byfile["payload/" + name]
             out = Path(temporary) / f"{idx}.ba2"
-            archive.replace_to(out, {name: (payload / name).read_bytes()})
+            archive.replace_to(out, {name: (payload / name).read_bytes() for name in names})
+            assets = []
+            for name in names:
+                original = archive.extract(name)
+                f = byfile["payload/" + name]
+                assets.append(
+                    {
+                        "name": name,
+                        "payload": f["path"],
+                        "vanilla_sha256": digest(original),
+                        "vanilla_size": len(original),
+                        "sha256": f["sha256"],
+                        "size": f["size"],
+                    }
+                )
             demand(hash_file(src) == before, "Game archive changed during certification")
             targets.append(
                 {
@@ -175,16 +198,7 @@ def build(
                     "vanilla_size": src.stat().st_size,
                     "after_sha256": hash_file(out),
                     "after_size": out.stat().st_size,
-                    "assets": [
-                        {
-                            "name": name,
-                            "payload": f["path"],
-                            "vanilla_sha256": digest(original),
-                            "vanilla_size": len(original),
-                            "sha256": f["sha256"],
-                            "size": f["size"],
-                        }
-                    ],
+                    "assets": assets,
                 }
             )
         localization = BA2(game / "Data/SeventySix - Localization.ba2")
@@ -220,8 +234,8 @@ def build(
             ),
             "installer_api": 1,
             "minimum_installer_version": APP_VERSION,
-            "required_capabilities": [WRITER],
-            "profile": PROFILE,
+            "required_capabilities": TRANSLATION_CAPABILITIES if include_translation else [WRITER],
+            "profile": profile,
             "game": {
                 "id": "fallout76",
                 "platform": "steam",
@@ -308,6 +322,7 @@ def main():
     b.add_argument("--revision", type=int, default=1)
     b.add_argument("--sequence", type=int, required=True)
     b.add_argument("--expected-legacy")
+    b.add_argument("--include-translation", action="store_true")
     a = p.parse_args()
     if a.command == "create-key":
         result = create_key(a.key, a.key_id)
@@ -326,6 +341,7 @@ def main():
             build_label=a.build_label,
             report_id=a.report_id,
             expected_legacy=a.expected_legacy,
+            include_translation=a.include_translation,
         )
     print(json.dumps(result, indent=2))
 

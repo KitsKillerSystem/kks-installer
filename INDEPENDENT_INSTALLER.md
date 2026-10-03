@@ -1,18 +1,18 @@
 # Independent installer and complete content packages
 
-Status: **implemented local candidate, unreleased**, 1 October 2026. Application 1.1.0 derives from released 1.0.0. Its first separate package contains unchanged content 1.0.0, revision 1, sequence 1. The user authorized this work as the immediate priority; string/visual normalization remains later work. This implements the September 27 proposal without promoting the candidate to production.
+Status: **Installer 1.2.0 local candidate, unreleased**, 3 October 2026. It adds the fixed English translation profile and retains original package/state compatibility. Owner in-game acceptance gates publication. The accepted perk deck and content artwork are maintained separately from application code.
 
 ## User workflow
 
 Keep `KKSInstaller.exe`. Download one complete content ZIP, close Fallout 76, open the installer, select the game folder, and browse to the ZIP or drop it onto the window. A ZIP may also be supplied at launch or dropped onto the EXE. Keep the ZIP unopened. Selection verifies and caches it; the Install action starts game changes.
 
-Application and content versions appear separately. The app compares the five selected payload hashes with the installed package. Complete packages permit A to E without B, C or D. Repair uses the authenticated cache. Restore needs the signed descriptor and original backups, but neither cached payloads, the downloaded ZIP nor the old EXE. Selecting the exact signed package again repairs damaged cached descriptors/payloads. Mod content cannot reconstruct missing original game backups.
+Application and content versions appear separately. The app compares the selected profile’s five or six payload hashes with the installed package. Complete packages permit A to E without B, C or D. Repair uses the authenticated cache. Restore needs the signed descriptor and original backups, but neither cached payloads, the downloaded ZIP nor the old EXE. Selecting the exact signed package again repairs damaged cached descriptors/payloads. Mod content cannot reconstruct missing original game backups.
 
 The fixed profile is Fallout 76, Steam, English, five targets, BA2 version 1 GNRL. The initial content 1.0.0 package supports Slasher build 25258219; the [content 1.0.1 compatibility release](review/content-1.0.1/README.md) certifies build 25636769 with unchanged mod files and the same installer. Exact hashes govern compatibility, never display labels. Other platforms/languages and future Bethesda fingerprints need explicit certification/support. There is no network update service or automatic download-folder scanning.
 
 ## Package and trust contract
 
-The ZIP has exactly seven files; matching optional directory entries are allowed:
+The original `fo76-steam-en-fonts-strings-v1` ZIP has exactly seven files; matching optional directory entries are allowed:
 
 ```text
 manifest.json
@@ -23,6 +23,10 @@ payload/strings/seventysix_en.strings
 payload/strings/seventysix_en.dlstrings
 payload/strings/seventysix_en.ilstrings
 ```
+
+The new `fo76-steam-en-fonts-strings-translate-v2` profile requires the same complete set plus exactly `payload/interface/translate_en.txt` (maximum 4 MiB). It requires Installer 1.2.0 and the additional `interface-translate-en-v1` capability. Both profiles still write the same five game targets. The Interface archive's fixed member list expands from fontconfig alone to fontconfig plus translation; unrelated members remain unchanged. Old packages cannot smuggle an unlisted translation file into their ZIP.
+
+Baseline fingerprints retain the original member pins so existing 1.1.0 saved installations remain compatible. Full original archive hashes already bind the translation member; its original member hash is also explicitly verified before a new-profile write. Restore uses the installed package's authenticated profile and original archive backups.
 
 Ed25519 signs `KKS-CONTENT-MANIFEST-v1\0` followed by the exact UTF-8 manifest bytes. The envelope selects a public key compiled into the app. Keys supplied by a package are never trusted. Initial key ID: `kks-release-2026-10`; only its public component is in `_application.py`.
 
@@ -80,7 +84,7 @@ Example from `source`, with paths/report identity chosen deliberately:
 python build_content.py build --game 'D:\VanillaGameCopy' --payload '.\release\payload' --output 'D:\Candidates\KKS_1.0.0_Content_r1.zip' --key "$env:LOCALAPPDATA\KKS\Signing\kks-release-2026-10.dpapi.json" --content-version 1.0.0 --revision 1 --sequence 1 --baseline-id steam-en-25258219 --build-label 'Steam English Slasher 25258219' --report-id 'local-acceptance-report' --expected-legacy '.\release\manifest.json'
 ```
 
-Existing output ZIPs are never overwritten. Later releases receive a new sequence and all five payloads; a different game baseline receives a new baseline ID. No partial or differential package is accepted. The tool currently marks packages as candidates; public promotion is a separate later change after acceptance.
+For the translation profile, supply `--include-translation` and the current matching English translation file alongside the other inputs. Existing output ZIPs are never overwritten. Later releases receive a new sequence and the complete five- or six-payload profile; a different game baseline receives a new baseline ID. No partial or differential package is accepted. The tool currently marks packages as candidates; public promotion is a separate later change after acceptance.
 
 The initial private signing key is Windows-DPAPI encrypted for the current publishing account and stored outside the repository. Never log, commit, bundle or copy private bytes into the master snapshot. Before public rollout, the publisher should create a passphrase-encrypted recovery export and keep it securely offline:
 

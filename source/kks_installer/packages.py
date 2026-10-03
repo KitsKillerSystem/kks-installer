@@ -1,4 +1,4 @@
-"""Authenticated, bounded seven-file content packages; no executable hooks."""
+"""Authenticated, bounded content packages with fixed asset profiles; no hooks."""
 
 from pathlib import Path
 import base64
@@ -14,6 +14,7 @@ import zipfile
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 from ._application import APP_VERSION, INSTALLER_API, PROFILE, WRITER, CAPABILITIES, TRUSTED_KEYS
+from ._application import TRANSLATION_PROFILE, TRANSLATION_CAPABILITIES
 from .engine import demand, digest, is_digest, durable_bytes, sync_directory
 from .ba2 import hash_file
 from .platforms import SafetyError, safe_path
@@ -27,11 +28,27 @@ MAX_FILE = 32 * 1024 * 1024 * 1024
 FONT = "Data/SeventySix - Interface_en.ba2"
 CONFIG = "Data/SeventySix - Interface.ba2"
 ARCHIVES = {FONT: "interface/fonts_en.swf", CONFIG: "interface/fontconfig_en.txt"}
+TRANSLATION = "interface/translate_en.txt"
+TRANSLATION_PAYLOAD = "payload/" + TRANSLATION
+MAX_TRANSLATION = 4 * 1024 * 1024
 STRINGS = {f"Data/strings/seventysix_en.{ext}" for ext in ("strings", "dlstrings", "ilstrings")}
 IDENTITIES = {"Fallout76.exe", "Data/SeventySix.esm", "Data/SeventySix - Localization.ba2"}
 PAYLOADS = {"payload/" + p for p in ARCHIVES.values()} | {"payload/" + p[5:] for p in STRINGS}
 FILES = PAYLOADS | {"manifest.json", "manifest.sig.json"}
 DIRECTORIES = {"payload/", "payload/interface/", "payload/strings/"}
+
+
+def archive_members(profile):
+    """The application, never package-provided paths, controls both catalogs."""
+    demand(profile in (PROFILE, TRANSLATION_PROFILE), "Unsupported asset profile")
+    result = {path: (name,) for path, name in ARCHIVES.items()}
+    if profile == TRANSLATION_PROFILE:
+        result[CONFIG] += (TRANSLATION,)
+    return result
+
+
+def profile_payloads(profile):
+    return PAYLOADS | ({TRANSLATION_PAYLOAD} if profile == TRANSLATION_PROFILE else set())
 
 
 def strict_json(raw, limit=MAX_MANIFEST):
@@ -110,10 +127,13 @@ def validate_manifest(m):
     integer(m["schema"], 1, 1)
     integer(m["installer_api"], INSTALLER_API, INSTALLER_API)
     demand(
-        (m["package_type"], m["product"], m["channel"], m["profile"])
-        == ("kks-content", "KKS", "release", PROFILE),
+        (m["package_type"], m["product"], m["channel"]) == ("kks-content", "KKS", "release")
+        and m["profile"] in (PROFILE, TRANSLATION_PROFILE),
         "Unsupported product, channel or asset profile",
     )
+    catalog = archive_members(m["profile"])
+    permitted_payloads = profile_payloads(m["profile"])
+    capabilities = TRANSLATION_CAPABILITIES if m["profile"] == TRANSLATION_PROFILE else CAPABILITIES
     version(m["content_version"])
     demand(
         version(m["minimum_installer_version"]) <= version(APP_VERSION),
@@ -122,9 +142,14 @@ def validate_manifest(m):
     integer(m["package_revision"], 1, 2**31 - 1)
     integer(m["release_sequence"], 1, 2**53 - 1)
     demand(
-        m["required_capabilities"] == CAPABILITIES,
+        m["required_capabilities"] == capabilities,
         "Unsupported archive writer or installer capability",
     )
+    if m["profile"] == TRANSLATION_PROFILE:
+        demand(
+            version(m["minimum_installer_version"]) >= (1, 2, 0),
+            "Translation packages require Installer 1.2.0 or newer",
+        )
     demand(
         type(m["created_utc"]) is str
         and re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ", m["created_utc"]),
@@ -148,17 +173,18 @@ def validate_manifest(m):
         hash_size({k: item[k] for k in ("sha256", "size")})
     demand({x["path"] for x in game["identity"]} == IDENTITIES, "Unexpected game identity path")
     demand(
-        type(m["files"]) is list and len(m["files"]) == 5, "Exactly five payload files are required"
+        type(m["files"]) is list and len(m["files"]) == len(permitted_payloads),
+        "The selected asset profile requires its complete payload set",
     )
     payloads = {}
     for f in m["files"]:
         fields(f, "path sha256 size")
         demand(
-            f["path"] in PAYLOADS and f["path"] not in payloads,
+            f["path"] in permitted_payloads and f["path"] not in payloads,
             "Unexpected or duplicate payload path",
         )
         hash_size({k: f[k] for k in ("sha256", "size")})
-        integer(f["size"], 1, MAX_ASSET)
+        integer(f["size"], 1, MAX_TRANSLATION if f["path"] == TRANSLATION_PAYLOAD else MAX_ASSET)
         payloads[f["path"]] = f
     demand(
         sum(f["size"] for f in payloads.values()) <= MAX_PACKAGE,
@@ -186,22 +212,26 @@ def validate_manifest(m):
                 "Unsupported archive operation",
             )
             demand(
-                type(t["assets"]) is list and len(t["assets"]) == 1,
-                "Exactly one permitted archive member is required",
+                type(t["assets"]) is list and len(t["assets"]) == len(catalog[t["path"]]),
+                "The selected profile requires its exact archive members",
             )
-            a = t["assets"][0]
-            fields(a, "name payload vanilla_sha256 vanilla_size sha256 size")
             demand(
-                a["name"] == ARCHIVES[t["path"]] and a["payload"] == "payload/" + a["name"],
-                "Forbidden archive member or payload",
+                all(type(a) is dict for a in t["assets"])
+                and [a.get("name") for a in t["assets"]] == list(catalog[t["path"]]),
+                "Forbidden, missing, duplicate or reordered archive members",
             )
-            demand(is_digest(a["vanilla_sha256"]), "Invalid original member digest")
-            integer(a["vanilla_size"], 1, MAX_ASSET)
-            demand(
-                {k: a[k] for k in ("sha256", "size")}
-                == {k: payloads[a["payload"]][k] for k in ("sha256", "size")},
-                "Archive member does not match payload",
-            )
+            for a in t["assets"]:
+                fields(a, "name payload vanilla_sha256 vanilla_size sha256 size")
+                demand(a["payload"] == "payload/" + a["name"], "Forbidden archive payload")
+                demand(is_digest(a["vanilla_sha256"]), "Invalid original member digest")
+                integer(
+                    a["vanilla_size"], 1, MAX_TRANSLATION if a["name"] == TRANSLATION else MAX_ASSET
+                )
+                demand(
+                    {k: a[k] for k in ("sha256", "size")}
+                    == {k: payloads[a["payload"]][k] for k in ("sha256", "size")},
+                    "Archive member does not match payload",
+                )
         else:
             fields(t, "path kind payload vanilla_sha256 vanilla_size after_sha256 after_size")
             demand(
@@ -311,7 +341,7 @@ def _container(file):
         sig == b"PK\x05\x06"
         and disk == cd_disk == 0
         and disk_n == n
-        and 7 <= n <= 10
+        and 7 <= n <= 11
         and comment == 0,
         "Unsupported, multipart, ZIP64, or malformed ZIP directory",
     )
@@ -327,7 +357,9 @@ def _container(file):
     for i in infos:
         name = i.filename
         demand(
-            name == i.orig_filename and name not in seen and name in FILES | DIRECTORIES,
+            name == i.orig_filename
+            and name not in seen
+            and name in FILES | {TRANSLATION_PAYLOAD} | DIRECTORIES,
             "Unexpected, duplicate or unsafe ZIP path",
         )
         seen.add(name)
@@ -350,6 +382,8 @@ def _container(file):
             limit = MAX_SIGNATURE
         elif name in DIRECTORIES:
             limit = 0
+        elif name == TRANSLATION_PAYLOAD:
+            limit = MAX_TRANSLATION
         else:
             limit = MAX_ASSET
         demand(
@@ -410,6 +444,11 @@ def import_package(path, cache, keys=None):
                 raw = z.read("manifest.json")
                 sig = z.read("manifest.sig.json")
                 release = SignedRelease(stage, raw, sig, keys)
+                demand(
+                    {i.filename for i in z.infolist() if i.filename not in DIRECTORIES}
+                    == set(release.files) | {"manifest.json", "manifest.sig.json"},
+                    "ZIP files do not match the signed asset profile",
+                )
                 for f in release.files.values():
                     info = z.getinfo(f["path"])
                     demand(
