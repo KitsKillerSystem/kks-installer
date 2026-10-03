@@ -1,5 +1,7 @@
 # KKS 1.0.0 — review notes
 
+Historical notes for the original uploaded 1.0.0 artifact. The current branch develops a separate, **unreleased** installer 1.1.0; see [INDEPENDENT_INSTALLER.md](INDEPENDENT_INSTALLER.md) for its changed code, signature handling and persistent state. The fingerprints below still identify the original artifact and have not been repurposed for this candidate.
+
 ## Artifact under review
 
 Nexus mod: https://www.nexusmods.com/fallout76/mods/4301

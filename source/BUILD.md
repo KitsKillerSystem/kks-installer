@@ -1,5 +1,5 @@
-# Building the review snapshot
+# Build the independent installer
 
-Follow [the repository build instructions](../BUILD.md). They cover prerequisites, tests, the existing build script and its equivalent explicit packaging command.
+See [the root build instructions](../BUILD.md) for the locked toolchain, clean-source build, tests, provenance receipt and reproduction limits.
 
-Application source, the build script and the five bundled payloads are unchanged from KKS 1.0.0. This documentation page is adapted for the focused review repository; optional authoring/history material is not required to build it.
+Run `build.ps1` with the chosen Python executable and two new output/work directories. The developer-only `review_build.py` runs all tests before PyInstaller and records the exact source revision. No content payload or private key is bundled.

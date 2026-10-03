@@ -1,46 +1,49 @@
 # KKS — Kit's Killer System
 
-## Download the installer and content
+KKS adds custom glyphs, clearer item information, useful sorting and redesigned perk-card descriptions to Fallout 76.
 
-[Current download page: KKS Content 1.0.1 and Installer 1.1.0](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.0.1)
+## Download KKS 1.1.0 and Installer 1.2.1
 
-- [KKS Installer 1.1.0](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.0.1/KKS_Installer_1.1.0.zip): reusable Windows application; extract this ZIP and run KKSInstaller.exe.
-- [KKS Content 1.0.1](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.0.1/KKS_1.0.1_Payload_Steam_EN_25636769_r1.zip): complete signed font/configuration/strings package; keep this ZIP intact.
+[Release page and downloads](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.1.0)
 
-1. Download both ZIPs if you do not already have installer 1.1.0.
-2. Extract only the installer ZIP, close Fallout 76, and open KKSInstaller.exe.
-3. Select the game folder and the intact content ZIP, then choose Install when the compatibility check succeeds.
+- [KKS Installer 1.2.1](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.1.0/KKS_Installer_1.2.1.zip) — extract this ZIP and run `KKSInstaller.exe`.
+- [KKS Content 1.1.0](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.1.0/KKS_1.1.0_Steam_EN_25636769.zip) — keep this signed content ZIP intact.
 
-**Supported game version for content 1.0.1:** Steam, English, Slasher hotfix build **25636769**. No artwork, strings, font configuration or installer code changed in this compatibility release. See [package verification and update notes](https://github.com/KitsKillerSystem/kks-installer/blob/release/review-hardening/review/content-1.0.1/README.md).
+**Supported game:** Fallout 76, Steam, English, build **25636769**. **Installer 1.2.1 is required for this content.** Installer and content versions are independent.
 
-If Bethesda updated the game while KKS was installed, complete Steam's Verify integrity of game files before selecting the new compatible package. The installer requires the current vanilla archives before retiring old KKS overrides across game builds; it will not restore old archives over an unverified new build. Keep the game's **.kks-manager** and any **.kks-installer-1.0.0** records and backups.
+1. Download both named ZIPs, including the updated installer if you have an older version.
+2. Close Fallout 76 and open `KKSInstaller.exe`.
+3. Select the game folder, then drag the intact content ZIP onto the installer or use **Choose package**.
+4. After verification, click **Install content** or **Install update**.
 
-GitHub's automatic Source code downloads are for developers; use the two named ZIP assets above. Python and xTranslator are not needed. The [original bundled 1.0.0 release](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.0.0) is preserved for history and its older supported game build.
+Existing KKS installations on the supported game build can update directly; no manual restore or intermediate content releases are needed. Selecting a package only verifies it. Keep the game's `.kks-manager` and any `.kks-installer-1.0.0` records/backups, and use Installer 1.2.1 for Repair or Restore vanilla after this update.
 
-## Historical v1.0.0 source and review notes
+If Bethesda updated the game while KKS was installed, complete Steam's **Verify integrity of game files** before selecting a package certified for that new build. Unsupported game fingerprints or conflicting files stop installation. The installer never downloads updates automatically.
 
-The default branch retains the original bundled installer source. The current independent installer source and review evidence are on [release/review-hardening](https://github.com/KitsKillerSystem/kks-installer/tree/release/review-hardening). The following source notes describe the historical 1.0.0 release; use the current downloads above for Steam build 25636769.
+GitHub's automatic **Source code** archives are for developers. Players need the two named ZIPs above; Python and xTranslator are not required. Previous releases remain available under [Releases](https://github.com/KitsKillerSystem/kks-installer/releases).
 
-KKS 1.0.0 provides a standalone Fallout 76 installer. This repository also contains its source for review of the released Windows executable.
+## What's new
 
-**Mod page:** https://www.nexusmods.com/fallout76/mods/4301
+- Refined glyph artwork and more consistent visual weight, including quieter legendary wordmarks and UNIQUE equipment labels.
+- Cleaner cooked-food names: cooking pot, mutation identity, name and useful effect suffixes, with effect-family sorting retained.
+- More consistent CAMP object/action labels, using existing artwork for recognizable objects and buff information.
+- Redesigned descriptions for all **240 standard perk cards**, including rank and ghoul variants, with clearer mechanics and flavor text. Legendary perk cards remain outside this update.
+- Plan rarity grouping, unknown plans before Known plans, and a Known checkmark that retains the Plan icon.
+- Targeted Sustain, Clean-food and missed UNIQUE assignment corrections.
 
-KKS installs its reviewed English font, font configuration and localization payloads. The GUI offers Install, Repair and Restore vanilla, with recovery for interrupted operations. End users do not need Python or xTranslator.
+Installer 1.2.1 fixes package drag-and-drop, refreshes the interface and securely adds English translation-file support. It preserves verified backups, repair, restoration and interrupted-operation recovery. The content and executable are the exact bytes accepted in the maintainer's playtest.
 
-## For Nexus reviewers
+## Source and verification
 
-- [Build instructions](BUILD.md): build the executable from the included Python source and exact release inputs. A game installation is not required to build or run the fixture tests.
-- [Reviewer notes](REVIEWER_NOTES.md): entry points, operating-system interactions, file changes and safety checks.
-- [Release fingerprints](RELEASE_SHA256SUMS.txt): identify the original uploaded ZIP, its executable and pinned release manifest.
-- [Source snapshot](SOURCE_SNAPSHOT.json): SHA-256 of every copied runtime source, test, build file and payload. These files are unchanged from the sealed 1.0.0 developer bundle.
-- [Restoration contract](UPGRADE_RESTORATION.md): persistent state and requirements for future version compatibility.
+- [Release notes](RELEASE_NOTES.md)
+- [Content 1.1.0 validation and signed manifest](review/content-1.1.0/README.md)
+- [Installer 1.2.1 build and test evidence](review/installer-1.2.1/README.md)
+- [Build instructions](BUILD.md), [package/restoration contract](INDEPENDENT_INSTALLER.md), and [security scope](SECURITY_REVIEW.md)
 
-The installer is an offline, on-disk asset patcher. It requires the game to be closed; it does not inject code into a running process. It supports only the pinned Steam English Slasher build 25258219. Unknown game fingerprints or conflicting target files stop installation/restoration.
+The application is an offline asset patcher. It requires Fallout 76 to be closed and never injects code into the game. Content packages are publisher-signed; the Windows executable is **not Authenticode-signed**. Publication here does not claim Nexus approval. Historical [Installer 1.1.0 review evidence](review/installer-1.1.0/README.md) and the original root-level 1.0.0 review files remain unchanged.
 
-The original 1.0.0 payload passed the author's final in-game QA. Publication of this source is for transparency and review; it does not imply Nexus has approved the quarantined upload.
+`source/kks_installer/` and `source/launcher.py` contain the application. `source/tests/` contains 138 automated tests. `source/release/` preserves the original 1.0.0 inputs for provenance; the current installer does not embed them. `source/build_content.py` is publisher tooling and is excluded from the runtime.
 
-## Repository contents
+Game archives, private signing keys, local backups and private authoring history are not part of this repository. The exact source commit for the published executable is recorded in its build receipts; later release documentation does not require a new binary.
 
-`source/kks_installer/` and `source/launcher.py` contain all application code. `source/tests/` contains the 59 fixture tests. `source/release/` contains the exact manifest and five inputs embedded in the executable. `source/build.ps1` and `source/requirements-build.txt` provide the build entry point and pinned PyInstaller version.
-
-The source tree omits the original EXE, Bethesda game archives/executable/ESM, local backups, private workstation logs and optional font-authoring/history tools. They are not required to build the installer. The original EXE is available in the complete installer ZIP linked above. The broader authoring/codex bundle remains a separate release artifact. Root documentation is prepared for this review; copied application code and payloads remain unchanged.
+[KKS on Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301)

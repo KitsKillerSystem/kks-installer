@@ -1,114 +1,486 @@
-"""Small native Windows interface; worker operations never block the UI loop."""
-from pathlib import Path
-import queue,threading,tkinter as tk
-from tkinter import ttk,filedialog,messagebox
-from .profile import Installer
-from .platforms import discover
+"""Native offline installer: select, check, update, repair and restore."""
 
-BG='#111b18';PANEL='#1b2923';PANEL2='#24362d';INK='#ecf1e9';MUTED='#acbdb0';GREEN='#b7f36c';LINE='#3c5143';RED='#ffb89a'
+from pathlib import Path
+import queue, threading, tkinter as tk
+from tkinter import ttk, filedialog, messagebox
+from ._application import APP_VERSION
+from .manager import Manager
+from .platforms import discover
+from .windows_drop import enable_file_drop
+
+BG = "#e8e2d4"
+PANEL = "#f5f0e5"
+PANEL2 = "#d9d2c2"
+INK = "#252d2b"
+MUTED = "#59625c"
+GREEN = "#536b3e"
+LINE = "#afa997"
+RED = "#a4402c"
+ACCENT = "#ce653c"
+DARK = "#27312e"
+
 
 class App:
-    def __init__(self,release):
-        self.release=release;self.root=tk.Tk();self.root.title('KKS Installer · 1.0.0')
-        self.root.geometry('940x820');self.root.minsize(880,800);self.root.configure(bg=BG)
-        self.root.option_add('*Font',('Segoe UI',10));self.busy=False;self.events=queue.Queue();self.last_status=None
-        self.root.protocol('WM_DELETE_WINDOW',self.close)
-        style=ttk.Style();style.theme_use('clam')
-        style.configure('KKS.Horizontal.TProgressbar',troughcolor=PANEL,bordercolor=PANEL,background=GREEN,lightcolor=GREEN,darkcolor=GREEN)
-        outer=tk.Frame(self.root,bg=BG);outer.pack(fill='both',expand=True,padx=34,pady=28)
-        top=tk.Frame(outer,bg=BG);top.pack(fill='x')
-        logo=tk.Label(top,text='KKS',font=('Segoe UI',31,'bold'),fg=GREEN,bg=BG);logo.pack(side='left')
-        tk.Label(top,text='KIT’S KILLER SYSTEM',font=('Segoe UI',11,'bold'),fg=INK,bg=BG).pack(side='left',padx=20)
-        tk.Label(top,text='1.0.0  /  ENGLISH',font=('Segoe UI',10),fg=MUTED,bg=BG).pack(side='right')
-        tk.Label(outer,text='Your inventory. Rewritten.',font=('Segoe UI',24,'bold'),fg=INK,bg=BG,anchor='w').pack(fill='x',pady=(18,6))
-        tk.Label(outer,text="Over 1,000 custom glyphs transform Fallout 76's inventory into information you can understand at a glance.",fg=MUTED,bg=BG,anchor='w',justify='left',wraplength=790).pack(fill='x',pady=(0,24))
-        location=tk.Frame(outer,bg=PANEL,highlightbackground=LINE,highlightthickness=1);location.pack(fill='x')
-        tk.Label(location,text='FALLOUT 76 LOCATION',font=('Segoe UI',9,'bold'),fg=MUTED,bg=PANEL,anchor='w').pack(fill='x',padx=20,pady=(14,8))
-        row=tk.Frame(location,bg=PANEL);row.pack(fill='x',padx=20,pady=(0,18))
-        self.path=tk.StringVar();self.entry=tk.Entry(row,textvariable=self.path,bg=PANEL2,fg=INK,insertbackground=INK,relief='flat',font=('Segoe UI',11))
-        self.entry.pack(side='left',fill='x',expand=True,ipady=9);self.entry.bind('<Return>',lambda e:self.start('check'))
-        self.browse=self.button(row,'Browse…',self.choose);self.browse.pack(side='left',padx=(10,0))
-        self.check=self.button(row,'Check',lambda:self.start('check'));self.check.pack(side='left',padx=(8,0))
-        self.status_panel=tk.Frame(outer,bg=PANEL,highlightbackground=LINE,highlightthickness=1);self.status_panel.pack(fill='x',pady=16)
-        self.status_title=tk.Label(self.status_panel,text='Let’s find your game.',font=('Segoe UI',19,'bold'),fg=INK,bg=PANEL,anchor='w')
-        self.status_title.pack(fill='x',padx=20,pady=(17,5))
-        self.status_message=tk.Label(self.status_panel,text='Choose your Fallout 76 folder, then check compatibility.',fg=MUTED,bg=PANEL,justify='left',wraplength=790,anchor='w')
-        self.status_message.pack(fill='x',padx=20,pady=(0,12))
-        chips=tk.Frame(self.status_panel,bg=PANEL);chips.pack(fill='x',padx=20,pady=(0,16))
-        for label in ['Build verification','Restoration backups','File validation']:
-            tk.Label(chips,text=label,fg=GREEN,bg=PANEL2,padx=10,pady=5,font=('Segoe UI',9)).pack(side='left',padx=(0,10))
-        # These labels describe safeguards, never claim that an unchecked game passed.
-        self.progress=ttk.Progressbar(outer,style='KKS.Horizontal.TProgressbar',mode='indeterminate');self.progress.pack(fill='x',pady=(0,14))
-        actions=tk.Frame(outer,bg=BG);actions.pack(fill='x')
-        self.primary=self.button(actions,'Install KKS',lambda:self.start('install'),primary=True);self.primary.pack(side='left')
-        self.repair=self.button(actions,'Repair',lambda:self.start('repair'));self.repair.pack(side='left',padx=10)
-        self.restore=self.button(actions,'Restore vanilla',lambda:self.start('restore'));self.restore.pack(side='left')
-        self.primary.configure(state='disabled');self.repair.configure(state='disabled');self.restore.configure(state='disabled')
-        tk.Label(actions,text='No xTranslator required',fg=MUTED,bg=BG,font=('Segoe UI',9)).pack(side='right')
-        tk.Label(outer,text='ACTIVITY',fg=MUTED,bg=BG,font=('Segoe UI',9,'bold'),anchor='w').pack(fill='x',pady=(22,8))
-        self.log=tk.Text(outer,height=5,bg=PANEL,fg=MUTED,relief='flat',font=('Consolas',10),wrap='word',padx=14,pady=10,state='disabled')
-        self.log.pack(fill='both',expand=True)
-        tk.Label(outer,text='Supports Steam English Slasher build 25258219 · Backups remain in your game folder',fg=MUTED,bg=BG,font=('Segoe UI',9),anchor='w').pack(fill='x',pady=(14,0))
-        self.path.trace_add('write',self.path_changed)
-        candidates=discover()
-        if candidates:
-            self.path.set(candidates[0]);self.root.after(350,lambda:self.start('check'))
-        else:self.append('No game installation was detected automatically. Use Browse to choose its folder.')
-        self.root.after(100,self.pump)
+    def __init__(self, package=None, game=None):
+        self.root = tk.Tk()
+        self.root.title("KKS Installer · " + APP_VERSION)
+        width = min(1080, self.root.winfo_screenwidth() - 60)
+        height = min(790, self.root.winfo_screenheight() - 80)
+        self.root.geometry(f"{width}x{height}")
+        self.root.minsize(min(900, width), min(700, height))
+        self.root.configure(bg=BG)
+        self.root.option_add("*Font", ("Segoe UI", 10))
+        self.busy = False
+        self.events = queue.Queue()
+        self.last_status = None
+        self.selected = None
+        self.root.protocol("WM_DELETE_WINDOW", self.close)
+        style = ttk.Style()
+        style.theme_use("clam")
+        style.configure(
+            "KKS.Horizontal.TProgressbar",
+            troughcolor=PANEL2,
+            bordercolor=PANEL2,
+            background=GREEN,
+            lightcolor=GREEN,
+            darkcolor=GREEN,
+            thickness=5,
+        )
 
-    def button(self,parent,text,command,primary=False):
-        return tk.Button(parent,text=text,command=command,font=('Segoe UI',11,'bold' if primary else 'normal'),
-                         bg=GREEN if primary else PANEL2,fg=BG if primary else INK,activebackground='#cafb90' if primary else LINE,
-                         activeforeground=BG if primary else INK,disabledforeground='#758677',relief='flat',borderwidth=0,padx=19,pady=10,cursor='hand2')
-    def append(self,text):
-        self.log.configure(state='normal');self.log.insert('end',text+'\n');self.log.see('end');self.log.configure(state='disabled')
-    def path_changed(self,*args):
+        # A compact field-manual layout: a fixed identity spine and one clear
+        # working surface. Native controls retain keyboard focus and resizing.
+        spine = tk.Frame(self.root, bg=DARK, width=170)
+        spine.pack(side="left", fill="y")
+        spine.pack_propagate(False)
+        tk.Frame(spine, bg=ACCENT, height=9).pack(fill="x")
+        tk.Label(
+            spine, text="KKS", font=("Bahnschrift", 48, "bold"), fg=BG, bg=DARK, anchor="w"
+        ).pack(fill="x", padx=18, pady=(22, 0))
+        tk.Label(
+            spine,
+            text="KIT’S\nKILLER\nSYSTEM",
+            font=("Bahnschrift", 15),
+            fg=BG,
+            bg=DARK,
+            justify="left",
+            anchor="w",
+        ).pack(fill="x", padx=22)
+        tk.Frame(spine, bg="#65716a", height=1).pack(fill="x", padx=22, pady=23)
+        tk.Label(
+            spine,
+            text="CONTENT\nINSTALLER",
+            font=("Consolas", 10),
+            fg="#b4bfb5",
+            bg=DARK,
+            justify="left",
+            anchor="w",
+        ).pack(fill="x", padx=22)
+        tk.Label(
+            spine, text="v" + APP_VERSION, font=("Consolas", 10), fg="#b4bfb5", bg=DARK, anchor="w"
+        ).pack(fill="x", padx=22, pady=(6, 0))
+        tk.Label(
+            spine,
+            text="FALLOUT 76\nSTEAM / ENGLISH",
+            font=("Consolas", 9),
+            fg="#b4bfb5",
+            bg=DARK,
+            justify="left",
+            anchor="w",
+        ).pack(side="bottom", fill="x", padx=22, pady=24)
+
+        outer = tk.Frame(self.root, bg=BG)
+        outer.pack(side="left", fill="both", expand=True, padx=28, pady=16)
+        tk.Label(
+            outer,
+            text="A BETTER-ORDERED WASTELAND.",
+            font=("Consolas", 10, "bold"),
+            fg=RED,
+            bg=BG,
+            anchor="w",
+        ).pack(fill="x")
+        tk.Label(
+            outer,
+            text="Make yourself at home.",
+            font=("Bahnschrift", 25),
+            fg=INK,
+            bg=BG,
+            anchor="w",
+        ).pack(fill="x", pady=(5, 8))
+        tk.Label(
+            outer,
+            text="Choose your game folder and a complete KKS content ZIP.",
+            fg=MUTED,
+            bg=BG,
+            anchor="w",
+        ).pack(fill="x")
+        tk.Frame(outer, bg=INK, height=2).pack(fill="x", pady=(12, 10))
+
+        self.label(outer, "01  /  GAME DIRECTORY", BG).pack(fill="x", pady=(0, 7))
+        row = tk.Frame(outer, bg=BG)
+        row.pack(fill="x")
+        self.path = tk.StringVar()
+        self.entry = tk.Entry(
+            row,
+            textvariable=self.path,
+            bg=PANEL,
+            fg=INK,
+            insertbackground=INK,
+            relief="flat",
+            highlightthickness=1,
+            highlightbackground=LINE,
+            highlightcolor=GREEN,
+        )
+        self.entry.pack(side="left", fill="x", expand=True, ipady=7)
+        self.browse = self.button(row, "Browse…", self.choose_game)
+        self.browse.pack(side="left", padx=(8, 0))
+        self.check = self.button(row, "Check", lambda: self.start("check"))
+        self.check.pack(side="left", padx=(6, 0))
+
+        self.label(outer, "02  /  CONTENT PACKAGE", BG).pack(fill="x", pady=(12, 7))
+        package_row = tk.Frame(outer, bg=PANEL, highlightbackground=LINE, highlightthickness=1)
+        package_row.pack(fill="x")
+        self.package_text = tk.StringVar(
+            value="Drop one content ZIP onto this window, or choose it below."
+        )
+        self.package_label = tk.Label(
+            package_row,
+            textvariable=self.package_text,
+            fg=INK,
+            bg=PANEL,
+            anchor="w",
+            justify="left",
+            wraplength=480,
+        )
+        self.package_label.pack(fill="x", padx=13, pady=(8, 5))
+        self.package_button = self.button(package_row, "Choose package…", self.choose_package)
+        self.package_button.pack(anchor="w", padx=12, pady=(0, 8))
+        self.label(outer, "03  /  INSTALLATION STATUS", BG).pack(fill="x", pady=(12, 7))
+        status = tk.Frame(outer, bg=PANEL)
+        status.pack(fill="x")
+        self.status_title = tk.Label(
+            status,
+            text="Ready when you are.",
+            font=("Bahnschrift", 19),
+            fg=INK,
+            bg=PANEL,
+            anchor="w",
+        )
+        self.status_title.pack(fill="x", padx=13, pady=(8, 5))
+        message_row = tk.Frame(status, bg=PANEL)
+        message_row.pack(fill="x", padx=13, pady=(0, 8))
+        self.status_message = tk.Text(
+            message_row,
+            height=3,
+            width=1,
+            wrap="word",
+            fg=MUTED,
+            bg=PANEL,
+            relief="flat",
+            borderwidth=0,
+            highlightthickness=0,
+            font=("Segoe UI", 10),
+            state="disabled",
+        )
+        message_scroll = ttk.Scrollbar(message_row, command=self.status_message.yview)
+        self.status_message.configure(yscrollcommand=message_scroll.set)
+        message_scroll.pack(side="right", fill="y")
+        self.status_message.pack(side="left", fill="x", expand=True)
+        self.status_text("Select a package to check compatibility.")
+        self.progress = ttk.Progressbar(
+            outer, style="KKS.Horizontal.TProgressbar", mode="indeterminate"
+        )
+        self.progress.pack(fill="x", pady=(0, 13))
+        actions = tk.Frame(outer, bg=BG)
+        actions.pack(fill="x")
+        self.primary = self.button(actions, "Install content", self.primary_action, True)
+        self.primary.pack(side="left")
+        self.repair = self.button(actions, "Repair", lambda: self.start("repair"))
+        self.repair.pack(side="left", padx=8)
+        self.restore = self.button(actions, "Restore vanilla", lambda: self.start("restore"))
+        self.restore.pack(side="left")
+        for button in (self.primary, self.repair, self.restore):
+            button.configure(state="disabled")
+        self.label(outer, "ACTIVITY", BG).pack(fill="x", pady=(10, 6))
+        self.log = tk.Text(
+            outer,
+            height=4,
+            bg=PANEL,
+            fg=MUTED,
+            relief="flat",
+            font=("Consolas", 9),
+            wrap="word",
+            padx=11,
+            pady=8,
+            state="disabled",
+        )
+        tk.Label(
+            outer,
+            text="Offline by design.  Your vanilla backups stay with your game.",
+            fg=MUTED,
+            bg=BG,
+            font=("Segoe UI", 9),
+            anchor="w",
+        ).pack(side="bottom", fill="x", pady=(12, 0))
+        self.log.pack(fill="both", expand=True)
+
+        def resize_labels(event):
+            self.package_label.configure(wraplength=max(360, event.width - 30))
+
+        outer.bind("<Configure>", resize_labels)
+        self.path.trace_add("write", self.path_changed)
+        candidates = discover() if not game else []
+        if game or candidates:
+            self.path.set(game or candidates[0])
+        try:
+            self.drop_binding = enable_file_drop(self.root, self.dropped)
+        except OSError:
+            self.drop_binding = None
+            self.append("Use Choose package to select your content ZIP.")
+        self.root.after(100, self.pump)
+        if package:
+            self.root.after(200, lambda: self.select_package(package))
+        elif self.path.get():
+            self.root.after(200, lambda: self.start("check"))
+
+    def panel(self, parent):
+        return tk.Frame(parent, bg=PANEL, highlightbackground=LINE, highlightthickness=1)
+
+    def label(self, parent, text, bg=PANEL):
+        return tk.Label(
+            parent, text=text, font=("Segoe UI", 9, "bold"), fg=MUTED, bg=bg, anchor="w"
+        )
+
+    def button(self, parent, text, command, primary=False):
+        return tk.Button(
+            parent,
+            text=text,
+            command=command,
+            font=("Segoe UI", 11, "bold" if primary else "normal"),
+            bg=GREEN if primary else PANEL2,
+            fg="#ffffff" if primary else INK,
+            activebackground="#415631" if primary else "#c6beab",
+            activeforeground="#ffffff" if primary else INK,
+            disabledforeground="#8b9282",
+            relief="flat",
+            borderwidth=0,
+            padx=17,
+            pady=8,
+            cursor="hand2",
+        )
+
+    def status_text(self, text):
+        self.status_message.configure(state="normal")
+        self.status_message.delete("1.0", "end")
+        self.status_message.insert("1.0", text)
+        self.status_message.configure(state="disabled")
+        self.status_message.yview_moveto(0)
+
+    def append(self, text):
+        self.log.configure(state="normal")
+        self.log.insert("end", text + "\n")
+        self.log.see("end")
+        self.log.configure(state="disabled")
+
+    def path_changed(self, *args):
         if not self.busy:
-            self.last_status=None
-            for b in [self.primary,self.repair,self.restore]:b.configure(state='disabled')
-    def choose(self):
-        path=filedialog.askdirectory(title='Choose the folder containing Fallout76.exe',initialdir=self.path.get() or None)
-        if path:self.path.set(path);self.start('check')
+            self.last_status = None
+            self.selected = None
+            self.package_text.set("Drop a ZIP here or choose a package. Keep the ZIP unopened.")
+            for b in (self.primary, self.repair, self.restore):
+                b.configure(state="disabled")
+
+    def choose_game(self):
+        path = filedialog.askdirectory(
+            title="Choose the folder containing Fallout76.exe", initialdir=self.path.get() or None
+        )
+        if path:
+            self.path.set(path)
+            self.start("check")
+
+    def choose_package(self):
+        path = filedialog.askopenfilename(
+            title="Choose a complete KKS content ZIP", filetypes=[("KKS content package", "*.zip")]
+        )
+        if path:
+            self.select_package(path)
+
+    def dropped(self, paths):
+        if self.busy:
+            self.append("Wait for the current operation, then drop the package again.")
+            return
+        if len(paths) != 1 or Path(paths[0]).suffix.lower() != ".zip":
+            messagebox.showinfo("Choose one ZIP", "Drop one complete KKS content ZIP.")
+            return
+        self.select_package(paths[0])
+
+    def select_package(self, path):
+        if not self.path.get():
+            game = filedialog.askdirectory(title="Choose the folder containing Fallout76.exe")
+            if not game:
+                return
+            self.path.set(game)
+        self.start("select", path)
+
+    def primary_action(self):
+        self.start("recover" if self.last_status == "recovery_required" else "install")
+
     def close(self):
         if self.busy:
-            messagebox.showinfo('KKS is working','Please wait for the operation to finish. If it is interrupted, KKS will retain the recovery journal and backups.')
-        else:self.root.destroy()
-    def start(self,action):
-        if self.busy:return
-        game=self.path.get().strip()
-        if not game:self.choose();return
-        self.busy=True;self.last_status=None
-        for widget in [self.entry,self.browse,self.check,self.primary,self.repair,self.restore]:widget.configure(state='disabled')
-        self.progress.start(12);self.status_title.configure(text='Checking your installation…' if action=='check' else 'Working safely…',fg=INK)
-        self.status_message.configure(text='This can take a moment while KKS verifies the game files. Keep the game closed.')
-        self.append({'check':'Checking compatibility…','install':'Installing KKS…','repair':'Repairing KKS…','restore':'Restoring vanilla…','recover':'Recovering the interrupted operation…'}[action])
+            messagebox.showinfo(
+                "KKS is working",
+                "Wait for the operation to finish. If it is interrupted, KKS keeps the recovery journal and backups.",
+            )
+        else:
+            if self.drop_binding is not None:
+                self.drop_binding.close()
+            for timer in self.root.tk.call("after", "info"):
+                self.root.after_cancel(timer)
+            self.root.destroy()
+
+    def start(self, action, zip_path=None):
+        if self.busy:
+            return
+        game = self.path.get().strip()
+        if not game:
+            self.choose_game()
+            return
+        self.busy = True
+        self.last_status = None
+        for w in (
+            self.entry,
+            self.browse,
+            self.check,
+            self.package_button,
+            self.primary,
+            self.repair,
+            self.restore,
+        ):
+            w.configure(state="disabled")
+        self.progress.start(12)
+        self.status_title.configure(
+            text=(
+                "Checking package…"
+                if action == "select"
+                else "Checking your installation…" if action == "check" else "Working…"
+            ),
+            fg=INK,
+        )
+        self.status_text(
+            "KKS is verifying the package, game files and restoration data. Keep Fallout 76 closed during changes."
+        )
+        selected = self.selected
+        self.append(
+            {
+                "select": "Verifying the selected package…",
+                "check": "Checking saved installation and compatibility…",
+                "install": "Installing the selected content package…",
+                "repair": "Repairing installed content…",
+                "restore": "Restoring verified vanilla…",
+                "recover": "Recovering the interrupted operation…",
+            }[action]
+        )
+
         def work():
             try:
-                engine=Installer(game,self.release,lambda text:self.events.put(('log',text)))
-                result=engine.inspect() if action=='check' else engine.recover() if action=='recover' else engine.run(action)
-                if action!='check':result=engine.inspect()
-                self.events.put(('success',result))
-            except Exception as e:self.events.put(('error',str(e)))
-        threading.Thread(target=work,daemon=False).start()
+                manager = Manager(game, lambda text: self.events.put(("log", text)))
+                release = (
+                    manager.package(selected)
+                    if selected and action not in ("select", "restore", "recover", "repair")
+                    else None
+                )
+                if action == "select":
+                    release = manager.select(zip_path)
+                    self.events.put(
+                        ("selected", (release.manifest_digest, release.name, len(release.files)))
+                    )
+                    result = manager.inspect(release)
+                elif action == "check":
+                    result = manager.inspect(release)
+                else:
+                    result = (
+                        manager.recover() if action == "recover" else manager.run(action, release)
+                    )
+                    self.events.put(("log", result.get("message", result["status"])))
+                    result = manager.inspect()
+                self.events.put(("success", result))
+            except Exception as e:
+                self.events.put(("error", str(e)))
+
+        threading.Thread(target=work, daemon=False).start()
+
     def pump(self):
         try:
             while True:
-                kind,data=self.events.get_nowait()
-                if kind=='log':self.append(data);continue
-                self.busy=False;self.progress.stop()
-                for widget in [self.entry,self.browse,self.check]:widget.configure(state='normal')
-                if kind=='error':
-                    self.status_title.configure(text='Needs attention before continuing',fg=RED)
-                    self.status_message.configure(text=data[:460]);self.append(data)
+                kind, data = self.events.get_nowait()
+                if kind == "log":
+                    self.append(data)
+                    continue
+                if kind == "selected":
+                    self.selected, name, file_count = data
+                    self.package_text.set(
+                        name + f" · signature and all {file_count} files verified"
+                    )
+                    continue
+                self.busy = False
+                self.progress.stop()
+                self.progress.configure(value=0)
+                for w in (self.entry, self.browse, self.check, self.package_button):
+                    w.configure(state="normal")
+                if kind == "error":
+                    self.status_title.configure(text="Needs attention before continuing", fg=RED)
+                    self.status_text(data)
+                    self.append(data)
                 else:
-                    status=data['status'];self.last_status=status
-                    self.status_title.configure(text={'ready':'Ready for KKS.','installed':'KKS is installed.','repairable':'KKS needs a repair.','recovery_required':'Let’s recover the interrupted change.'}.get(status,status),fg=GREEN)
-                    self.status_message.configure(text=data.get('message','Verified.'));self.append(data.get('message',status))
-                    self.primary.configure(text='Recover previous state' if status=='recovery_required' else 'Install KKS',command=lambda:self.start('recover' if self.last_status=='recovery_required' else 'install'),state='normal' if status in ('ready','recovery_required') else 'disabled')
-                    self.repair.configure(state='normal' if status in ('installed','repairable') else 'disabled')
-                    self.restore.configure(state='normal' if status in ('installed','repairable') else 'disabled')
-        except queue.Empty:pass
-        self.root.after(100,self.pump)
-    def run(self):self.root.mainloop()
+                    status = data["status"]
+                    self.last_status = status
+                    titles = {
+                        "ready": "Ready to install.",
+                        "update_available": "Ready to update.",
+                        "installed": "KKS is installed.",
+                        "legacy_installed": "KKS 1.0 installation found.",
+                        "repairable": "KKS needs a repair.",
+                        "package_required": "Choose a content package.",
+                        "recovery_required": "Recover the interrupted change.",
+                    }
+                    self.status_title.configure(text=titles.get(status, status), fg=GREEN)
+                    message = data.get("message", "Verified.")
+                    if data.get("selected_content"):
+                        message += " Selected: " + data["selected_content"] + "."
+                    if data.get("installed_content"):
+                        message += " Installed: " + data["installed_content"] + "."
+                    if "changed_payload_files" in data:
+                        message += f' {data["changed_payload_files"]} of {data["payload_file_count"]} content files differ.'
+                    self.status_text(message)
+                    self.append(message)
+                    self.primary.configure(
+                        text=(
+                            "Recover previous state"
+                            if status == "recovery_required"
+                            else (
+                                "Install update"
+                                if status == "update_available"
+                                else "Install content"
+                            )
+                        ),
+                        state=(
+                            "normal"
+                            if status in ("ready", "update_available", "recovery_required")
+                            else "disabled"
+                        ),
+                    )
+                    self.repair.configure(
+                        state="normal" if data.get("repair_available") else "disabled"
+                    )
+                    self.restore.configure(
+                        state="normal" if data.get("restore_available") else "disabled"
+                    )
+        except queue.Empty:
+            pass
+        self.root.after(100, self.pump)
 
-def launch(release):App(release).run()
+    def run(self):
+        self.root.mainloop()
+
+
+def launch(package=None, game=None):
+    App(package, game).run()

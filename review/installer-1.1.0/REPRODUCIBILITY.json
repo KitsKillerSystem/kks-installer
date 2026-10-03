@@ -1,0 +1,17 @@
+{
+  "same_host": true,
+  "separate_fresh_git_clones": true,
+  "different_source_and_work_paths": true,
+  "same_fresh_locked_venv": true,
+  "source_commit": "5c6eadf80ebcec84b62a8c5bec71f7679d9f3004",
+  "source_tree": "b02b2f94280df561bb5c65d6d7f232c6a370a3e6",
+  "source_date_epoch": "1790876010",
+  "python_hash_seed": "1",
+  "build_a_exe_sha256": "4e79031ef37c83dc730ff49de46cdfb21d8b326b58ba7a8e0fdb259f96baf17d",
+  "build_b_exe_sha256": "4e79031ef37c83dc730ff49de46cdfb21d8b326b58ba7a8e0fdb259f96baf17d",
+  "byte_identical": true,
+  "cross_machine_reproduction": "not tested",
+  "zlib_compile_version": "1.3.2",
+  "zlib_runtime_version": "1.3.2",
+  "cryptography_openssl": "OpenSSL 4.0.3 29 Sep 2026"
+}

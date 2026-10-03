@@ -1,54 +1,98 @@
-# Build KKS 1.0.0 on Windows
+# Build installer application 1.2.1
 
-## Requirements
+Content version 1.1.0 is independent. Use the original `v1.0.0` source to reproduce
+the older bundled installer. This branch's runtime build never includes
+`source/release`, publisher tooling, tests, game files or private signing keys.
+No game installation or publisher key is needed for synthetic tests or building.
 
-- Windows x64.
-- Python 3.12 x64 with `venv`, `pip` and Tk/Tcl. The released executable was built using Python **3.12.14** and PyInstaller **6.22.3**. Other build environments can produce a different executable hash.
-- Internet access for the development-only dependency installation below. The installed KKS application has no runtime network feature.
+The [1.2.1 build receipts](review/installer-1.2.1/README.md) identify exact source
+commit `3d65c7df0ca28b638d416dbab0392155022a6d9b`, tree, executable and tests.
+The `installer-v1.2.1` tag identifies that build commit. Historical 1.1.0 was built from
+`5c6eadf80ebcec84b62a8c5bec71f7679d9f3004`; its executable and review evidence
+remain frozen. Use the receipt for the executable you intend to reproduce.
 
-No Fallout 76 installation, xTranslator, font editor or localization compiler is required to build the EXE. The exact release inputs are already included in `source/release/`.
+## Reproduce the reviewed source
 
-## Build steps
+Use Windows x64, Git, Python **3.12.14 x64 with Tk/Tcl**, and a fresh checkout of the
+full source commit printed in the release's build-receipt.json.
+The recorded environment used Tcl/Tk **8.6.12**, PyInstaller **6.22.3** and
+cryptography **50.0.2**. The complete Windows/Python-3.12 wheel closure, including
+pip, is pinned with SHA-256 hashes in `source/requirements-build.txt`.
 
-Download this repository using GitHub's **Code → Download ZIP**, extract it, and open PowerShell in the extracted repository folder containing this file. With the intended Python 3.12 interpreter available as `python`, run:
+In PowerShell, from the repository root (replace the example commit/path):
 
 ```powershell
-python --version
-Set-Location source
+git checkout --detach <full-reviewed-commit>
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
-.\.venv\Scripts\python.exe -c "import tkinter; print(tkinter.Tcl().eval('info patchlevel'))"
-if ($LASTEXITCODE -ne 0) { throw 'Python Tk/Tcl is unavailable; repair the Python installation before building.' }
-.\build.ps1 -Python "$PWD\.venv\Scripts\python.exe"
+.\.venv\Scripts\python.exe -m pip install --require-hashes --only-binary=:all: -r source\requirements-build.txt
+.\.venv\Scripts\python.exe -c "import sys, tkinter; print(sys.version); print(tkinter.Tcl().eval('info patchlevel'))"
+.\source\build.ps1 -Python "$PWD\.venv\Scripts\python.exe" -Destination C:\KKSBuild\run1\app -BuildDirectory C:\KKSBuild\run1\work
 ```
 
-The build script runs the 59 fixture tests first and stops if they fail. It then packages `launcher.py`, its application modules and the `release` directory with PyInstaller's Windows, single-file GUI mode. The output is **`app/KKSInstaller.exe`**, relative to the repository root. End users do not install the build dependencies.
+Both output directories must be new. The script rejects uncommitted/untracked
+source, checks Python/dependency versions, runs all **138** tests, then invokes
+PyInstaller with `--clean --noupx --onefile --windowed`. A failed step stops the
+build. Accept the output only when `build-receipt.json` exists and logs pass;
+a partially created EXE alone is not success. Do not edit source during a build.
+Use a fresh checkout and venv to avoid ignored/local modules or extra packages.
+Git's commit time sets `SOURCE_DATE_EPOCH`, and `PYTHONHASHSEED=1` fixes Python hash
+ordering; the script clears inherited Python import-path overrides in child
+processes. The receipt records the command, source tree and every tracked-file
+hash, interpreter/platform/dependencies, logs and executable hash.
 
-The Tk/Tcl check must succeed before packaging. Stop if PyInstaller warns that the tkinter installation is broken or excludes tkinter; that would not be a complete GUI build. Repair the Python installation with its Tk/Tcl component selected and retry. The released EXE already embeds this component.
-
-If local PowerShell policy prevents running the reviewed `build.ps1`, the equivalent commands below perform the build without changing that policy. Run them from `source` after creating the environment and installing requirements:
+Repeat with new run2 output/work directories and compare:
 
 ```powershell
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
-if ($LASTEXITCODE -ne 0) { throw 'Tests failed; stop here.' }
-.\.venv\Scripts\python.exe -m PyInstaller --noconfirm --clean --onefile --windowed --name KKSInstaller --add-data "$PWD\release;release" --distpath ..\app --workpath build\pyinstaller --specpath build launcher.py
-if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
+Get-FileHash C:\KKSBuild\run1\app\KKSInstaller.exe -Algorithm SHA256
+Get-FileHash C:\KKSBuild\run2\app\KKSInstaller.exe -Algorithm SHA256
 ```
 
-## Read-only verification
+These controls follow [PyInstaller's reproducible-build guidance](https://pyinstaller.org/en/stable/advanced-topics.html#creating-a-reproducible-build).
+The release handoff reports the actual two-build result, rather than promising
+cross-machine identity. Published source/environment/hash receipts and full
+test/build logs identify both clean builds. The source tag preserves the exact
+reviewed revision; the later content release tag also includes release documentation.
 
-The fixture tests use temporary synthetic game files. They do not need a game installation. Rebuilding the application does not install KKS or alter the game.
+## Limits of reproduction and provenance
 
-For an optional check of an actual game installation, from the repository root:
+Matching Python's version string alone does not guarantee matching interpreter,
+standard library, Tcl/Tk, OpenSSL or Windows system DLL bytes. This build used
+the Python 3.12.14 runtime provided by the local Codex environment (MSC v.1944,
+64 bit); that provenance is disclosed, not assumed equivalent to every Python
+3.12.14 distribution. The receipts record interpreter and dependency versions.
+Independent builders can compare their runtime/module source and explain any
+remaining differences. Different base runtimes/toolchains, system DLLs or later
+Authenticode signing can change the binary. The current build is unsigned and
+uses no UPX. Build receipts/checksums bind named artifacts to this recorded build;
+they are not independent attestation or a code-signing certificate.
+
+Dependency installation needs access to the Python package index unless wheels
+are supplied locally. For offline building, download the locked wheels on an
+online machine, verify with pip's `--require-hashes`, then install with
+`--no-index --find-links <wheel-directory>`. The build/test/application themselves
+have no dependency download step. Preserve the wheel files if long-term exact
+reproduction matters. `source/review_build.py` is developer tooling and never
+imports into the application.
+
+## Run and check
 
 ```powershell
-.\app\KKSInstaller.exe --check --game 'D:\SteamLibrary\steamapps\common\Fallout76' --report .\check-result.json
+.\KKSInstaller.exe --version --report .\version.json
+.\KKSInstaller.exe --verify-package --package D:\Downloads\KKS_Content.zip --report .\package-check.json
+.\KKSInstaller.exe --check --game D:\SteamLibrary\steamapps\common\Fallout76 --package D:\Downloads\KKS_Content.zip --report .\game-check.json
 ```
 
-Replace the example path with your own game folder. `--check` performs compatibility checks; it does not patch game files. The JSON result is written to the explicit report path. Actual Install/Repair/Restore/Recover operations must be tested only on appropriate copies or a deliberately chosen supported installation.
+Windowed builds use the explicit report file and return 0 for success or 1 for a
+blocked operation. `--check` creates no game state (temporary package verification
+and the requested report are still writes). `--install`, `--repair`, `--restore`
+and `--recover` modify game files/state; validate on disposable copies.
 
-## Integrity and reproduction scope
+To run only synthetic tests: `python -m unittest discover -s source/tests -v`
+requires `source` on the import path; the simplest invocation is to change into
+`source` and run `python -m unittest discover -s tests -v` with the locked venv.
 
-The release manifest SHA-256 is `dda35c73a9c1119010a3a7c2d15517df2457b231d894e2b910dd34f1d5afd3e7` and is pinned in `source/kks_installer/_release.py`. The engine checks every bundled payload against that manifest. Preserve the manifest and payload bytes; do not re-save them through an editor, change line endings, or regenerate the assets for this review.
-
-This reproduces the executable's source and embedded inputs. It does not promise a bit-for-bit identical EXE: PyInstaller bootloader/build metadata and dependency versions can differ. The original artifact hashes are in RELEASE_SHA256SUMS.txt. Rebuilding is separate from replacing the already uploaded Nexus artifact; keep that original for review.
+Source style is Black 26.5.1, Python 3.12 target, line length 100; formatting tools
+are optional development tools, not runtime/build dependencies. The initial
+formatting commit was checked with exact AST equality for all 22 Python files.
+Read [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the security scope and
+[INDEPENDENT_INSTALLER.md](INDEPENDENT_INSTALLER.md) for publisher/package contracts.

@@ -1,0 +1,2 @@
+ca479dbc7abd94faf0a6cc2945bb4e4c6967fbe218069d06bef74d20cd58a7cd  KKS_1.1.0_Steam_EN_25636769.zip
+f6c6efbccb8447936876b8ce03d21b6c9338caea029a866a5e554788a5ce1c04  KKS_Installer_1.2.1.zip
