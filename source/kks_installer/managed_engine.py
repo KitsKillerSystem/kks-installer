@@ -1,7 +1,8 @@
-"""Strict state reader around the proven five-file transaction engine."""
+"""Strict profile-bound state reader around the file transaction engine."""
 
 import re
 from .engine import Installer, demand, digest
+from .ba2 import hash_file
 from .packages import (
     bounded_file,
     strict_json,
@@ -12,6 +13,7 @@ from .packages import (
     IDENTITIES,
     MAX_MANIFEST,
     archive_members,
+    LOCALIZATION,
 )
 from ._application import PROFILE
 from .platforms import SafetyError
@@ -41,12 +43,12 @@ class LegacyDescriptor:
 
 class ManagedEngine(Installer):
     def __init__(self, game, release, log=None, *, state_name, event=None):
-        demand(set(release.by_path) == set(ARCHIVES) | STRINGS, "Invalid managed target set")
+        catalog = archive_members(getattr(release, "manifest", {}).get("profile", PROFILE))
+        demand(set(release.by_path) == set(catalog) | STRINGS, "Invalid managed target set")
         demand(
             {i["path"] for i in release.data["identity"]} == IDENTITIES,
             "Invalid managed game identity",
         )
-        catalog = archive_members(getattr(release, "manifest", {}).get("profile", PROFILE))
         for path, names in catalog.items():
             t = release.by_path[path]
             demand(
@@ -57,11 +59,23 @@ class ManagedEngine(Installer):
         super().__init__(game, release, log, state_name=state_name)
 
     def _identity(self, *, skip_exe=False):
-        super()._identity(skip_exe=skip_exe)
+        self.log("Verifying the supported game build…")
         for item in self.release.data["identity"]:
+            if skip_exe and item["path"] == "Fallout76.exe":
+                continue
+            path = self.target(item["path"])
+            permitted = {item["sha256"]: item.get("size")}
+            # Localization remains a baseline identity. Only the authenticated
+            # v3 profile can additionally recognize its own exact patched bytes.
+            # Receipt/current-target checks still enforce ownership separately.
+            if item["path"] == LOCALIZATION and LOCALIZATION in self.release.by_path:
+                target = self.release.by_path[LOCALIZATION]
+                permitted[target["after_sha256"]] = target["after_size"]
+            current = hash_file(path) if path.is_file() else None
+            demand(current in permitted, "Unsupported or changed game build: " + item["path"])
             if "size" in item:
                 demand(
-                    self.target(item["path"]).stat().st_size == item["size"],
+                    path.stat().st_size == permitted[current],
                     "Game identity size changed",
                 )
         for path in (
@@ -110,7 +124,10 @@ class ManagedEngine(Installer):
         demand(
             j["operation"] == "install" or installed, "Recovery has no prior managed installation"
         )
-        demand(type(j["entries"]) is list and len(j["entries"]) == 5, "Invalid recovery entries")
+        demand(
+            type(j["entries"]) is list and len(j["entries"]) == len(self.release.targets),
+            "Invalid recovery entries",
+        )
         seen = set()
         for entry in j["entries"]:
             fields(entry, "path before after")

@@ -22,6 +22,7 @@ from kks_installer._application import (
     WRITER,
     TRANSLATION_PROFILE,
     TRANSLATION_CAPABILITIES,
+    LOCALIZATION_PROFILE,
 )
 from kks_installer.ba2 import BA2, hash_file
 from kks_installer.engine import demand, digest
@@ -36,6 +37,7 @@ from kks_installer.packages import (
     strict_json,
     archive_members,
     profile_payloads,
+    profile_capabilities,
 )
 
 
@@ -148,6 +150,7 @@ def build(
     report_id,
     expected_legacy=None,
     include_translation=False,
+    translation_localization=False,
 ):
     game = Path(game)
     payload = Path(payload)
@@ -155,7 +158,12 @@ def build(
     demand(not output.exists(), "Refusing to replace an existing package")
     files = []
     targets = []
-    profile = TRANSLATION_PROFILE if include_translation else PROFILE
+    demand(not (include_translation and translation_localization), "Choose one translation profile")
+    profile = (
+        LOCALIZATION_PROFILE
+        if translation_localization
+        else TRANSLATION_PROFILE if include_translation else PROFILE
+    )
     catalog = archive_members(profile)
     for p in sorted(profile_payloads(profile)):
         src = payload / p.removeprefix("payload/")
@@ -234,7 +242,7 @@ def build(
             ),
             "installer_api": 1,
             "minimum_installer_version": APP_VERSION,
-            "required_capabilities": TRANSLATION_CAPABILITIES if include_translation else [WRITER],
+            "required_capabilities": profile_capabilities(profile),
             "profile": profile,
             "game": {
                 "id": "fallout76",
@@ -323,6 +331,7 @@ def main():
     b.add_argument("--sequence", type=int, required=True)
     b.add_argument("--expected-legacy")
     b.add_argument("--include-translation", action="store_true")
+    b.add_argument("--translation-localization", action="store_true")
     a = p.parse_args()
     if a.command == "create-key":
         result = create_key(a.key, a.key_id)
@@ -342,6 +351,7 @@ def main():
             report_id=a.report_id,
             expected_legacy=a.expected_legacy,
             include_translation=a.include_translation,
+            translation_localization=a.translation_localization,
         )
     print(json.dumps(result, indent=2))
 

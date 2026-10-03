@@ -15,6 +15,7 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 from ._application import APP_VERSION, INSTALLER_API, PROFILE, WRITER, CAPABILITIES, TRUSTED_KEYS
 from ._application import TRANSLATION_PROFILE, TRANSLATION_CAPABILITIES
+from ._application import LOCALIZATION_PROFILE, LOCALIZATION_CAPABILITIES
 from .engine import demand, digest, is_digest, durable_bytes, sync_directory
 from .ba2 import hash_file
 from .platforms import SafetyError, safe_path
@@ -27,6 +28,7 @@ MAX_PACKAGE = 512 * 1024 * 1024
 MAX_FILE = 32 * 1024 * 1024 * 1024
 FONT = "Data/SeventySix - Interface_en.ba2"
 CONFIG = "Data/SeventySix - Interface.ba2"
+LOCALIZATION = "Data/SeventySix - Localization.ba2"
 ARCHIVES = {FONT: "interface/fonts_en.swf", CONFIG: "interface/fontconfig_en.txt"}
 TRANSLATION = "interface/translate_en.txt"
 TRANSLATION_PAYLOAD = "payload/" + TRANSLATION
@@ -40,15 +42,29 @@ DIRECTORIES = {"payload/", "payload/interface/", "payload/strings/"}
 
 def archive_members(profile):
     """The application, never package-provided paths, controls both catalogs."""
-    demand(profile in (PROFILE, TRANSLATION_PROFILE), "Unsupported asset profile")
+    demand(
+        profile in (PROFILE, TRANSLATION_PROFILE, LOCALIZATION_PROFILE), "Unsupported asset profile"
+    )
     result = {path: (name,) for path, name in ARCHIVES.items()}
     if profile == TRANSLATION_PROFILE:
         result[CONFIG] += (TRANSLATION,)
+    elif profile == LOCALIZATION_PROFILE:
+        result[LOCALIZATION] = (TRANSLATION,)
     return result
 
 
 def profile_payloads(profile):
-    return PAYLOADS | ({TRANSLATION_PAYLOAD} if profile == TRANSLATION_PROFILE else set())
+    archive_members(profile)  # Reject unknown profiles even for standalone callers.
+    return PAYLOADS | ({TRANSLATION_PAYLOAD} if profile != PROFILE else set())
+
+
+def profile_capabilities(profile):
+    archive_members(profile)
+    return (
+        LOCALIZATION_CAPABILITIES
+        if profile == LOCALIZATION_PROFILE
+        else TRANSLATION_CAPABILITIES if profile == TRANSLATION_PROFILE else CAPABILITIES
+    )
 
 
 def strict_json(raw, limit=MAX_MANIFEST):
@@ -128,12 +144,12 @@ def validate_manifest(m):
     integer(m["installer_api"], INSTALLER_API, INSTALLER_API)
     demand(
         (m["package_type"], m["product"], m["channel"]) == ("kks-content", "KKS", "release")
-        and m["profile"] in (PROFILE, TRANSLATION_PROFILE),
+        and m["profile"] in (PROFILE, TRANSLATION_PROFILE, LOCALIZATION_PROFILE),
         "Unsupported product, channel or asset profile",
     )
     catalog = archive_members(m["profile"])
     permitted_payloads = profile_payloads(m["profile"])
-    capabilities = TRANSLATION_CAPABILITIES if m["profile"] == TRANSLATION_PROFILE else CAPABILITIES
+    capabilities = profile_capabilities(m["profile"])
     version(m["content_version"])
     demand(
         version(m["minimum_installer_version"]) <= version(APP_VERSION),
@@ -149,6 +165,11 @@ def validate_manifest(m):
         demand(
             version(m["minimum_installer_version"]) >= (1, 2, 0),
             "Translation packages require Installer 1.2.0 or newer",
+        )
+    if m["profile"] == LOCALIZATION_PROFILE:
+        demand(
+            version(m["minimum_installer_version"]) >= (1, 2, 1),
+            "Localization packages require Installer 1.2.1 or newer",
         )
     demand(
         type(m["created_utc"]) is str
@@ -191,8 +212,8 @@ def validate_manifest(m):
         "Payload exceeds the supported total size",
     )
     demand(
-        type(m["targets"]) is list and len(m["targets"]) == 5,
-        "Exactly five game targets are required",
+        type(m["targets"]) is list and len(m["targets"]) == len(catalog) + len(STRINGS),
+        "The selected profile requires its exact game targets",
     )
     seen = set()
     for t in m["targets"]:
@@ -201,7 +222,7 @@ def validate_manifest(m):
             "Duplicate or invalid target",
         )
         seen.add(t["path"])
-        if t["path"] in ARCHIVES:
+        if t["path"] in catalog:
             fields(
                 t,
                 "path kind version type writer vanilla_sha256 vanilla_size after_sha256 after_size assets",
@@ -250,7 +271,15 @@ def validate_manifest(m):
         )
         integer(t["vanilla_size"], 1)
         integer(t["after_size"], 1)
-    demand(seen == set(ARCHIVES) | STRINGS, "Unexpected target set")
+    demand(seen == set(catalog) | STRINGS, "Unexpected target set")
+    if LOCALIZATION in catalog:
+        identity = next(i for i in game["identity"] if i["path"] == LOCALIZATION)
+        target = next(t for t in m["targets"] if t["path"] == LOCALIZATION)
+        demand(
+            identity["sha256"] == target["vanilla_sha256"]
+            and identity["size"] == target["vanilla_size"],
+            "Localization target must retain the certified original game identity",
+        )
     fields(m["qa"], "status report_id")
     demand(m["qa"]["status"] in ("candidate", "approved"), "Invalid QA status")
     plain(m["qa"]["report_id"])

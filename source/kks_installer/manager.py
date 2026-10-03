@@ -1,7 +1,7 @@
 """Offline package selection and recoverable, independently versioned updates.
 
 The outer journal coordinates restore -> verified vanilla -> install. Each phase
-uses the original five-target transaction engine. Downloads are never needed for
+uses the profile-bound transaction engine. Downloads are never needed for
 restoration; signed descriptors and installation-specific backups are retained.
 """
 
@@ -27,6 +27,7 @@ from .packages import (
     MAX_MANIFEST,
     ARCHIVES,
     STRINGS,
+    archive_members,
 )
 from .managed_engine import ManagedEngine, LegacyDescriptor, LEGACY_STATE
 
@@ -45,6 +46,10 @@ def fingerprint(release):
         "targets": [],
     }
     for t in sorted(release.targets, key=lambda x: x["path"]):
+        if t["path"] not in set(ARCHIVES) | STRINGS:
+            # The new Localization target is already bound by the unchanged
+            # certified game-identity hash. Preserve historical fingerprints.
+            continue
         original["targets"].append(
             [
                 t["path"],
@@ -395,7 +400,7 @@ class Manager:
         )
         new = ManagedEngine(self.root, package, self.log, state_name=STATE + "/preflight")
         new._identity(skip_exe=skip_exe)
-        for path in ARCHIVES:
+        for path in archive_members(package.manifest["profile"]):
             demand(
                 new.current(path) == package.by_path[path]["vanilla_sha256"],
                 "The game update is incomplete or another mod changed an archive. Verify Fallout 76 in Steam before updating KKS: "
@@ -423,7 +428,7 @@ class Manager:
         old = self._historical_data(plan["old"])
         engine = self._engine(plan["new"])
         engine._identity(skip_exe=skip_exe)
-        for path in ARCHIVES:
+        for path in archive_members(package.manifest["profile"]):
             demand(
                 engine.current(path) == package.by_path[path]["vanilla_sha256"],
                 "New vanilla archive changed during reconciliation",
@@ -445,7 +450,7 @@ class Manager:
             if entry["before"] == entry["after"] or engine.current(entry["path"]) == entry["after"]:
                 continue
             engine._identity(skip_exe=True)
-            for path in ARCHIVES:
+            for path in archive_members(package.manifest["profile"]):
                 demand(
                     engine.current(path) == package.by_path[path]["vanilla_sha256"],
                     "New game archive changed during cleanup",
@@ -458,6 +463,11 @@ class Manager:
         self._verify_vanilla(plan, engine)
 
     def _sequence(self, package, state, active=None):
+        if active:
+            demand(
+                set(self._release(active).by_path) <= set(package.by_path),
+                "Restore vanilla before selecting a package that removes managed game targets",
+            )
         m = package.manifest
         identity = m["content_version"] + "/" + str(m["package_revision"])
         existing = state["release_ids"].get(identity)
@@ -597,7 +607,11 @@ class Manager:
         for t in package.targets:
             if t["kind"] == "loose":
                 continue
-            src = old._backup_path(t["vanilla_sha256"]) if old else self.path(t["path"])
+            src = (
+                old._backup_path(t["vanilla_sha256"])
+                if old and t["path"] in old.release.by_path
+                else self.path(t["path"])
+            )
             demand(
                 hash_file(src) == t["vanilla_sha256"],
                 "The selected package needs a different vanilla archive",
@@ -608,7 +622,15 @@ class Manager:
                 a["name"]: package.payload(a["payload"], a["sha256"]).read_bytes()
                 for a in t["assets"]
             }
-            BA2(src).replace_to(stage, replacements)
+            archive = BA2(src)
+            for asset in t["assets"]:
+                original = archive.extract(asset["name"])
+                demand(
+                    digest(original) == asset["vanilla_sha256"]
+                    and len(original) == asset["vanilla_size"],
+                    "The certified original archive member does not match this package",
+                )
+            archive.replace_to(stage, replacements)
             demand(
                 hash_file(stage) == t["after_sha256"] and stage.stat().st_size == t["after_size"],
                 "The package output does not match this installer writer. Existing KKS was not removed",
@@ -797,9 +819,13 @@ class Manager:
                 )
             else:
                 identity_engine = old
-            identity_engine._identity()
+            # On the same certified baseline, the current owner authenticates
+            # its patched Localization archive. Incoming content may have a
+            # different after-hash; it is checked normally after old restoration.
+            identity_check = old if old and not reconcile else identity_engine
+            identity_check._identity()
             with game_guard(self.path("Fallout76.exe"), identity_engine.executable_hash()):
-                identity_engine._identity(skip_exe=True)
+                identity_check._identity(skip_exe=True)
                 cleanup = None
                 if reconcile:
                     _, _, cleanup = self._reconcile_inputs(selected, active, skip_exe=True)
@@ -824,7 +850,10 @@ class Manager:
                     state["installation_id"] = uuid.uuid4().hex
                     durable_json(self.saved("installation.json"), state)
                 if reconcile:
-                    originals = {p: selected.by_path[p]["vanilla_sha256"] for p in ARCHIVES}
+                    originals = {
+                        p: selected.by_path[p]["vanilla_sha256"]
+                        for p in archive_members(selected.manifest["profile"])
+                    }
                     originals.update({e["path"]: e["after"] for e in cleanup})
                     baseline = {
                         "schema": 2,
@@ -846,6 +875,20 @@ class Manager:
                     baseline = self._baseline(active)
                     if baseline["id"] is None:
                         baseline["id"] = uuid.uuid4().hex
+                    if selected and set(baseline["originals"]) != set(selected.by_path):
+                        # Expand into a NEW immutable baseline; never rewrite an
+                        # old five-target record or lose its original presence.
+                        expanded = deepcopy(baseline)
+                        expanded["id"] = uuid.uuid4().hex
+                        for path in set(selected.by_path) - set(baseline["originals"]):
+                            expected = selected.by_path[path]["vanilla_sha256"]
+                            demand(
+                                identity_engine.current(path) == expected,
+                                "New managed archive is not certified vanilla: " + path,
+                            )
+                            expanded["originals"][path] = expected
+                        self._originals(expanded["originals"], selected)
+                        baseline = expanded
                 else:
                     baseline = {
                         "schema": 2,

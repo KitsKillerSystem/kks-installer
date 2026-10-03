@@ -1,6 +1,6 @@
 # Independent installer and complete content packages
 
-Status: **Installer 1.2.0 local candidate, unreleased**, 3 October 2026. It adds the fixed English translation profile and retains original package/state compatibility. Owner in-game acceptance gates publication. The accepted perk deck and content artwork are maintained separately from application code.
+Status: **Installer 1.2.1 local candidate, unreleased**, 3 October 2026. It adds the fixed English translation profile and retains original package/state compatibility. Owner in-game acceptance gates publication. The accepted perk deck and content artwork are maintained separately from application code.
 
 ## User workflow
 
@@ -8,7 +8,7 @@ Keep `KKSInstaller.exe`. Download one complete content ZIP, close Fallout 76, op
 
 Application and content versions appear separately. The app compares the selected profile’s five or six payload hashes with the installed package. Complete packages permit A to E without B, C or D. Repair uses the authenticated cache. Restore needs the signed descriptor and original backups, but neither cached payloads, the downloaded ZIP nor the old EXE. Selecting the exact signed package again repairs damaged cached descriptors/payloads. Mod content cannot reconstruct missing original game backups.
 
-The fixed profile is Fallout 76, Steam, English, five targets, BA2 version 1 GNRL. The initial content 1.0.0 package supports Slasher build 25258219; the [content 1.0.1 compatibility release](review/content-1.0.1/README.md) certifies build 25636769 with unchanged mod files and the same installer. Exact hashes govern compatibility, never display labels. Other platforms/languages and future Bethesda fingerprints need explicit certification/support. There is no network update service or automatic download-folder scanning.
+The fixed profiles support Fallout 76, Steam, English, five or six targets, BA2 version 1 GNRL. The initial content 1.0.0 package supports Slasher build 25258219; the [content 1.0.1 compatibility release](review/content-1.0.1/README.md) certifies build 25636769 with unchanged mod files and the same installer. Exact hashes govern compatibility, never display labels. Other platforms/languages and future Bethesda fingerprints need explicit certification/support. There is no network update service or automatic download-folder scanning.
 
 ## Package and trust contract
 
@@ -27,6 +27,12 @@ payload/strings/seventysix_en.ilstrings
 The new `fo76-steam-en-fonts-strings-translate-v2` profile requires the same complete set plus exactly `payload/interface/translate_en.txt` (maximum 4 MiB). It requires Installer 1.2.0 and the additional `interface-translate-en-v1` capability. Both profiles still write the same five game targets. The Interface archive's fixed member list expands from fontconfig alone to fontconfig plus translation; unrelated members remain unchanged. Old packages cannot smuggle an unlisted translation file into their ZIP.
 
 Baseline fingerprints retain the original member pins so existing 1.1.0 saved installations remain compatible. Full original archive hashes already bind the translation member; its original member hash is also explicitly verified before a new-profile write. Restore uses the installed package's authenticated profile and original archive backups.
+
+The corrected `fo76-steam-en-fonts-strings-localization-v3` profile requires Installer **1.2.1** and capability `localization-translate-en-v1`. It uses the same six payload paths, but installs translation in `Data/SeventySix - Localization.ba2`; Interface.ba2 returns to fontconfig-only. There are now six fixed game targets. The owner’s RC1 test showed the Interface duplicate was not supplying the Known label. The new profile binds the Localization target’s original hash/size to its existing game identity; all other archive members remain exact.
+
+Old baseline fingerprints remain stable. Five-to-six target upgrades preserve the original baseline and create a new immutable expanded record with the additional certified original. Current ownership, payload integrity, member hashes, whole-archive output hashes and interrupted-operation recovery all cover the sixth target. A future package that removes targets requires Restore vanilla first. Do not use older installers to manage a v3 installation.
+
+Publisher: use `--translation-localization` with the current Localization archive’s English text; `--include-translation` remains the historical v2 authoring option. They are mutually exclusive. No existing signed package is overwritten.
 
 Ed25519 signs `KKS-CONTENT-MANIFEST-v1\0` followed by the exact UTF-8 manifest bytes. The envelope selects a public key compiled into the app. Keys supplied by a package are never trusted. Initial key ID: `kks-release-2026-10`; only its public component is in `_application.py`.
 

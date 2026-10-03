@@ -1,6 +1,6 @@
-# Independent installer 1.2.0 — security scope
+# Independent installer 1.2.1 — security scope
 
-Application and content have separate versions. Installer 1.2.0 is a local,
+Application and content have separate versions. Installer 1.2.1 is a local,
 unpublished playtest candidate. Its build receipt identifies exact source and
 binary. Frozen 1.1.0 review evidence and root-level 1.0 historical fingerprints
 remain unchanged. No Nexus approval or executable upload is claimed.
@@ -12,12 +12,12 @@ remain unchanged. No Nexus approval or executable upload is claimed.
 | Start / choose | `source/launcher.py`, `kks_installer/ui.py`: CLI or Tk UI, explicit package and operation selection |
 | Authenticate / import | `packages.py`: bounded ZIP reader, strict JSON, compiled publisher key, signature and payload hashes; verified cache publication |
 | Compatibility / transition | `manager.py`: fixed game root, current ownership, baseline and release sequence, outer restore/install journal |
-| Back up / write / verify | `managed_engine.py`, `engine.py`, `ba2.py`: strict receipts, immutable originals, staged outputs, five-file replacement and verification |
+| Back up / write / verify | `managed_engine.py`, `engine.py`, `ba2.py`: strict receipts, immutable originals, staged outputs, profile-bound replacement and verification |
 | Recover | `Manager.recover`, `Installer._rollback`: reconcile journal with known current hashes; refuse foreign changes |
 | Windows boundary | `platforms.py`, `windows_drop.py`: path/link checks, process enumeration, exclusive game handle, locks, Steam discovery and file drop |
 
 The outer manager coordinates content versions and game-baseline changes. The
-inner transaction engine handles the five files. Their separate journals and
+inner transaction engine handles the profile's five or six files. Their separate journals and
 repeated checks protect different commit boundaries. `engine.Release` and
 `profile.py` remain for historical regression tests. Current entry points never
 select that bundled-package reader; legacy restoration uses the pinned public
@@ -30,9 +30,14 @@ The only game assets the signed-package profile can replace are:
 - `Data/SeventySix - Interface_en.ba2`: only `interface/fonts_en.swf` changes.
 - `Data/SeventySix - Interface.ba2`: `interface/fontconfig_en.txt`, plus exactly `interface/translate_en.txt` for the translation profile.
 - `Data/strings/seventysix_en.strings`, `.dlstrings`, `.ilstrings`.
+- `Data/SeventySix - Localization.ba2`: exactly `interface/translate_en.txt` for the v3 profile; all other members are preserved.
 
-The EXE, `Data/SeventySix.esm` and `Data/SeventySix - Localization.ba2` are identity
-inputs, never write targets. Both original archives and their named members are
+The EXE and `Data/SeventySix.esm` remain read-only identity inputs. Localization
+remains pinned to its original game identity and becomes a write target only in
+the v3 profile. Its target vanilla hash/size must exactly equal that identity.
+While installed or recovering, only that authenticated descriptor’s exact
+original or patched Localization bytes satisfy identity checks. Receipt/ownership
+and per-target checks still separately govern whether either state is allowed. All original archives and their named members are
 verified before constructing replacement archives. Unrelated archive members
 are preserved. The installer does not modify INIs, other mods or game launchers.
 
@@ -163,3 +168,20 @@ build reproduction results. Finite tests support these guarantees within the
 stated model; they are not a proof against all OS/filesystem races. See
 [BUILD.md](BUILD.md) for reproduction and [audit/REVIEW_HARDENING.md](audit/REVIEW_HARDENING.md)
 for the pre-change audit and deliberately preserved complexity.
+
+## Corrected Localization profile (1.2.1)
+
+The v3 profile requires Installer 1.2.1 and capability `localization-translate-en-v1`.
+It restores Interface.ba2 to the fontconfig-only member catalog and adds the
+fixed Localization target. The original game identity hash continues to bind
+that archive, preserving historical baseline fingerprints. Expanding an installed
+five-target package creates a new immutable six-target baseline; original records
+remain unchanged. Preflight verifies every original member before removing old
+content. Journals require exactly the authenticated profile's target count.
+
+During same-baseline update preflight, the verified current owner authenticates
+its installed Localization bytes. After restoration, the incoming descriptor
+governs writes and verification. Unrecognized archive bytes always stop the
+operation. Cross-build reconciliation requires the new vanilla Localization
+archive as well as both Interface archives. Removing managed targets requires
+Restore vanilla first; an active six-target installation cannot silently shrink.

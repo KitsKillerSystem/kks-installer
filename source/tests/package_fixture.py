@@ -16,6 +16,8 @@ from kks_installer.packages import (
     CONFIG,
     TRANSLATION,
     archive_members,
+    LOCALIZATION,
+    profile_capabilities,
 )
 from kks_installer._application import (
     PROFILE,
@@ -23,6 +25,7 @@ from kks_installer._application import (
     APP_VERSION,
     TRANSLATION_PROFILE,
     TRANSLATION_CAPABILITIES,
+    LOCALIZATION_PROFILE,
 )
 from kks_installer.manager import Manager
 from kks_installer.managed_engine import LegacyDescriptor
@@ -58,13 +61,26 @@ class PackageFixture:
                 ),
             )
         (self.game / "Fallout76.ini").write_bytes(b"INI MUST NOT CHANGE")
+        archive(
+            self.game / LOCALIZATION,
+            [
+                (
+                    TRANSLATION,
+                    b"\xff\xfe" + "$Known\t(Known)\r\n$Keep\tLive English\r\n".encode("utf-16le"),
+                    True,
+                ),
+                ("strings/other-language.strings", b"untouched localization", True),
+            ],
+        )
         self.loose = {p: ("vanilla " + p).encode() for p in STRINGS}
         if loose:
             (self.game / "Data/strings").mkdir()
             for p, b in self.loose.items():
                 (self.game / p).write_bytes(b)
         self.original = self.snapshot()
-        self.raw_originals = {p: (self.game / p).read_bytes() for p in ARCHIVES}
+        self.raw_originals = {
+            p: (self.game / p).read_bytes() for p in set(ARCHIVES) | {LOCALIZATION}
+        }
         self.a, self.manifest, self.payloads = self.build(1)
         old = {
             "schema": 1,
@@ -96,10 +112,15 @@ class PackageFixture:
         one_change=False,
         mutate=None,
         include_translation=False,
+        translation_localization=False,
     ):
         payloads = {}
         targets = []
-        profile = TRANSLATION_PROFILE if include_translation else PROFILE
+        profile = (
+            LOCALIZATION_PROFILE
+            if translation_localization
+            else TRANSLATION_PROFILE if include_translation else PROFILE
+        )
         for idx, (path, names) in enumerate(archive_members(profile).items()):
             for name in names:
                 payloads["payload/" + name] = (
@@ -167,7 +188,7 @@ class PackageFixture:
             "created_utc": "2026-10-01T12:00:00Z",
             "installer_api": 1,
             "minimum_installer_version": APP_VERSION,
-            "required_capabilities": TRANSLATION_CAPABILITIES if include_translation else [WRITER],
+            "required_capabilities": profile_capabilities(profile),
             "profile": profile,
             "game": {
                 "id": "fallout76",
@@ -192,6 +213,11 @@ class PackageFixture:
             "targets": targets,
             "qa": {"status": "candidate", "report_id": "synthetic test fixture"},
         }
+        if translation_localization:
+            original = self.raw_originals[LOCALIZATION]
+            next(i for i in m["game"]["identity"] if i["path"] == LOCALIZATION).update(
+                sha256=digest(original), size=len(original)
+            )
         if mutate:
             mutate(m)
         path = self.base / f"content-{sequence}-{revision}.zip"

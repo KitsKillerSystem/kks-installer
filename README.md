@@ -1,10 +1,10 @@
 # KKS — Kit's Killer System
 
-## Installer 1.2.0 — local playtest candidate
+## Installer 1.2.1 — local playtest candidate
 
-This branch adds authenticated English translation support, repairs Windows file-drop handling, and gives the installer a compact field-manual layout. It still supports existing 1.1.0 content packages and their saved installations. The original 1.1.0 executable and review evidence remain unchanged.
+The Known-label fix now targets `interface/translate_en.txt` in **SeventySix - Localization.ba2**. The 1.2.0 candidate patched the duplicate in Interface.ba2, while the owner's in-game screenshot still showed “(Known).” Version **1.2.1** adds the corrected signed profile and directly upgrades RC1, preserving original restoration history.
 
-Translation-enabled packages require **Installer 1.2.0**. Their sixth signed payload is exactly `interface/translate_en.txt`, installed inside the existing Interface archive. Signature, game-version, backup, repair, restore and interrupted-update checks cover it. No arbitrary extra files or executable hooks are accepted. Package selection never installs automatically.
+The new profile contains six payloads and six game targets, with exact signature, path, member, size, game-baseline and before/after checks. Existing five-target packages remain supported. English translation is the only permitted member of the additional archive; all other Localization members are retained. Package selection never installs automatically. The fonts, fontconfig, compiled strings, artwork and accepted perk deck remain unchanged in RC2.
 
 The drop handler uses a managed Windows subclass and queues filenames for the normal Tk event loop, keeping native callbacks alive until teardown. Both window drops and ZIP-at-launch remain supported. Repeated drops, spaces and Unicode paths have native Windows regression coverage.
 
@@ -51,6 +51,6 @@ The original 1.0.0 payload passed the author's final in-game QA. Publication of 
 
 ## Repository contents
 
-`source/kks_installer/` and `source/launcher.py` contain application code. `source/tests/` contains 126 fixture tests, including all 59 original tests. `source/release/` retains the exact 1.0.0 manifest and five inputs for provenance and package creation; **the current build does not embed them**. `source/build_content.py` is a publisher tool, excluded from the runtime. `source/build.ps1` and `source/requirements-build.txt` provide the build entry point and pinned dependencies.
+`source/kks_installer/` and `source/launcher.py` contain application code. `source/tests/` contains 138 fixture tests, including all 59 original tests. `source/release/` retains the exact 1.0.0 manifest and five inputs for provenance and package creation; **the current build does not embed them**. `source/build_content.py` is a publisher tool, excluded from the runtime. `source/build.ps1` and `source/requirements-build.txt` provide the build entry point and pinned dependencies.
 
 The source tree omits the original EXE, Bethesda game archives/executable/ESM, local backups, signing private keys, private workstation logs and optional font-authoring/history tools. They are not required to build the installer. The original EXE is available in the complete installer ZIP linked above. The broader authoring/codex bundle remains a separate release artifact. Frozen 1.0.0 evidence and payload bytes remain unchanged.
