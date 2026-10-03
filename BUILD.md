@@ -1,19 +1,20 @@
 # Build installer application 1.2.1
 
-Content version 1.0.0 is independent. Use the original `v1.0.0` source to reproduce
+Content version 1.1.0 is independent. Use the original `v1.0.0` source to reproduce
 the older bundled installer. This branch's runtime build never includes
 `source/release`, publisher tooling, tests, game files or private signing keys.
 No game installation or publisher key is needed for synthetic tests or building.
 
-The 1.2.1 candidate's `build-receipt.json` identifies its exact source commit,
-tree, executable and tests. Historical 1.1.0 was built from
+The [1.2.1 build receipts](review/installer-1.2.1/README.md) identify exact source
+commit `3d65c7df0ca28b638d416dbab0392155022a6d9b`, tree, executable and tests.
+The `installer-v1.2.1` tag identifies that build commit. Historical 1.1.0 was built from
 `5c6eadf80ebcec84b62a8c5bec71f7679d9f3004`; its executable and review evidence
-remain frozen. Use the receipt for the candidate you intend to reproduce.
+remain frozen. Use the receipt for the executable you intend to reproduce.
 
 ## Reproduce the reviewed source
 
 Use Windows x64, Git, Python **3.12.14 x64 with Tk/Tcl**, and a fresh checkout of the
-full source commit printed in the release's REVIEWER_HANDOFF.md/build-receipt.json.
+full source commit printed in the release's build-receipt.json.
 The recorded environment used Tcl/Tk **8.6.12**, PyInstaller **6.22.3** and
 cryptography **50.0.2**. The complete Windows/Python-3.12 wheel closure, including
 pip, is pinned with SHA-256 hashes in `source/requirements-build.txt`.
@@ -48,17 +49,18 @@ Get-FileHash C:\KKSBuild\run2\app\KKSInstaller.exe -Algorithm SHA256
 
 These controls follow [PyInstaller's reproducible-build guidance](https://pyinstaller.org/en/stable/advanced-topics.html#creating-a-reproducible-build).
 The release handoff reports the actual two-build result, rather than promising
-cross-machine identity. It also includes a runtime file inventory (hashes of
-bundled DLLs, Python/Tk data and modules) and source archive for comparison.
+cross-machine identity. Published source/environment/hash receipts and full
+test/build logs identify both clean builds. The source tag preserves the exact
+reviewed revision; the later content release tag also includes release documentation.
 
 ## Limits of reproduction and provenance
 
 Matching Python's version string alone does not guarantee matching interpreter,
-standard library, Tcl/Tk, OpenSSL or Windows system DLL bytes. This candidate used
+standard library, Tcl/Tk, OpenSSL or Windows system DLL bytes. This build used
 the Python 3.12.14 runtime provided by the local Codex environment (MSC v.1944,
 64 bit); that provenance is disclosed, not assumed equivalent to every Python
-3.12.14 distribution. The release inventory identifies exact bundled bytes.
-Independent builders can compare their inventory/module source and explain any
+3.12.14 distribution. The receipts record interpreter and dependency versions.
+Independent builders can compare their runtime/module source and explain any
 remaining differences. Different base runtimes/toolchains, system DLLs or later
 Authenticode signing can change the binary. The current build is unsigned and
 uses no UPX. Build receipts/checksums bind named artifacts to this recorded build;

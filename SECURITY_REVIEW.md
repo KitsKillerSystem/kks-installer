@@ -1,9 +1,9 @@
 # Independent installer 1.2.1 — security scope
 
-Application and content have separate versions. Installer 1.2.1 is a local,
-unpublished playtest candidate. Its build receipt identifies exact source and
-binary. Frozen 1.1.0 review evidence and root-level 1.0 historical fingerprints
-remain unchanged. No Nexus approval or executable upload is claimed.
+Application and content have separate versions. Installer 1.2.1 accompanies
+content 1.1.0. Its [build evidence](review/installer-1.2.1/README.md) identifies
+exact source and binary. Frozen 1.1.0 review evidence and root-level 1.0 historical
+fingerprints remain unchanged. No Nexus approval is claimed.
 
 ## Read the code in this order
 
@@ -28,7 +28,7 @@ select that bundled-package reader; legacy restoration uses the pinned public
 The only game assets the signed-package profile can replace are:
 
 - `Data/SeventySix - Interface_en.ba2`: only `interface/fonts_en.swf` changes.
-- `Data/SeventySix - Interface.ba2`: `interface/fontconfig_en.txt`, plus exactly `interface/translate_en.txt` for the translation profile.
+- `Data/SeventySix - Interface.ba2`: `interface/fontconfig_en.txt`, plus exactly `interface/translate_en.txt` for the historical v2 profile only.
 - `Data/strings/seventysix_en.strings`, `.dlstrings`, `.ilstrings`.
 - `Data/SeventySix - Localization.ba2`: exactly `interface/translate_en.txt` for the v3 profile; all other members are preserved.
 
@@ -137,7 +137,7 @@ signature is separate from Windows executable signing.
 All needed originals and complete output candidates are verified before replacing
 game files. Original absence of loose strings is recorded as absence. Atomic
 same-volume file replacements and flushed journals allow recovery between files;
-five-file installation is not one filesystem-wide atomic operation. Process
+installation is not one filesystem-wide atomic operation. Process
 death is tested. Windows directory metadata is not explicitly flushed; physical
 power-loss/storage-failure durability is not guaranteed by these tests.
 
@@ -155,7 +155,7 @@ against the new certified baseline. No automatic backup deletion occurs.
 
 ## Validation and release evidence
 
-The build runs all 112 unittest methods (including 59 original tests and their
+The build runs all 138 unittest methods (including 59 original tests and their
 subcases) before packaging. Tests cover complete/skipped updates, changed game
 baselines, exact restore, malformed packages, path/link and state tampering,
 space/write failures, locks, interruptions in installation, upgrade and recovery,
@@ -163,8 +163,10 @@ and subprocess death. Two additional tests pin the readable legacy descriptor to
 the original released bytes and confirm it remains restore-only.
 
 The release handoff records additional actual-EXE tests on disposable real game
-files, exact five-payload/output parity, frozen production preservation and clean
-build reproduction results. Finite tests support these guarantees within the
+files, profile migration, payload/output integrity, frozen production preservation
+and clean build reproduction results. The new coverage includes native file drops,
+strict translation profiles, six-target recovery and preserved restoration history.
+Finite tests support these guarantees within the
 stated model; they are not a proof against all OS/filesystem races. See
 [BUILD.md](BUILD.md) for reproduction and [audit/REVIEW_HARDENING.md](audit/REVIEW_HARDENING.md)
 for the pre-change audit and deliberately preserved complexity.

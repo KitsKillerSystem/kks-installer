@@ -1,0 +1,127 @@
+{
+  "status": "PASS",
+  "automated_tests": 138,
+  "all_tests_passed_in_both_clean_builds": true,
+  "two_builds_byte_identical": true,
+  "source_commit": "3d65c7df0ca28b638d416dbab0392155022a6d9b",
+  "exe_sha256": "a1a5868b03702268de7845f297ff913b5063db6b85c0dae534844cc671bb35cb",
+  "profile_upgrade_checks": {
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "old_installer_rejects_translation",
+        "status": "blocked"
+      },
+      {
+        "name": "signed_package",
+        "status": "verified"
+      },
+      {
+        "name": "clean_fixture_ready",
+        "status": "ready"
+      },
+      {
+        "name": "accepted_rc1_install_by_1_2_0",
+        "status": "installed"
+      },
+      {
+        "name": "rc2_update_available",
+        "status": "update_available"
+      },
+      {
+        "name": "rc1_to_rc2_update",
+        "status": "installed"
+      },
+      {
+        "name": "rc2_cached_repair",
+        "status": "installed"
+      },
+      {
+        "name": "rc2_restore",
+        "status": "restored"
+      },
+      {
+        "name": "rc2_fresh_reinstall",
+        "status": "installed"
+      },
+      {
+        "name": "rc2_final_restore",
+        "status": "restored"
+      }
+    ],
+    "check_count": 10,
+    "package_sha256": "cf3a7f649ea06e0cb54aa017e5ecd5a4751e48348f43270ee2dac301fb6262a7",
+    "installer_sha256": "a1a5868b03702268de7845f297ff913b5063db6b85c0dae534844cc671bb35cb",
+    "fixture_restored": true,
+    "live_targets_and_game_identity_unchanged": true,
+    "upgraded_actual_1_2_0_saved_state": true,
+    "unrelated_archive_members_unchanged": true,
+    "gameplay_verified": false
+  },
+  "final_content_checks": {
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "signed_package",
+        "status": "verified"
+      },
+      {
+        "name": "install_accepted_checkmark_rc2",
+        "status": "installed"
+      },
+      {
+        "name": "sort_update_available",
+        "status": "update_available"
+      },
+      {
+        "name": "rc2_to_sort_test",
+        "status": "installed"
+      },
+      {
+        "name": "cached_repair",
+        "status": "installed"
+      },
+      {
+        "name": "restore",
+        "status": "restored"
+      }
+    ],
+    "check_count": 6,
+    "package_sha256": "ca479dbc7abd94faf0a6cc2945bb4e4c6967fbe218069d06bef74d20cd58a7cd",
+    "installer_sha256": "a1a5868b03702268de7845f297ff913b5063db6b85c0dae534844cc671bb35cb",
+    "fixture_restored": true,
+    "live_game_files_unchanged": true,
+    "all_archive_targets_exact_rc2": true,
+    "gameplay_sort_verified": false
+  },
+  "packaged_drop_checks": {
+    "status": "PASS",
+    "exe_sha256": "a1a5868b03702268de7845f297ff913b5063db6b85c0dae534844cc671bb35cb",
+    "checks": [
+      {
+        "kind": "window drop and one repeated drop",
+        "unicode_spaces": true,
+        "cache_reimport_verified": true,
+        "process_alive": true
+      },
+      {
+        "kind": "positional ZIP launch",
+        "unicode_spaces": true,
+        "cache_reimport_verified": true,
+        "process_alive": true
+      }
+    ],
+    "normal_shutdown": true,
+    "fixture_targets_unchanged": true,
+    "live_game_writes": false,
+    "visual_review": {
+      "both_views_signature_and_all_six_files_verified": true,
+      "both_views_ready_to_install": true,
+      "buttons_and_status_visible_without_clipping": true,
+      "screenshots": {
+        "packaged_installer_drop.png": "bf2ed01357f407daae5d8923b328c6547427efba5c60627d5fc16172c72e4cc5",
+        "packaged_installer_launch.png": "be2ee08f8b7a282ffd949660db8966bd9496e864a0389c6610ac3d2290d52d75"
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Independent installer and complete content packages
 
-Status: **Installer 1.2.1 local candidate, unreleased**, 3 October 2026. It adds the fixed English translation profile and retains original package/state compatibility. Owner in-game acceptance gates publication. The accepted perk deck and content artwork are maintained separately from application code.
+Status: **Installer 1.2.1 / Content 1.1.0**, 3 October 2026. The maintainer has accepted the final content in game. The installer adds the fixed English translation profile and retains earlier package/state compatibility. See review/installer-1.2.1 and review/content-1.1.0 for exact build and acceptance evidence.
 
 ## User workflow
 
@@ -28,7 +28,7 @@ The new `fo76-steam-en-fonts-strings-translate-v2` profile requires the same com
 
 Baseline fingerprints retain the original member pins so existing 1.1.0 saved installations remain compatible. Full original archive hashes already bind the translation member; its original member hash is also explicitly verified before a new-profile write. Restore uses the installed package's authenticated profile and original archive backups.
 
-The corrected `fo76-steam-en-fonts-strings-localization-v3` profile requires Installer **1.2.1** and capability `localization-translate-en-v1`. It uses the same six payload paths, but installs translation in `Data/SeventySix - Localization.ba2`; Interface.ba2 returns to fontconfig-only. There are now six fixed game targets. The owner’s RC1 test showed the Interface duplicate was not supplying the Known label. The new profile binds the Localization target’s original hash/size to its existing game identity; all other archive members remain exact.
+The corrected `fo76-steam-en-fonts-strings-localization-v3` profile requires Installer **1.2.1** and capability `localization-translate-en-v1`. It uses the same six payload paths, but installs translation in `Data/SeventySix - Localization.ba2`; Interface.ba2 returns to fontconfig-only. There are now six fixed game targets. The maintainer confirmed that this target displays the Known checkmark correctly in game. The new profile binds the Localization target’s original hash/size to its existing game identity; all other archive members remain exact.
 
 Old baseline fingerprints remain stable. Five-to-six target upgrades preserve the original baseline and create a new immutable expanded record with the additional certified original. Current ownership, payload integrity, member hashes, whole-archive output hashes and interrupted-operation recovery all cover the sixth target. A future package that removes targets requires Restore vanilla first. Do not use older installers to manage a v3 installation.
 
@@ -36,7 +36,7 @@ Publisher: use `--translation-localization` with the current Localization archiv
 
 Ed25519 signs `KKS-CONTENT-MANIFEST-v1\0` followed by the exact UTF-8 manifest bytes. The envelope selects a public key compiled into the app. Keys supplied by a package are never trusted. Initial key ID: `kks-release-2026-10`; only its public component is in `_application.py`.
 
-The strict manifest binds content version/revision, monotonic sequence, installer API/minimum version/capabilities, fixed product/profile/platform/language, exact game identities, payload lengths/hashes, before/after target lengths/hashes, embedded asset hashes, baseline ID and QA report. Packages cannot add paths, commands, scripts or settings. The initial package is marked `candidate`, not a newly accepted public release.
+The strict manifest binds content version/revision, monotonic sequence, installer API/minimum version/capabilities, fixed product/profile/platform/language, exact game identities, payload lengths/hashes, before/after target lengths/hashes, embedded asset hashes, baseline ID and QA report. Packages cannot add paths, commands, scripts or settings. The builder retains `qa.status: candidate` in signed metadata; public acceptance is recorded separately without changing the tested ZIP or its signature.
 
 Validation bounds the central directory before allocating it. It rejects extra/duplicate/aliased paths, traversal, links, alternate streams, header disagreement, hidden/trailing data, encryption, unsupported compression, duplicate JSON keys, BOM and unknown schemas. Limits: 512 MiB ZIP/combined payload, 256 MiB per payload, 1 MiB manifest, 16 KiB signature, 10 ZIP entries. Streaming decompression checks signed lengths/hashes before publication to the cache. Failed `import-*` staging is untrusted and never selected as a release.
 
@@ -44,7 +44,7 @@ Content signatures establish the publisher key that authorized these bytes. They
 
 ## Fixed operations and retained state
 
-The app changes only `interface/fonts_en.swf` inside `Data/SeventySix - Interface_en.ba2`, `interface/fontconfig_en.txt` inside `Data/SeventySix - Interface.ba2`, and three English loose string tables. Fallout76.exe, SeventySix.esm and Localization.ba2 remain read-only identities. No ESM/INI edits, registry writes, game-process injection, startup registration, service, telemetry, network request or automatic privilege elevation is added.
+The app changes only the fixed members in the selected authenticated profile: the English font in Interface_en.ba2, fontconfig in Interface.ba2, the English translation in Localization.ba2 for v3 (Interface.ba2 for historical v2), and three English loose string tables. Fallout76.exe and SeventySix.esm remain read-only identities. Localization.ba2 retains its original identity pin and becomes a managed target only in v3. No ESM/INI edits, registry writes, game-process injection, startup registration, service, telemetry, network request or automatic privilege elevation is added.
 
 | Module | Responsibility |
 | --- | --- |
@@ -74,7 +74,7 @@ History/backups have no automatic garbage collection; temporary/preflight record
 
 On the same game baseline, the app validates old restoration data and verifies new archive outputs **before** removing old KKS. It restores old KKS, verifies vanilla, installs the complete package, verifies outputs, publishes state and retires the journal. Original loose-file presence survives across versions. Replacements are atomic per file; the whole update is recoverable, not one atomic operation. Recovery can return the previous managed state, verified vanilla, or commit a completed new installation. Unknown external changes stop recovery with state retained.
 
-After Bethesda changes the baseline, a newly certified package must match all three current identity files and **both new vanilla Interface archives** before cleanup. Old ownership/backups must validate. Only old KKS loose overrides whose bytes match the authenticated old receipt may be quarantined and removed. New vanilla tables remain; unknown tables block all cleanup. No old archive/table backups are restored to the new build. The old owner becomes obsolete, with its historical receipt preserved rather than falsely marked restored. Interrupted cleanup recovers forward to new verified vanilla.
+After Bethesda changes the baseline, a newly certified package must match all three current identity files and **every archive in the selected profile**, including Localization for v3 before cleanup. Old ownership/backups must validate. Only old KKS loose overrides whose bytes match the authenticated old receipt may be quarantined and removed. New vanilla tables remain; unknown tables block all cleanup. No old archive/table backups are restored to the new build. The old owner becomes obsolete, with its historical receipt preserved rather than falsely marked restored. Interrupted cleanup recovers forward to new verified vanilla.
 
 Returning users still need Steam's game files to match the package. Incomplete updates or unsupported fingerprints stop safely. Conflicting version/revision/baseline reuse and old release sequences are rejected. The exact highest installed sequence can be reinstalled after Restore. Downgrade controls are not implemented.
 
@@ -90,7 +90,7 @@ Example from `source`, with paths/report identity chosen deliberately:
 python build_content.py build --game 'D:\VanillaGameCopy' --payload '.\release\payload' --output 'D:\Candidates\KKS_1.0.0_Content_r1.zip' --key "$env:LOCALAPPDATA\KKS\Signing\kks-release-2026-10.dpapi.json" --content-version 1.0.0 --revision 1 --sequence 1 --baseline-id steam-en-25258219 --build-label 'Steam English Slasher 25258219' --report-id 'local-acceptance-report' --expected-legacy '.\release\manifest.json'
 ```
 
-For the translation profile, supply `--include-translation` and the current matching English translation file alongside the other inputs. Existing output ZIPs are never overwritten. Later releases receive a new sequence and the complete five- or six-payload profile; a different game baseline receives a new baseline ID. No partial or differential package is accepted. The tool currently marks packages as candidates; public promotion is a separate later change after acceptance.
+For the current translation profile, supply `--translation-localization` and the current Localization English translation file alongside the other inputs. The old `--include-translation` option is retained only for historical v2 packages. Existing output ZIPs are never overwritten. Later releases receive a new sequence and the complete five- or six-payload profile; a different game baseline receives a new baseline ID. No partial or differential package is accepted. The tool marks packages as candidates; a separate acceptance record promotes the exact tested bytes after owner approval.
 
 The initial private signing key is Windows-DPAPI encrypted for the current publishing account and stored outside the repository. Never log, commit, bundle or copy private bytes into the master snapshot. Before public rollout, the publisher should create a passphrase-encrypted recovery export and keep it securely offline:
 
@@ -102,6 +102,8 @@ The command prompts privately for a matching passphrase of at least 16 character
 
 ## Acceptance and boundaries
 
-The 112 tests include all 59 original tests, strict signature/ZIP/schema cases, source-process termination, changed/foreign game files, low space, backup permission failures, locks/links, cache damage, preserved file presence, A→B→C and A→E updates, legacy migration, each file boundary, metadata commit boundaries, interrupted recovery and new-baseline reconciliation. Synthetic future baselines prove the protocol, not compatibility with an unreleased game build.
+The 138 tests include all 59 original tests, strict signature/ZIP/schema cases, source-process termination, changed/foreign game files, low space, backup permission failures, locks/links, cache damage, preserved file presence, A→B→C and A→E updates, legacy migration, each file boundary, metadata commit boundaries, interrupted recovery and new-baseline reconciliation. Synthetic future baselines prove the protocol, not compatibility with an unreleased game build.
 
-Local acceptance additionally records real-file tests of the built EXE: exact frozen 1.0 parity, repair/restore, forced process-tree termination/recovery, legacy migration and changed-file refusals. The maintainer accepted the unchanged 1.0 content in-game and recovery-key backup verification is complete. Nexus submission/review remains separate; see review/installer-1.1.0 for current evidence. Existing 1.0 gameplay approval applies to identical payload bytes, not every new workflow. Nexus may still review data packages, and the app can still need future security/compatibility updates.
+Local acceptance additionally records real-file tests of the built EXE: exact frozen 1.0 parity, repair/restore, forced process-tree termination/recovery, legacy migration and changed-file refusals. The maintainer accepted the unchanged 1.0 content in-game and recovery-key backup verification is complete. Nexus submission/review remains separate; see review/installer-1.2.1 for current evidence and review/installer-1.1.0 for historical evidence. Existing 1.0 gameplay approval applies to identical payload bytes, not every new workflow. Nexus may still review data packages, and the app can still need future security/compatibility updates.
+
+Content 1.1.0 has owner acceptance for artwork, the standard perk deck and final Known checkmark/sorting. Its six final real-file installer checks and unchanged accepted bytes are recorded in review/content-1.1.0.
