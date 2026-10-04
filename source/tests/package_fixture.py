@@ -18,6 +18,7 @@ from kks_installer.packages import (
     archive_members,
     LOCALIZATION,
     profile_capabilities,
+    profile_strings,
 )
 from kks_installer._application import (
     PROFILE,
@@ -26,6 +27,7 @@ from kks_installer._application import (
     TRANSLATION_PROFILE,
     TRANSLATION_CAPABILITIES,
     LOCALIZATION_PROFILE,
+    GERMAN_PROFILE,
 )
 from kks_installer.manager import Manager
 from kks_installer.managed_engine import LegacyDescriptor
@@ -33,7 +35,7 @@ from test_installer import archive
 
 
 class PackageFixture:
-    def __init__(self, base, loose=False):
+    def __init__(self, base, loose=False, german=False):
         self.base = Path(base)
         self.game = self.base / "game"
         (self.game / "Data").mkdir(parents=True)
@@ -48,6 +50,11 @@ class PackageFixture:
                     (name, ("vanilla " + name).encode(), True),
                     ("untouched.dat", b"unrelated payload", False),
                 ]
+                + (
+                    [("interface/fontconfig_de.txt", b"fontlib fonts_en DE", True)]
+                    if german and path == CONFIG
+                    else []
+                )
                 + (
                     [
                         (
@@ -70,9 +77,24 @@ class PackageFixture:
                     True,
                 ),
                 ("strings/other-language.strings", b"untouched localization", True),
-            ],
+            ]
+            + (
+                [
+                    (
+                        "interface/translate_de.txt",
+                        b"\xff\xfe" + "$Known\t(Bekannt)\r\n".encode("utf-16le"),
+                        True,
+                    )
+                ]
+                if german
+                else []
+            ),
         )
         self.loose = {p: ("vanilla " + p).encode() for p in STRINGS}
+        if german:
+            self.loose.update(
+                {p: ("vanilla " + p).encode() for p in profile_strings(GERMAN_PROFILE)}
+            )
         if loose:
             (self.game / "Data/strings").mkdir()
             for p, b in self.loose.items():
@@ -113,26 +135,31 @@ class PackageFixture:
         mutate=None,
         include_translation=False,
         translation_localization=False,
+        language="en",
     ):
         payloads = {}
         targets = []
         profile = (
-            LOCALIZATION_PROFILE
-            if translation_localization
-            else TRANSLATION_PROFILE if include_translation else PROFILE
+            GERMAN_PROFILE
+            if language == "de"
+            else (
+                LOCALIZATION_PROFILE
+                if translation_localization
+                else TRANSLATION_PROFILE if include_translation else PROFILE
+            )
         )
         for idx, (path, names) in enumerate(archive_members(profile).items()):
             for name in names:
                 payloads["payload/" + name] = (
                     f"KKS asset {name} v{1 if one_change else sequence}"
                 ).encode()
-            src = self.base / f"vanilla-{sequence}-{idx}.ba2"
+            src = self.base / f"vanilla-{language}-{sequence}-{idx}.ba2"
             src.write_bytes(
                 self.raw_originals[path]
                 if hasattr(self, "raw_originals")
                 else (self.game / path).read_bytes()
             )
-            out = self.base / f"output-{sequence}-{idx}.ba2"
+            out = self.base / f"output-{language}-{sequence}-{idx}.ba2"
             BA2(src).replace_to(out, {name: payloads["payload/" + name] for name in names})
             assets = []
             for name in names:
@@ -162,7 +189,7 @@ class PackageFixture:
                     "assets": assets,
                 }
             )
-        for idx, path in enumerate(sorted(STRINGS)):
+        for idx, path in enumerate(sorted(profile_strings(profile))):
             payload = "payload/" + path[5:]
             n = sequence if not one_change or idx == 0 else 1
             payloads[payload] = (f"compiled {path} v{n}").encode()
@@ -194,9 +221,9 @@ class PackageFixture:
                 "id": "fallout76",
                 "platform": "steam",
                 "app_id": 1151340,
-                "language": "en",
+                "language": language,
                 "build_label": "fixture game",
-                "baseline_id": "fixture-baseline",
+                "baseline_id": "fixture-baseline" + ("-de" if language == "de" else ""),
                 "identity": [
                     {
                         "path": p,
@@ -213,14 +240,14 @@ class PackageFixture:
             "targets": targets,
             "qa": {"status": "candidate", "report_id": "synthetic test fixture"},
         }
-        if translation_localization:
+        if translation_localization or language == "de":
             original = self.raw_originals[LOCALIZATION]
             next(i for i in m["game"]["identity"] if i["path"] == LOCALIZATION).update(
                 sha256=digest(original), size=len(original)
             )
         if mutate:
             mutate(m)
-        path = self.base / f"content-{sequence}-{revision}.zip"
+        path = self.base / f"content-{'de-' if language == 'de' else ''}{sequence}-{revision}.zip"
         self.write(path, m, payloads)
         return path, m, payloads
 

@@ -28,10 +28,32 @@ from .packages import (
     ARCHIVES,
     STRINGS,
     archive_members,
+    profile_strings,
 )
+from ._application import PROFILE
 from .managed_engine import ManagedEngine, LegacyDescriptor, LEGACY_STATE
 
 STATE = ".kks-manager"
+
+
+def content_language(release):
+    return getattr(release, "manifest", {}).get("game", {}).get("language", "en")
+
+
+def content_strings(release):
+    return profile_strings(getattr(release, "manifest", {}).get("profile", PROFILE))
+
+
+def content_identity(package):
+    m = package.manifest
+    prefix = "de/" if content_language(package) == "de" else ""
+    return prefix + m["content_version"] + "/" + str(m["package_revision"])
+
+
+def sequence_highest(state, language):
+    if state["schema"] == 2:
+        return state["highest_sequence"] if language == "en" else 0
+    return state["language_sequences"][language]
 
 
 def token(value):
@@ -41,6 +63,25 @@ def token(value):
 
 
 def fingerprint(release):
+    if content_language(release) != "en":
+        # Language-specific member/target catalog; historical EN fingerprints stay exact.
+        return digest(
+            json.dumps(
+                {
+                    "language": content_language(release),
+                    "identity": sorted((x["path"], x["sha256"]) for x in release.data["identity"]),
+                    "targets": sorted(
+                        (
+                            t["path"],
+                            t["vanilla_sha256"],
+                            sorted((a["name"], a["vanilla_sha256"]) for a in t.get("assets", [])),
+                        )
+                        for t in release.targets
+                    ),
+                },
+                sort_keys=True,
+            ).encode()
+        )
     original = {
         "identity": sorted((x["path"], x["sha256"]) for x in release.data["identity"]),
         "targets": [],
@@ -112,11 +153,20 @@ class Manager:
         }
 
     def _validate_state(self, data):
+        integer(data.get("schema") if isinstance(data, dict) else None, 2, 3)
         fields(
             data,
-            "schema root installation_id active highest_sequence release_ids baseline_ids retired",
+            "schema root installation_id active highest_sequence release_ids baseline_ids retired"
+            + (" language_sequences" if data["schema"] == 3 else ""),
         )
-        integer(data["schema"], 2, 2)
+        if data["schema"] == 3:
+            fields(data["language_sequences"], "en de")
+            for value in data["language_sequences"].values():
+                integer(value, 0, 2**53 - 1)
+            demand(
+                data["highest_sequence"] == data["language_sequences"]["en"],
+                "English sequence history is inconsistent",
+            )
         demand(
             data["root"] == str(self.root), "This saved installation belongs to another game folder"
         )
@@ -132,7 +182,9 @@ class Manager:
         )
         for key, value in data["release_ids"].items():
             demand(
-                re.fullmatch(r"[0-9.]+/[0-9]+", key)
+                re.fullmatch(
+                    r"(?:de/)?[0-9.]+/[0-9]+" if data["schema"] == 3 else r"[0-9.]+/[0-9]+", key
+                )
                 and type(value) is str
                 and re.fullmatch("[0-9a-f]{64}", value),
                 "Invalid saved content identity",
@@ -353,7 +405,9 @@ class Manager:
             "Invalid original file set",
         )
         for p, h in records.items():
-            permitted = [release.by_path[p]["vanilla_sha256"]] + ([None] if p in STRINGS else [])
+            permitted = [release.by_path[p]["vanilla_sha256"]] + (
+                [None] if p in content_strings(release) else []
+            )
             demand(h in permitted, "Unknown vanilla original")
 
     def _verify_old(self, ref):
@@ -407,7 +461,7 @@ class Manager:
                 + path,
             )
         cleanup = []
-        for path in sorted(STRINGS):
+        for path in sorted(content_strings(package)):
             current = new.current(path)
             target = package.by_path[path]
             if current is None or current == target["vanilla_sha256"]:
@@ -465,11 +519,16 @@ class Manager:
     def _sequence(self, package, state, active=None):
         if active:
             demand(
+                content_language(self._release(active)) == content_language(package),
+                "Restore vanilla before switching the KKS content language",
+            )
+            demand(
                 set(self._release(active).by_path) <= set(package.by_path),
                 "Restore vanilla before selecting a package that removes managed game targets",
             )
         m = package.manifest
-        identity = m["content_version"] + "/" + str(m["package_revision"])
+        identity = content_identity(package)
+        highest = sequence_highest(state, content_language(package))
         existing = state["release_ids"].get(identity)
         demand(
             existing in (None, package.manifest_digest),
@@ -481,12 +540,9 @@ class Manager:
             "A baseline ID was reused for different game files",
         )
         same = bool(active and active["manifest"] == package.manifest_digest)
-        reinstall = (
-            m["release_sequence"] == state["highest_sequence"]
-            and existing == package.manifest_digest
-        )
+        reinstall = m["release_sequence"] == highest and existing == package.manifest_digest
         demand(
-            same or reinstall or m["release_sequence"] > state["highest_sequence"],
+            same or reinstall or m["release_sequence"] > highest,
             "This package is older than or conflicts with an installed release. Select a newer complete package",
         )
 
@@ -697,7 +753,10 @@ class Manager:
             for e in p["cleanup"]:
                 fields(e, "path before after")
                 path = e["path"]
-                demand(path in STRINGS and path not in seen, "Invalid cleanup target")
+                demand(
+                    path in content_strings(descriptor) and path not in seen,
+                    "Invalid cleanup target",
+                )
                 seen.add(path)
                 allowed = (None, descriptor.by_path[path]["vanilla_sha256"])
                 demand(
@@ -757,10 +816,18 @@ class Manager:
         if installed:
             package = self._release(plan["new"])
             m = package.manifest
-            state["highest_sequence"] = max(state["highest_sequence"], m["release_sequence"])
-            state["release_ids"][
-                m["content_version"] + "/" + str(m["package_revision"])
-            ] = package.manifest_digest
+            language = content_language(package)
+            if language != "en" and state["schema"] == 2:
+                state["schema"] = 3
+                state["language_sequences"] = {"en": state["highest_sequence"], "de": 0}
+            if state["schema"] == 3:
+                state["language_sequences"][language] = max(
+                    state["language_sequences"][language], m["release_sequence"]
+                )
+                state["highest_sequence"] = state["language_sequences"]["en"]
+            else:
+                state["highest_sequence"] = max(state["highest_sequence"], m["release_sequence"])
+            state["release_ids"][content_identity(package)] = package.manifest_digest
             state["baseline_ids"][m["game"]["baseline_id"]] = fingerprint(package)
         return state
 

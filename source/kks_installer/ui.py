@@ -3,7 +3,8 @@
 from pathlib import Path
 import queue, threading, tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-from ._application import APP_VERSION
+from ._application import APP_VERSION, BUILD_LABEL
+from .i18n import translate, load_language, save_language
 from .manager import Manager
 from .platforms import discover
 from .windows_drop import enable_file_drop
@@ -21,9 +22,13 @@ DARK = "#27312e"
 
 
 class App:
-    def __init__(self, package=None, game=None):
+    def __init__(self, package=None, game=None, language=None):
+        self.language = language or load_language()
+        self.log_lines = []
+        self.status_title_key = "Ready when you are."
+        self.primary_key = "Install content"
         self.root = tk.Tk()
-        self.root.title("KKS Installer · " + APP_VERSION)
+        self.root.title("KKS Installer · " + APP_VERSION + " · " + BUILD_LABEL)
         width = min(1080, self.root.winfo_screenwidth() - 60)
         height = min(790, self.root.winfo_screenheight() - 80)
         self.root.geometry(f"{width}x{height}")
@@ -80,16 +85,29 @@ class App:
         ).pack(fill="x", padx=22, pady=(6, 0))
         tk.Label(
             spine,
-            text="FALLOUT 76\nSTEAM / ENGLISH",
+            text="FALLOUT 76\nSTEAM / EN + DE",
             font=("Consolas", 9),
             fg="#b4bfb5",
             bg=DARK,
             justify="left",
             anchor="w",
         ).pack(side="bottom", fill="x", padx=22, pady=24)
+        tk.Label(
+            spine, text="Language / Sprache", fg=BG, bg=DARK, font=("Segoe UI", 9), anchor="w"
+        ).pack(fill="x", padx=18, pady=(20, 5))
+        self.language_value = tk.StringVar(value="Deutsch" if self.language == "de" else "English")
+        self.language_box = ttk.Combobox(
+            spine,
+            textvariable=self.language_value,
+            values=("English", "Deutsch"),
+            state="readonly",
+            width=13,
+        )
+        self.language_box.pack(fill="x", padx=18)
+        self.language_box.bind("<<ComboboxSelected>>", self.change_language)
 
         outer = tk.Frame(self.root, bg=BG)
-        outer.pack(side="left", fill="both", expand=True, padx=28, pady=16)
+        outer.pack(side="left", fill="both", expand=True, padx=28, pady=12)
         tk.Label(
             outer,
             text="A BETTER-ORDERED WASTELAND.",
@@ -105,7 +123,7 @@ class App:
             fg=INK,
             bg=BG,
             anchor="w",
-        ).pack(fill="x", pady=(5, 8))
+        ).pack(fill="x", pady=(3, 5))
         tk.Label(
             outer,
             text="Choose your game folder and a complete KKS content ZIP.",
@@ -142,6 +160,7 @@ class App:
         self.package_text = tk.StringVar(
             value="Drop one content ZIP onto this window, or choose it below."
         )
+        self.package_key = self.package_text.get()
         self.package_label = tk.Label(
             package_row,
             textvariable=self.package_text,
@@ -189,7 +208,7 @@ class App:
         self.progress = ttk.Progressbar(
             outer, style="KKS.Horizontal.TProgressbar", mode="indeterminate"
         )
-        self.progress.pack(fill="x", pady=(0, 13))
+        self.progress.pack(fill="x", pady=(0, 10))
         actions = tk.Frame(outer, bg=BG)
         actions.pack(fill="x")
         self.primary = self.button(actions, "Install content", self.primary_action, True)
@@ -220,8 +239,21 @@ class App:
             bg=BG,
             font=("Segoe UI", 9),
             anchor="w",
-        ).pack(side="bottom", fill="x", pady=(12, 0))
+        ).pack(side="bottom", fill="x", pady=(8, 0))
         self.log.pack(fill="both", expand=True)
+        self.static_text = []
+
+        def remember(widget):
+            if widget not in (self.status_title, self.primary, self.package_label):
+                if "text" in widget.keys() and not widget.cget("textvariable"):
+                    text = widget.cget("text")
+                    if text:
+                        self.static_text.append((widget, text))
+            for child in widget.winfo_children():
+                remember(child)
+
+        remember(self.root)
+        self.render_language()
 
         def resize_labels(event):
             self.package_label.configure(wraplength=max(360, event.width - 30))
@@ -244,6 +276,38 @@ class App:
 
     def panel(self, parent):
         return tk.Frame(parent, bg=PANEL, highlightbackground=LINE, highlightthickness=1)
+
+    def t(self, text):
+        return translate(text, self.language)
+
+    def change_language(self, event=None):
+        if self.busy:
+            return
+        self.language = "de" if self.language_value.get() == "Deutsch" else "en"
+        save_language(self.language)
+        self.render_language()
+
+    def render_language(self):
+        for widget, text in self.static_text:
+            widget.configure(text=self.t(text))
+        self.status_title.configure(text=self.t(self.status_title_key))
+        self.primary.configure(text=self.t(self.primary_key))
+        self.package_text.set(self.t(self.package_key))
+        self.status_text(self.status_text_key)
+        self.log.configure(state="normal")
+        self.log.delete("1.0", "end")
+        self.log.insert(
+            "end", "\n".join(self.t(x) for x in self.log_lines) + ("\n" if self.log_lines else "")
+        )
+        self.log.configure(state="disabled")
+
+    def set_title(self, text, color=INK):
+        self.status_title_key = text
+        self.status_title.configure(text=self.t(text), fg=color)
+
+    def set_package(self, text):
+        self.package_key = text
+        self.package_text.set(self.t(text))
 
     def label(self, parent, text, bg=PANEL):
         return tk.Label(
@@ -269,15 +333,17 @@ class App:
         )
 
     def status_text(self, text):
+        self.status_text_key = text
         self.status_message.configure(state="normal")
         self.status_message.delete("1.0", "end")
-        self.status_message.insert("1.0", text)
+        self.status_message.insert("1.0", self.t(text))
         self.status_message.configure(state="disabled")
         self.status_message.yview_moveto(0)
 
     def append(self, text):
+        self.log_lines.append(text)
         self.log.configure(state="normal")
-        self.log.insert("end", text + "\n")
+        self.log.insert("end", self.t(text) + "\n")
         self.log.see("end")
         self.log.configure(state="disabled")
 
@@ -285,13 +351,14 @@ class App:
         if not self.busy:
             self.last_status = None
             self.selected = None
-            self.package_text.set("Drop a ZIP here or choose a package. Keep the ZIP unopened.")
+            self.set_package("Drop a ZIP here or choose a package. Keep the ZIP unopened.")
             for b in (self.primary, self.repair, self.restore):
                 b.configure(state="disabled")
 
     def choose_game(self):
         path = filedialog.askdirectory(
-            title="Choose the folder containing Fallout76.exe", initialdir=self.path.get() or None
+            title=self.t("Choose the folder containing Fallout76.exe"),
+            initialdir=self.path.get() or None,
         )
         if path:
             self.path.set(path)
@@ -299,7 +366,8 @@ class App:
 
     def choose_package(self):
         path = filedialog.askopenfilename(
-            title="Choose a complete KKS content ZIP", filetypes=[("KKS content package", "*.zip")]
+            title=self.t("Choose a complete KKS content ZIP"),
+            filetypes=[(self.t("KKS content package"), "*.zip")],
         )
         if path:
             self.select_package(path)
@@ -309,13 +377,17 @@ class App:
             self.append("Wait for the current operation, then drop the package again.")
             return
         if len(paths) != 1 or Path(paths[0]).suffix.lower() != ".zip":
-            messagebox.showinfo("Choose one ZIP", "Drop one complete KKS content ZIP.")
+            messagebox.showinfo(
+                self.t("Choose one ZIP"), self.t("Drop one complete KKS content ZIP.")
+            )
             return
         self.select_package(paths[0])
 
     def select_package(self, path):
         if not self.path.get():
-            game = filedialog.askdirectory(title="Choose the folder containing Fallout76.exe")
+            game = filedialog.askdirectory(
+                title=self.t("Choose the folder containing Fallout76.exe")
+            )
             if not game:
                 return
             self.path.set(game)
@@ -327,8 +399,10 @@ class App:
     def close(self):
         if self.busy:
             messagebox.showinfo(
-                "KKS is working",
-                "Wait for the operation to finish. If it is interrupted, KKS keeps the recovery journal and backups.",
+                self.t("KKS is working"),
+                self.t(
+                    "Wait for the operation to finish. If it is interrupted, KKS keeps the recovery journal and backups."
+                ),
             )
         else:
             if self.drop_binding is not None:
@@ -345,6 +419,7 @@ class App:
             self.choose_game()
             return
         self.busy = True
+        self.language_box.configure(state="disabled")
         self.last_status = None
         for w in (
             self.entry,
@@ -357,13 +432,12 @@ class App:
         ):
             w.configure(state="disabled")
         self.progress.start(12)
-        self.status_title.configure(
-            text=(
+        self.set_title(
+            (
                 "Checking package…"
                 if action == "select"
                 else "Checking your installation…" if action == "check" else "Working…"
             ),
-            fg=INK,
         )
         self.status_text(
             "KKS is verifying the package, game files and restoration data. Keep Fallout 76 closed during changes."
@@ -390,8 +464,23 @@ class App:
                 )
                 if action == "select":
                     release = manager.select(zip_path)
+                    if release.manifest["game"]["language"] == "de":
+                        self.events.put(
+                            (
+                                "log",
+                                "Private beta: set Fallout 76 to German in Steam before installing Deutsch content.",
+                            )
+                        )
                     self.events.put(
-                        ("selected", (release.manifest_digest, release.name, len(release.files)))
+                        (
+                            "selected",
+                            (
+                                release.manifest_digest,
+                                release.name,
+                                len(release.files),
+                                release.manifest["game"]["language"],
+                            ),
+                        )
                     )
                     result = manager.inspect(release)
                 elif action == "check":
@@ -416,18 +505,26 @@ class App:
                     self.append(data)
                     continue
                 if kind == "selected":
-                    self.selected, name, file_count = data
-                    self.package_text.set(
-                        name + f" · signature and all {file_count} files verified"
+                    self.selected, name, file_count, language = data
+                    self.set_package(
+                        name
+                        + f" · signature and all {file_count} files verified"
+                        + "\n"
+                        + (
+                            "Content language: German. Set Fallout 76 to Deutsch in Steam."
+                            if language == "de"
+                            else "Content language: English."
+                        )
                     )
                     continue
                 self.busy = False
+                self.language_box.configure(state="readonly")
                 self.progress.stop()
                 self.progress.configure(value=0)
                 for w in (self.entry, self.browse, self.check, self.package_button):
                     w.configure(state="normal")
                 if kind == "error":
-                    self.status_title.configure(text="Needs attention before continuing", fg=RED)
+                    self.set_title("Needs attention before continuing", RED)
                     self.status_text(data)
                     self.append(data)
                 else:
@@ -442,7 +539,7 @@ class App:
                         "package_required": "Choose a content package.",
                         "recovery_required": "Recover the interrupted change.",
                     }
-                    self.status_title.configure(text=titles.get(status, status), fg=GREEN)
+                    self.set_title(titles.get(status, status), GREEN)
                     message = data.get("message", "Verified.")
                     if data.get("selected_content"):
                         message += " Selected: " + data["selected_content"] + "."
@@ -452,16 +549,15 @@ class App:
                         message += f' {data["changed_payload_files"]} of {data["payload_file_count"]} content files differ.'
                     self.status_text(message)
                     self.append(message)
+                    self.primary_key = (
+                        "Recover previous state"
+                        if status == "recovery_required"
+                        else (
+                            "Install update" if status == "update_available" else "Install content"
+                        )
+                    )
                     self.primary.configure(
-                        text=(
-                            "Recover previous state"
-                            if status == "recovery_required"
-                            else (
-                                "Install update"
-                                if status == "update_available"
-                                else "Install content"
-                            )
-                        ),
+                        text=self.t(self.primary_key),
                         state=(
                             "normal"
                             if status in ("ready", "update_available", "recovery_required")

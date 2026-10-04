@@ -23,6 +23,7 @@ from kks_installer._application import (
     TRANSLATION_PROFILE,
     TRANSLATION_CAPABILITIES,
     LOCALIZATION_PROFILE,
+    GERMAN_PROFILE,
 )
 from kks_installer.ba2 import BA2, hash_file
 from kks_installer.engine import demand, digest
@@ -38,6 +39,8 @@ from kks_installer.packages import (
     archive_members,
     profile_payloads,
     profile_capabilities,
+    profile_strings,
+    profile_language,
 )
 
 
@@ -151,6 +154,7 @@ def build(
     expected_legacy=None,
     include_translation=False,
     translation_localization=False,
+    language="en",
 ):
     game = Path(game)
     payload = Path(payload)
@@ -159,10 +163,19 @@ def build(
     files = []
     targets = []
     demand(not (include_translation and translation_localization), "Choose one translation profile")
+    demand(language in ("en", "de"), "Unsupported content language")
+    demand(
+        language == "en" or (translation_localization and not include_translation),
+        "German content requires the Localization profile",
+    )
     profile = (
-        LOCALIZATION_PROFILE
-        if translation_localization
-        else TRANSLATION_PROFILE if include_translation else PROFILE
+        GERMAN_PROFILE
+        if language == "de"
+        else (
+            LOCALIZATION_PROFILE
+            if translation_localization
+            else TRANSLATION_PROFILE if include_translation else PROFILE
+        )
     )
     catalog = archive_members(profile)
     for p in sorted(profile_payloads(profile)):
@@ -210,7 +223,7 @@ def build(
                 }
             )
         localization = BA2(game / "Data/SeventySix - Localization.ba2")
-        for p in sorted(STRINGS):
+        for p in sorted(profile_strings(profile)):
             raw = localization.extract(p.removeprefix("Data/"))
             f = byfile["payload/" + p[5:]]
             targets.append(
@@ -248,7 +261,7 @@ def build(
                 "id": "fallout76",
                 "platform": "steam",
                 "app_id": 1151340,
-                "language": "en",
+                "language": profile_language(profile),
                 "build_label": build_label,
                 "baseline_id": baseline_id,
                 "identity": identity,
@@ -332,6 +345,7 @@ def main():
     b.add_argument("--expected-legacy")
     b.add_argument("--include-translation", action="store_true")
     b.add_argument("--translation-localization", action="store_true")
+    b.add_argument("--language", choices=("en", "de"), default="en")
     a = p.parse_args()
     if a.command == "create-key":
         result = create_key(a.key, a.key_id)
@@ -352,6 +366,7 @@ def main():
             expected_legacy=a.expected_legacy,
             include_translation=a.include_translation,
             translation_localization=a.translation_localization,
+            language=a.language,
         )
     print(json.dumps(result, indent=2))
 

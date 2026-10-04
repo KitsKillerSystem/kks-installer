@@ -13,9 +13,10 @@ from .packages import (
     IDENTITIES,
     MAX_MANIFEST,
     archive_members,
+    profile_strings,
     LOCALIZATION,
 )
-from ._application import PROFILE
+from ._application import PROFILE, GERMAN_PROFILE
 from .platforms import SafetyError
 from . import _legacy
 
@@ -43,8 +44,15 @@ class LegacyDescriptor:
 
 class ManagedEngine(Installer):
     def __init__(self, game, release, log=None, *, state_name, event=None):
-        catalog = archive_members(getattr(release, "manifest", {}).get("profile", PROFILE))
-        demand(set(release.by_path) == set(catalog) | STRINGS, "Invalid managed target set")
+        profile = getattr(release, "manifest", {}).get("profile", PROFILE)
+        catalog = archive_members(profile)
+        self.strings = profile_strings(profile)
+        self.interface_overrides = {"Data/" + n for names in catalog.values() for n in names}
+        self.interface_overrides.add("Data/interface/fontconfig.txt")
+        # Historical EN profiles also refuse a loose translation override.
+        if profile != GERMAN_PROFILE:
+            self.interface_overrides.add("Data/interface/translate_en.txt")
+        demand(set(release.by_path) == set(catalog) | self.strings, "Invalid managed target set")
         demand(
             {i["path"] for i in release.data["identity"]} == IDENTITIES,
             "Invalid managed game identity",
@@ -78,12 +86,7 @@ class ManagedEngine(Installer):
                     path.stat().st_size == permitted[current],
                     "Game identity size changed",
                 )
-        for path in (
-            "Data/interface/fonts_en.swf",
-            "Data/interface/fontconfig_en.txt",
-            "Data/interface/fontconfig.txt",
-            "Data/interface/translate_en.txt",
-        ):
+        for path in sorted(self.interface_overrides):
             demand(
                 not self.target(path).exists(),
                 "A loose interface override conflicts with KKS: " + path,
@@ -139,7 +142,7 @@ class ManagedEngine(Installer):
             seen.add(path)
             target = self.release.by_path[path]
             permitted = {target["vanilla_sha256"]}
-            if path in STRINGS:
+            if path in self.strings:
                 permitted.add(None)
             if installed:
                 permitted.add(target["after_sha256"])
