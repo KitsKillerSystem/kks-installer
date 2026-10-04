@@ -153,13 +153,14 @@ class PackageFixture:
                 payloads["payload/" + name] = (
                     f"KKS asset {name} v{1 if one_change else sequence}"
                 ).encode()
-            src = self.base / f"vanilla-{language}-{sequence}-{idx}.ba2"
+            lang_prefix = "de-" if language == "de" else ""
+            src = self.base / f"vanilla-{lang_prefix}{sequence}-{idx}.ba2"
             src.write_bytes(
                 self.raw_originals[path]
                 if hasattr(self, "raw_originals")
                 else (self.game / path).read_bytes()
             )
-            out = self.base / f"output-{language}-{sequence}-{idx}.ba2"
+            out = self.base / f"output-{lang_prefix}{sequence}-{idx}.ba2"
             BA2(src).replace_to(out, {name: payloads["payload/" + name] for name in names})
             assets = []
             for name in names:
