@@ -180,8 +180,11 @@ class MultilingualUiTests(unittest.TestCase):
     def test_languages_keep_actions_and_selection_at_minimum_size(self):
         from kks_installer.ui import App
 
-        with patch.object(App, "start"):
-            a = App(game=r"C:\KKS fixture only", language="en")
+        # Keep the scheduled initial Check mocked throughout Tk event updates.
+        # Otherwise a slower four-language layout test starts an unrelated
+        # check of the intentionally nonexistent game folder after 200ms.
+        self.enterContext(patch.object(App, "start"))
+        a = App(game=r"C:\KKS fixture only", language="en")
         try:
             a.root.geometry("900x700")
             a.root.update()
