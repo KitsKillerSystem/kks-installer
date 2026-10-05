@@ -95,7 +95,7 @@ class App:
         ).pack(fill="x", padx=22, pady=(6, 0))
         tk.Label(
             spine,
-            text="FALLOUT 76\nSTEAM / EN + DE",
+            text="FALLOUT 76\nSTEAM\nEN · DE · RU · FR",
             font=("Consolas", 9),
             fg="#b4bfb5",
             bg=DARK,
@@ -104,7 +104,7 @@ class App:
         ).pack(side="bottom", fill="x", padx=22, pady=24)
         tk.Label(
             spine,
-            text="Language / Sprache",
+            text="Language",
             fg=BG,
             bg=DARK,
             font=("Segoe UI", 9),

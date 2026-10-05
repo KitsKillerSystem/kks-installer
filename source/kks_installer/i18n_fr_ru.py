@@ -1,6 +1,7 @@
 """Private-beta French and Russian UI catalogues; native QA pending."""
 
 FR = {
+    "Language": "Langue",
     "Vanilla files restored. Backups retained.": "Fichiers d’origine restaurés. Sauvegardes conservées.",
     "KKS installed and verified.": "KKS installé et vérifié.",
     "Recovery needs attention: ": "Récupération à vérifier : ",
@@ -240,6 +241,7 @@ FR = {
 }
 
 RU = {
+    "Language": "Язык",
     "Vanilla files restored. Backups retained.": "Исходные файлы восстановлены. Резервные копии сохранены.",
     "KKS installed and verified.": "KKS установлен и проверен.",
     "Recovery needs attention: ": "Восстановление требует внимания: ",

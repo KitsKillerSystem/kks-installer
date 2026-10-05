@@ -13,6 +13,7 @@ CONTENT_HINTS = {
 }
 
 DE = {
+    "Language": "Sprache",
     "Vanilla files restored. Backups retained.": "Originaldateien wiederhergestellt. Sicherungen bleiben erhalten.",
     "KKS installed and verified.": "KKS installiert und geprüft.",
     "Recovery needs attention: ": "Wiederherstellung muss geprüft werden: ",
