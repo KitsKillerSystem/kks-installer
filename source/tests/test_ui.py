@@ -10,10 +10,10 @@ class UiTests(unittest.TestCase):
     def setUp(self):
         from kks_installer.ui import App
 
-        with patch.object(App, "start"):
-            self.app = App(game=r"C:\KKS fixture only", language="en")
-            self.app.root.geometry("900x700")
-            self.app.root.update()
+        self.enterContext(patch.object(App, "start"))
+        self.app = App(game=r"C:\KKS fixture only", language="en")
+        self.app.root.geometry("900x700")
+        self.app.root.update()
 
     def tearDown(self):
         self.app.close()
