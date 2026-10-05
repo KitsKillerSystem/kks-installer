@@ -94,7 +94,10 @@ def main():
         report.parent.mkdir(parents=True, exist_ok=True)
         report.write_text(output + "\n", "utf8")
     if sys.stdout:
-        print(output)
+        # Redirected output can inherit a legacy Windows code page even in a
+        # frozen windowed build. ASCII JSON escapes round-trip every language;
+        # the explicit report above and the GUI retain readable Unicode.
+        print(json.dumps(result, ensure_ascii=True, indent=2))
     elif code and not args.report:
         import tkinter as tk
         from tkinter import messagebox
