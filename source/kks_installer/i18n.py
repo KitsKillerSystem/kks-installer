@@ -2,6 +2,15 @@
 
 from pathlib import Path
 import ctypes, json, os, re, uuid
+from .i18n_fr_ru import FR, RU, FR_PREFIXES, RU_PREFIXES
+
+LANGUAGE_NAMES = {"en": "English", "de": "Deutsch", "ru": "Русский", "fr": "Français"}
+CONTENT_HINTS = {
+    "en": "Content language: English.",
+    "de": "Content language: German. Set Fallout 76 to Deutsch in Steam.",
+    "ru": "Content language: Russian. Set Fallout 76 to Русский in Steam.",
+    "fr": "Content language: French. Set Fallout 76 to Français in Steam.",
+}
 
 DE = {
     "Vanilla files restored. Backups retained.": "Originaldateien wiederhergestellt. Sicherungen bleiben erhalten.",
@@ -114,17 +123,56 @@ PREFIXES = {
 }
 
 
+DE.update(
+    {
+        CONTENT_HINTS["ru"]: "Inhaltssprache: Russisch. Stelle Fallout 76 in Steam auf Русский.",
+        CONTENT_HINTS[
+            "fr"
+        ]: "Inhaltssprache: Französisch. Stelle Fallout 76 in Steam auf Français.",
+        "Russian and French packages require Installer 1.3.1 or newer": "Russische und französische Pakete benötigen Installer 1.3.1 oder neuer.",
+    }
+)
+
+
 def translate(text, language):
-    if language != "de":
+    catalog = {"de": DE, "fr": FR, "ru": RU}.get(language)
+    if catalog is None:
         return text
-    if text in DE:
-        return DE[text]
+    if text in catalog:
+        return catalog[text]
     # Complete user-facing sentence fragments; paths and package names stay exact.
-    for source, target in sorted(DE.items(), key=lambda p: len(p[0]), reverse=True):
+    for source, target in sorted(catalog.items(), key=lambda p: len(p[0]), reverse=True):
         if len(source) > 18:
             text = text.replace(source, target)
-    for source, target in PREFIXES.items():
+    for source, target in {"de": PREFIXES, "fr": FR_PREFIXES, "ru": RU_PREFIXES}[language].items():
         text = text.replace(source, target)
+    if language in ("fr", "ru"):
+        patterns = {
+            "fr": (
+                r" · signature et \1 fichiers vérifiés",
+                r"\1 fichiers de contenu sur \2 diffèrent.",
+                r"Paquet de contenu \1 vérifié.",
+                " Sélectionné : ",
+                " Installé : ",
+                " installé et vérifié.",
+            ),
+            "ru": (
+                r" · подпись и все файлы (\1) проверены",
+                r"Отличаются файлы контента: \1 из \2.",
+                r"Пакет контента \1 проверен.",
+                " Выбрано: ",
+                " Установлено: ",
+                " установлен и проверен.",
+            ),
+        }[language]
+        text = re.sub(r" · signature and all (\d+) files verified", patterns[0], text)
+        text = re.sub(r"(\d+) of (\d+) content files differ\.", patterns[1], text)
+        text = re.sub(r"^Verified (KKS .*) content package\.$", patterns[2], text)
+        return (
+            text.replace(" Selected: ", patterns[3])
+            .replace(" Installed: ", patterns[4])
+            .replace(" installed and verified.", patterns[5])
+        )
     text = re.sub(
         r" · signature and all (\d+) files verified",
         r" · Signatur und alle \1 Dateien geprüft",
@@ -150,20 +198,21 @@ def load_language():
         p = preference_path()
         if p.stat().st_size <= 1024:
             value = json.loads(p.read_text("utf8")).get("language")
-            if value in ("en", "de"):
+            if value in LANGUAGE_NAMES:
                 return value
     except (OSError, ValueError, AttributeError):
         pass
     try:
-        if os.name == "nt" and ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF == 7:
-            return "de"
+        if os.name == "nt":
+            primary = ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF
+            return {7: "de", 12: "fr", 25: "ru"}.get(primary, "en")
     except (AttributeError, OSError):
         pass
     return "en"
 
 
 def save_language(language):
-    if language not in ("en", "de"):
+    if language not in LANGUAGE_NAMES:
         return False
     try:
         p = preference_path()

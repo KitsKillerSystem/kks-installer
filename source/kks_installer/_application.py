@@ -1,7 +1,7 @@
 """Application policy. Content packages cannot expand these capabilities."""
 
-APP_VERSION = "1.3.0"
-BUILD_LABEL = "Private Beta B001"
+APP_VERSION = "1.3.1"
+BUILD_LABEL = "Private Beta B002"
 INSTALLER_API = 1
 PROFILE = "fo76-steam-en-fonts-strings-v1"
 WRITER = "ba2-v1-gnrl-kks-writer-v1"
@@ -13,6 +13,10 @@ LOCALIZATION_PROFILE = "fo76-steam-en-fonts-strings-localization-v3"
 LOCALIZATION_CAPABILITIES = [WRITER, "localization-translate-en-v1"]
 GERMAN_PROFILE = "fo76-steam-de-fonts-strings-localization-v1"
 GERMAN_CAPABILITIES = [WRITER, "localization-translate-de-v1"]
+RUSSIAN_PROFILE = "fo76-steam-ru-fonts-strings-localization-v1"
+FRENCH_PROFILE = "fo76-steam-fr-fonts-strings-localization-v1"
+LOCALIZED_PROFILES = {"de": GERMAN_PROFILE, "ru": RUSSIAN_PROFILE, "fr": FRENCH_PROFILE}
+CONTENT_LANGUAGES = ("en", "de", "ru", "fr")
 # Public verification keys only. Private signing keys never ship with the app.
 TRUSTED_KEYS = {
     "kks-release-2026-10": "1ff7681dfa502f1478154b412b7f37a284cca141436022f6c76bd653f0685103"

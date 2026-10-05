@@ -4,7 +4,7 @@ from pathlib import Path
 import queue, threading, tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from ._application import APP_VERSION, BUILD_LABEL
-from .i18n import translate, load_language, save_language
+from .i18n import translate, load_language, save_language, LANGUAGE_NAMES, CONTENT_HINTS
 from .manager import Manager
 from .platforms import discover
 from .windows_drop import enable_file_drop
@@ -59,7 +59,12 @@ class App:
         spine.pack_propagate(False)
         tk.Frame(spine, bg=ACCENT, height=9).pack(fill="x")
         tk.Label(
-            spine, text="KKS", font=("Bahnschrift", 48, "bold"), fg=BG, bg=DARK, anchor="w"
+            spine,
+            text="KKS",
+            font=("Bahnschrift", 48, "bold"),
+            fg=BG,
+            bg=DARK,
+            anchor="w",
         ).pack(fill="x", padx=18, pady=(22, 0))
         tk.Label(
             spine,
@@ -81,7 +86,12 @@ class App:
             anchor="w",
         ).pack(fill="x", padx=22)
         tk.Label(
-            spine, text="v" + APP_VERSION, font=("Consolas", 10), fg="#b4bfb5", bg=DARK, anchor="w"
+            spine,
+            text="v" + APP_VERSION,
+            font=("Consolas", 10),
+            fg="#b4bfb5",
+            bg=DARK,
+            anchor="w",
         ).pack(fill="x", padx=22, pady=(6, 0))
         tk.Label(
             spine,
@@ -93,13 +103,18 @@ class App:
             anchor="w",
         ).pack(side="bottom", fill="x", padx=22, pady=24)
         tk.Label(
-            spine, text="Language / Sprache", fg=BG, bg=DARK, font=("Segoe UI", 9), anchor="w"
+            spine,
+            text="Language / Sprache",
+            fg=BG,
+            bg=DARK,
+            font=("Segoe UI", 9),
+            anchor="w",
         ).pack(fill="x", padx=18, pady=(20, 5))
-        self.language_value = tk.StringVar(value="Deutsch" if self.language == "de" else "English")
+        self.language_value = tk.StringVar(value=LANGUAGE_NAMES[self.language])
         self.language_box = ttk.Combobox(
             spine,
             textvariable=self.language_value,
-            values=("English", "Deutsch"),
+            values=tuple(LANGUAGE_NAMES.values()),
             state="readonly",
             width=13,
         )
@@ -283,7 +298,9 @@ class App:
     def change_language(self, event=None):
         if self.busy:
             return
-        self.language = "de" if self.language_value.get() == "Deutsch" else "en"
+        self.language = next(
+            code for code, name in LANGUAGE_NAMES.items() if name == self.language_value.get()
+        )
         save_language(self.language)
         self.render_language()
 
@@ -297,7 +314,8 @@ class App:
         self.log.configure(state="normal")
         self.log.delete("1.0", "end")
         self.log.insert(
-            "end", "\n".join(self.t(x) for x in self.log_lines) + ("\n" if self.log_lines else "")
+            "end",
+            "\n".join(self.t(x) for x in self.log_lines) + ("\n" if self.log_lines else ""),
         )
         self.log.configure(state="disabled")
 
@@ -464,11 +482,11 @@ class App:
                 )
                 if action == "select":
                     release = manager.select(zip_path)
-                    if release.manifest["game"]["language"] == "de":
+                    if release.manifest["game"]["language"] != "en":
                         self.events.put(
                             (
                                 "log",
-                                "Private beta: set Fallout 76 to German in Steam before installing Deutsch content.",
+                                CONTENT_HINTS[release.manifest["game"]["language"]],
                             )
                         )
                     self.events.put(
@@ -510,11 +528,7 @@ class App:
                         name
                         + f" · signature and all {file_count} files verified"
                         + "\n"
-                        + (
-                            "Content language: German. Set Fallout 76 to Deutsch in Steam."
-                            if language == "de"
-                            else "Content language: English."
-                        )
+                        + (CONTENT_HINTS[language])
                     )
                     continue
                 self.busy = False

@@ -14,6 +14,7 @@ from .packages import (
     MAX_MANIFEST,
     archive_members,
     profile_strings,
+    profile_language,
     LOCALIZATION,
 )
 from ._application import PROFILE, GERMAN_PROFILE
@@ -33,7 +34,10 @@ class LegacyDescriptor:
         self.name = self.data["release"]
         self.targets = self.data["targets"]
         self.by_path = {t["path"]: t for t in self.targets}
-        demand(set(self.by_path) == set(ARCHIVES) | STRINGS, "Invalid legacy target catalog")
+        demand(
+            set(self.by_path) == set(ARCHIVES) | STRINGS,
+            "Invalid legacy target catalog",
+        )
 
     def verify_payloads(self):
         raise SafetyError("The legacy descriptor permits restoration and recovery only")
@@ -50,9 +54,12 @@ class ManagedEngine(Installer):
         self.interface_overrides = {"Data/" + n for names in catalog.values() for n in names}
         self.interface_overrides.add("Data/interface/fontconfig.txt")
         # Historical EN profiles also refuse a loose translation override.
-        if profile != GERMAN_PROFILE:
+        if profile_language(profile) == "en":
             self.interface_overrides.add("Data/interface/translate_en.txt")
-        demand(set(release.by_path) == set(catalog) | self.strings, "Invalid managed target set")
+        demand(
+            set(release.by_path) == set(catalog) | self.strings,
+            "Invalid managed target set",
+        )
         demand(
             {i["path"] for i in release.data["identity"]} == IDENTITIES,
             "Invalid managed game identity",
@@ -80,7 +87,10 @@ class ManagedEngine(Installer):
                 target = self.release.by_path[LOCALIZATION]
                 permitted[target["after_sha256"]] = target["after_size"]
             current = hash_file(path) if path.is_file() else None
-            demand(current in permitted, "Unsupported or changed game build: " + item["path"])
+            demand(
+                current in permitted,
+                "Unsupported or changed game build: " + item["path"],
+            )
             if "size" in item:
                 demand(
                     path.stat().st_size == permitted[current],
@@ -103,7 +113,10 @@ class ManagedEngine(Installer):
         demand(type(value["files"]) is dict, "Invalid saved target records")
         for record in value["files"].values():
             fields(record, "before after")
-        demand(value["release"] == self.release.name, "Saved content identity is inconsistent")
+        demand(
+            value["release"] == self.release.name,
+            "Saved content identity is inconsistent",
+        )
         return super()._validate_receipt(value)
 
     def _read_journal(self):
@@ -125,7 +138,8 @@ class ManagedEngine(Installer):
             self._validate_receipt(receipt)
         installed = bool(receipt and receipt["status"] == "installed")
         demand(
-            j["operation"] == "install" or installed, "Recovery has no prior managed installation"
+            j["operation"] == "install" or installed,
+            "Recovery has no prior managed installation",
         )
         demand(
             type(j["entries"]) is list and len(j["entries"]) == len(self.release.targets),

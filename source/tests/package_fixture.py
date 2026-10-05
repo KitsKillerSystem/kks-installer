@@ -17,6 +17,7 @@ from kks_installer.packages import (
     TRANSLATION,
     archive_members,
     LOCALIZATION,
+    RUSSIAN_FONT,
     profile_capabilities,
     profile_strings,
 )
@@ -28,6 +29,7 @@ from kks_installer._application import (
     TRANSLATION_CAPABILITIES,
     LOCALIZATION_PROFILE,
     GERMAN_PROFILE,
+    LOCALIZED_PROFILES,
 )
 from kks_installer.manager import Manager
 from kks_installer.managed_engine import LegacyDescriptor
@@ -35,7 +37,8 @@ from test_installer import archive
 
 
 class PackageFixture:
-    def __init__(self, base, loose=False, german=False):
+    def __init__(self, base, loose=False, german=False, multilingual=False):
+        languages = ("de", "ru", "fr") if multilingual else ("de",) if german else ()
         self.base = Path(base)
         self.game = self.base / "game"
         (self.game / "Data").mkdir(parents=True)
@@ -43,7 +46,10 @@ class PackageFixture:
         self.keys = {"fixture": self.key.public_key().public_bytes_raw().hex()}
         for path in IDENTITIES:
             (self.game / path).write_bytes(("game identity " + path).encode())
-        for path, name in ARCHIVES.items():
+        font_archives = dict(ARCHIVES)
+        if multilingual:
+            font_archives[RUSSIAN_FONT] = "interface/fonts_ru.swf"
+        for path, name in font_archives.items():
             archive(
                 self.game / path,
                 [
@@ -51,8 +57,15 @@ class PackageFixture:
                     ("untouched.dat", b"unrelated payload", False),
                 ]
                 + (
-                    [("interface/fontconfig_de.txt", b"fontlib fonts_en DE", True)]
-                    if german and path == CONFIG
+                    [
+                        (
+                            f"interface/fontconfig_{lang}.txt",
+                            ("fontlib fonts_en " + lang).encode(),
+                            True,
+                        )
+                        for lang in languages
+                    ]
+                    if languages and path == CONFIG
                     else []
                 )
                 + (
@@ -81,19 +94,20 @@ class PackageFixture:
             + (
                 [
                     (
-                        "interface/translate_de.txt",
+                        f"interface/translate_{lang}.txt",
                         b"\xff\xfe" + "$Known\t(Bekannt)\r\n".encode("utf-16le"),
                         True,
                     )
+                    for lang in languages
                 ]
-                if german
+                if languages
                 else []
             ),
         )
         self.loose = {p: ("vanilla " + p).encode() for p in STRINGS}
-        if german:
+        for lang in languages:
             self.loose.update(
-                {p: ("vanilla " + p).encode() for p in profile_strings(GERMAN_PROFILE)}
+                {p: ("vanilla " + p).encode() for p in profile_strings(LOCALIZED_PROFILES[lang])}
             )
         if loose:
             (self.game / "Data/strings").mkdir()
@@ -101,7 +115,7 @@ class PackageFixture:
                 (self.game / p).write_bytes(b)
         self.original = self.snapshot()
         self.raw_originals = {
-            p: (self.game / p).read_bytes() for p in set(ARCHIVES) | {LOCALIZATION}
+            p: (self.game / p).read_bytes() for p in set(font_archives) | {LOCALIZATION}
         }
         self.a, self.manifest, self.payloads = self.build(1)
         old = {
@@ -140,8 +154,8 @@ class PackageFixture:
         payloads = {}
         targets = []
         profile = (
-            GERMAN_PROFILE
-            if language == "de"
+            LOCALIZED_PROFILES[language]
+            if language != "en"
             else (
                 LOCALIZATION_PROFILE
                 if translation_localization
@@ -153,7 +167,7 @@ class PackageFixture:
                 payloads["payload/" + name] = (
                     f"KKS asset {name} v{1 if one_change else sequence}"
                 ).encode()
-            lang_prefix = "de-" if language == "de" else ""
+            lang_prefix = language + "-" if language != "en" else ""
             src = self.base / f"vanilla-{lang_prefix}{sequence}-{idx}.ba2"
             src.write_bytes(
                 self.raw_originals[path]
@@ -224,7 +238,7 @@ class PackageFixture:
                 "app_id": 1151340,
                 "language": language,
                 "build_label": "fixture game",
-                "baseline_id": "fixture-baseline" + ("-de" if language == "de" else ""),
+                "baseline_id": "fixture-baseline" + ("-" + language if language != "en" else ""),
                 "identity": [
                     {
                         "path": p,
@@ -241,19 +255,30 @@ class PackageFixture:
             "targets": targets,
             "qa": {"status": "candidate", "report_id": "synthetic test fixture"},
         }
-        if translation_localization or language == "de":
+        if translation_localization or language != "en":
             original = self.raw_originals[LOCALIZATION]
             next(i for i in m["game"]["identity"] if i["path"] == LOCALIZATION).update(
                 sha256=digest(original), size=len(original)
             )
         if mutate:
             mutate(m)
-        path = self.base / f"content-{'de-' if language == 'de' else ''}{sequence}-{revision}.zip"
+        path = (
+            self.base
+            / f"content-{language + '-' if language != 'en' else ''}{sequence}-{revision}.zip"
+        )
         self.write(path, m, payloads)
         return path, m, payloads
 
     def write(
-        self, path, manifest, payloads, *, raw=None, key=None, extra=None, signature_mutator=None
+        self,
+        path,
+        manifest,
+        payloads,
+        *,
+        raw=None,
+        key=None,
+        extra=None,
+        signature_mutator=None,
     ):
         raw = (
             json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()

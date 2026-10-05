@@ -30,7 +30,7 @@ from .packages import (
     archive_members,
     profile_strings,
 )
-from ._application import PROFILE
+from ._application import PROFILE, CONTENT_LANGUAGES
 from .managed_engine import ManagedEngine, LegacyDescriptor, LEGACY_STATE
 
 STATE = ".kks-manager"
@@ -46,19 +46,21 @@ def content_strings(release):
 
 def content_identity(package):
     m = package.manifest
-    prefix = "de/" if content_language(package) == "de" else ""
+    language = content_language(package)
+    prefix = language + "/" if language != "en" else ""
     return prefix + m["content_version"] + "/" + str(m["package_revision"])
 
 
 def sequence_highest(state, language):
     if state["schema"] == 2:
         return state["highest_sequence"] if language == "en" else 0
-    return state["language_sequences"][language]
+    return state["language_sequences"].get(language, 0)
 
 
 def token(value):
     demand(
-        type(value) is str and re.fullmatch("[0-9a-f]{32}", value), "Invalid local state identifier"
+        type(value) is str and re.fullmatch("[0-9a-f]{32}", value),
+        "Invalid local state identifier",
     )
 
 
@@ -153,14 +155,17 @@ class Manager:
         }
 
     def _validate_state(self, data):
-        integer(data.get("schema") if isinstance(data, dict) else None, 2, 3)
+        integer(data.get("schema") if isinstance(data, dict) else None, 2, 4)
         fields(
             data,
             "schema root installation_id active highest_sequence release_ids baseline_ids retired"
-            + (" language_sequences" if data["schema"] == 3 else ""),
+            + (" language_sequences" if data["schema"] >= 3 else ""),
         )
-        if data["schema"] == 3:
-            fields(data["language_sequences"], "en de")
+        if data["schema"] >= 3:
+            fields(
+                data["language_sequences"],
+                "en de" if data["schema"] == 3 else " ".join(CONTENT_LANGUAGES),
+            )
             for value in data["language_sequences"].values():
                 integer(value, 0, 2**53 - 1)
             demand(
@@ -168,7 +173,8 @@ class Manager:
                 "English sequence history is inconsistent",
             )
         demand(
-            data["root"] == str(self.root), "This saved installation belongs to another game folder"
+            data["root"] == str(self.root),
+            "This saved installation belongs to another game folder",
         )
         if data["installation_id"] is not None:
             token(data["installation_id"])
@@ -183,7 +189,14 @@ class Manager:
         for key, value in data["release_ids"].items():
             demand(
                 re.fullmatch(
-                    r"(?:de/)?[0-9.]+/[0-9]+" if data["schema"] == 3 else r"[0-9.]+/[0-9]+", key
+                    (
+                        r"(?:(?:de|ru|fr)/)?[0-9.]+/[0-9]+"
+                        if data["schema"] == 4
+                        else (
+                            r"(?:de/)?[0-9.]+/[0-9]+" if data["schema"] == 3 else r"[0-9.]+/[0-9]+"
+                        )
+                    ),
+                    key,
                 )
                 and type(value) is str
                 and re.fullmatch("[0-9a-f]{64}", value),
@@ -510,7 +523,10 @@ class Manager:
                     "New game archive changed during cleanup",
                 )
             path = self.path(entry["path"])
-            demand(hash_file(path) == entry["before"], "String override changed during cleanup")
+            demand(
+                hash_file(path) == entry["before"],
+                "String override changed during cleanup",
+            )
             path.unlink()
             sync_directory(path.parent)
             self.event("override_retired", {"index": index, "path": entry["path"]})
@@ -625,7 +641,10 @@ class Manager:
                     != getattr(self._release(active), "files", {}).get(p, {}).get("sha256")
                     for p, a in selected.files.items()
                 )
-                result.update(changed_payload_files=changed, payload_file_count=len(selected.files))
+                result.update(
+                    changed_payload_files=changed,
+                    payload_file_count=len(selected.files),
+                )
                 if active["kind"] == "legacy" or active["manifest"] != selected.manifest_digest:
                     result.update(
                         status="update_available",
@@ -713,19 +732,28 @@ class Manager:
             p["root"] == str(self.root)
             and p["operation"] in ("install", "repair", "restore", "reconcile")
             and p["phase"]
-            in ("restore_pending", "vanilla_committed", "install_pending", "cleanup_pending"),
+            in (
+                "restore_pending",
+                "vanilla_committed",
+                "install_pending",
+                "cleanup_pending",
+            ),
             "Invalid coordinated recovery plan",
         )
         before = self._validate_state(p["before"])
         demand(
-            before["installation_id"] == p["installation_id"], "Recovery installation ID changed"
+            before["installation_id"] == p["installation_id"],
+            "Recovery installation ID changed",
         )
         for r in (p["old"], p["new"]):
             if r is not None:
                 self._validate_ref(r)
                 self._release(r)
         demand(p["old"] is not None or p["new"] is not None, "Empty recovery operation")
-        demand((p["operation"] == "restore") == (p["new"] is None), "Invalid recovery destination")
+        demand(
+            (p["operation"] == "restore") == (p["new"] is None),
+            "Invalid recovery destination",
+        )
         if p["operation"] == "repair":
             demand(p["old"] == p["new"], "Repair changed its content identity")
         if p["old"] and p["old"]["kind"] == "managed":
@@ -748,7 +776,10 @@ class Manager:
                 fingerprint(old_descriptor) != fingerprint(descriptor),
                 "Reconciliation did not change game baseline",
             )
-            demand(type(p["cleanup"]) is list and len(p["cleanup"]) == 3, "Invalid cleanup plan")
+            demand(
+                type(p["cleanup"]) is list and len(p["cleanup"]) == 3,
+                "Invalid cleanup plan",
+            )
             seen = set()
             for e in p["cleanup"]:
                 fields(e, "path before after")
@@ -794,13 +825,19 @@ class Manager:
                 "New baseline disagrees with cleanup results",
             )
         if p["new"]:
-            demand(p["new"]["baseline"] == b["id"], "New installation points to another baseline")
+            demand(
+                p["new"]["baseline"] == b["id"],
+                "New installation points to another baseline",
+            )
         stored = strict_json(
             bounded_file(self.saved("baselines/" + b["id"] + ".json"), MAX_MANIFEST)
         )
         demand(stored == b, "Immutable baseline record changed")
         state = self._read_state()
-        demand(state["installation_id"] == p["installation_id"], "Recovery root identity changed")
+        demand(
+            state["installation_id"] == p["installation_id"],
+            "Recovery root identity changed",
+        )
         permitted = [before, self._after_state(p, False)]
         if p["new"]:
             permitted.append(self._after_state(p, True))
@@ -820,7 +857,10 @@ class Manager:
             if language != "en" and state["schema"] == 2:
                 state["schema"] = 3
                 state["language_sequences"] = {"en": state["highest_sequence"], "de": 0}
-            if state["schema"] == 3:
+            if language in ("ru", "fr") and state["schema"] < 4:
+                state["schema"] = 4
+                state["language_sequences"].update(ru=0, fr=0)
+            if state["schema"] >= 3:
                 state["language_sequences"][language] = max(
                     state["language_sequences"][language], m["release_sequence"]
                 )
@@ -850,7 +890,10 @@ class Manager:
                 selected.manifest_digest if isinstance(selected, SignedRelease) else selected
             )
         with self._locks():
-            demand(not self.saved("pending.json").exists(), "Recover the interrupted change first")
+            demand(
+                not self.saved("pending.json").exists(),
+                "Recover the interrupted change first",
+            )
             state = self._read_state()
             active = self._owners(state)
             reconcile = bool(
@@ -865,7 +908,10 @@ class Manager:
                 else None
             )
             if operation != "install":
-                demand(active is not None, "There is no managed installation to " + operation)
+                demand(
+                    active is not None,
+                    "There is no managed installation to " + operation,
+                )
             if operation == "repair":
                 demand(
                     active["kind"] == "managed",
@@ -903,7 +949,7 @@ class Manager:
                     identity_engine._validate_current(None)
                 free = shutil.disk_usage(self.root).free
                 total = sum(
-                    self.path(t["path"]).stat().st_size if self.path(t["path"]).exists() else 0
+                    (self.path(t["path"]).stat().st_size if self.path(t["path"]).exists() else 0)
                     for t in identity_engine.release.targets
                 )
                 demand(
@@ -936,7 +982,8 @@ class Manager:
                                 verified_copy(self.path(entry["path"]), dest, entry["before"])
                             else:
                                 demand(
-                                    hash_file(dest) == entry["before"], "Damaged quarantine object"
+                                    hash_file(dest) == entry["before"],
+                                    "Damaged quarantine object",
                                 )
                 elif active:
                     baseline = self._baseline(active)
@@ -1004,7 +1051,8 @@ class Manager:
                         self._write_plan(plan, "cleanup_pending")
                         self._cleanup(plan)
                         durable_json(
-                            self.saved("installation.json"), self._after_state(plan, False)
+                            self.saved("installation.json"),
+                            self._after_state(plan, False),
                         )
                         self._write_plan(plan, "vanilla_committed")
                     elif old and operation != "repair":
@@ -1046,7 +1094,8 @@ class Manager:
         engine._identity(skip_exe=True)
         for path, expected in plan["baseline"]["originals"].items():
             demand(
-                engine.current(path) == expected, "Vanilla checkpoint validation failed: " + path
+                engine.current(path) == expected,
+                "Vanilla checkpoint validation failed: " + path,
             )
         engine._validate_current(None)
 
@@ -1154,4 +1203,7 @@ class Manager:
                         "status": "recovered",
                         "message": "The interrupted managed operation was recovered.",
                     }
-            return {"status": "no_recovery_needed", "message": "There is no pending recovery."}
+            return {
+                "status": "no_recovery_needed",
+                "message": "There is no pending recovery.",
+            }

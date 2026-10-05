@@ -24,6 +24,8 @@ from kks_installer._application import (
     TRANSLATION_CAPABILITIES,
     LOCALIZATION_PROFILE,
     GERMAN_PROFILE,
+    LOCALIZED_PROFILES,
+    CONTENT_LANGUAGES,
 )
 from kks_installer.ba2 import BA2, hash_file
 from kks_installer.engine import demand, digest
@@ -51,7 +53,10 @@ def protect(data, decrypt=False):
     )
 
     class Blob(ctypes.Structure):
-        _fields_ = [("cbData", wintypes.DWORD), ("pbData", ctypes.POINTER(ctypes.c_ubyte))]
+        _fields_ = [
+            ("cbData", wintypes.DWORD),
+            ("pbData", ctypes.POINTER(ctypes.c_ubyte)),
+        ]
 
     buf = ctypes.create_string_buffer(data)
     src = Blob(len(data), ctypes.cast(buf, ctypes.POINTER(ctypes.c_ubyte)))
@@ -162,15 +167,18 @@ def build(
     demand(not output.exists(), "Refusing to replace an existing package")
     files = []
     targets = []
-    demand(not (include_translation and translation_localization), "Choose one translation profile")
-    demand(language in ("en", "de"), "Unsupported content language")
+    demand(
+        not (include_translation and translation_localization),
+        "Choose one translation profile",
+    )
+    demand(language in CONTENT_LANGUAGES, "Unsupported content language")
     demand(
         language == "en" or (translation_localization and not include_translation),
-        "German content requires the Localization profile",
+        "Localized content requires the Localization profile",
     )
     profile = (
-        GERMAN_PROFILE
-        if language == "de"
+        LOCALIZED_PROFILES[language]
+        if language != "en"
         else (
             LOCALIZATION_PROFILE
             if translation_localization
@@ -282,7 +290,8 @@ def build(
                 previous = next(x for x in old["targets"] if x["path"] == t["path"])
                 for field in ("vanilla_sha256", "after_sha256"):
                     demand(
-                        t[field] == previous[field], "Output differs from frozen 1.0: " + t["path"]
+                        t[field] == previous[field],
+                        "Output differs from frozen 1.0: " + t["path"],
                     )
                 for a, b in zip(t.get("assets", []), previous.get("assets", [])):
                     demand(
@@ -345,7 +354,7 @@ def main():
     b.add_argument("--expected-legacy")
     b.add_argument("--include-translation", action="store_true")
     b.add_argument("--translation-localization", action="store_true")
-    b.add_argument("--language", choices=("en", "de"), default="en")
+    b.add_argument("--language", choices=CONTENT_LANGUAGES, default="en")
     a = p.parse_args()
     if a.command == "create-key":
         result = create_key(a.key, a.key_id)
