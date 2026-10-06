@@ -160,6 +160,7 @@ def build(
     include_translation=False,
     translation_localization=False,
     language="en",
+    equipment_naming=False,
 ):
     game = Path(game)
     payload = Path(payload)
@@ -278,6 +279,22 @@ def build(
             "targets": targets,
             "qa": {"status": "candidate", "report_id": report_id},
         }
+        if equipment_naming:
+            from equipment_catalog import equipment_categories
+            from kks_installer.equipment import CAPABILITY, reset_equipment
+
+            demand(language == "en" and translation_localization,
+                   "The equipment naming preview requires English Localization content")
+            categories = equipment_categories(game / "Data/SeventySix.esm")
+            member = "strings/seventysix_en.strings"
+            derived = reset_equipment((payload / member).read_bytes(), localization.extract(member), categories)
+            m["schema"] = 2
+            m["required_capabilities"] = m["required_capabilities"] + [CAPABILITY]
+            m["equipment_naming"] = dict(algorithm=CAPABILITY, categories=categories,
+                                         sha256=digest(derived), size=len(derived))
+            for item in identity:
+                demand(hash_file(game / item["path"]) == item["sha256"],
+                       "Game identity changed during equipment certification")
         validate_manifest(m)
         if expected_legacy:
             old = json.loads(Path(expected_legacy).read_bytes())
@@ -355,6 +372,7 @@ def main():
     b.add_argument("--include-translation", action="store_true")
     b.add_argument("--translation-localization", action="store_true")
     b.add_argument("--language", choices=CONTENT_LANGUAGES, default="en")
+    b.add_argument("--equipment-naming", action="store_true")
     a = p.parse_args()
     if a.command == "create-key":
         result = create_key(a.key, a.key_id)
@@ -376,6 +394,7 @@ def main():
             include_translation=a.include_translation,
             translation_localization=a.translation_localization,
             language=a.language,
+            equipment_naming=a.equipment_naming,
         )
     print(json.dumps(result, indent=2))
 

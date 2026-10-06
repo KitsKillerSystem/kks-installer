@@ -1,4 +1,8 @@
-# Build installer application 1.2.1
+# Build installer application 1.4.0 equipment naming preview
+
+The current private preview adds optional equipment naming to supported English
+content; see EQUIPMENT_NAMING.md. The clean-source build runs 169 tests. Historical
+release reproduction details below remain tied to their named commits.
 
 Content version 1.1.0 is independent. Use the original `v1.0.0` source to reproduce
 the older bundled installer. This branch's runtime build never includes

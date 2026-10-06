@@ -7,6 +7,7 @@ from kks_installer._application import APP_VERSION
 from kks_installer.manager import Manager
 from kks_installer.packages import import_package
 from kks_installer.platforms import discover
+from kks_installer.equipment import NAMING_PROFILES, FULL
 
 
 def main():
@@ -27,6 +28,8 @@ def main():
         group.add_argument("--" + name, action="store_true")
     parser.add_argument("--game", help="Folder containing Fallout76.exe")
     parser.add_argument("--package", help="Complete signed KKS content ZIP")
+    parser.add_argument("--naming", choices=NAMING_PROFILES, default=FULL,
+                        help="Equipment naming for check/install; repair preserves the installed choice")
     parser.add_argument(
         "package_path", nargs="?", help="A ZIP dropped onto the application or supplied at launch"
     )
@@ -51,6 +54,7 @@ def main():
                     "manifest": release.manifest_digest,
                     "supported_build": release.data["supported_build"],
                     "payload_files": len(release.files),
+                    "equipment_naming_available": "equipment_naming" in release.manifest,
                 }
         else:
             action = next(
@@ -64,7 +68,7 @@ def main():
             if action is None:
                 from kks_installer.ui import launch
 
-                launch(package, args.game)
+                launch(package, args.game, naming=args.naming)
                 return 0
             if not args.game:
                 raise ValueError("--game is required for command-line operations")
@@ -75,14 +79,14 @@ def main():
                 if package:
                     with tempfile.TemporaryDirectory(prefix="kks-check-") as cache:
                         selected = import_package(package, cache)
-                        result = manager.inspect(selected)
+                        result = manager.inspect(selected, naming=args.naming)
                 else:
                     result = manager.inspect()
             elif action == "recover":
                 result = manager.recover()
             else:
                 selected = manager.select(package) if package else None
-                result = manager.run(action, selected)
+                result = manager.run(action, selected, naming=args.naming)
             result["activity"] = logs
         code = 0
     except Exception as e:

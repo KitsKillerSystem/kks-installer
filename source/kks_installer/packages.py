@@ -1,6 +1,7 @@
 """Authenticated, bounded content packages with fixed asset profiles; no hooks."""
 
 from pathlib import Path
+from copy import copy, deepcopy
 import base64
 import hashlib
 import json
@@ -28,6 +29,7 @@ from ._application import RUSSIAN_PROFILE, FRENCH_PROFILE, LOCALIZED_PROFILES
 from .engine import demand, digest, is_digest, durable_bytes, sync_directory
 from .ba2 import hash_file
 from .platforms import SafetyError, safe_path
+from .equipment import FULL, VANILLA, NAMING_PROFILES, CAPABILITY, CATEGORIES, reset_equipment
 
 DOMAIN = b"KKS-CONTENT-MANIFEST-v1\0"
 MAX_MANIFEST = 1024 * 1024
@@ -179,11 +181,13 @@ def hash_size(value):
 
 
 def validate_manifest(m):
+    schema = m.get("schema") if isinstance(m, dict) else None
+    integer(schema, 1, 2)
     fields(
         m,
-        "schema package_type product channel content_version package_revision release_sequence created_utc installer_api minimum_installer_version required_capabilities profile game files targets qa",
+        "schema package_type product channel content_version package_revision release_sequence created_utc installer_api minimum_installer_version required_capabilities profile game files targets qa"
+        + (" equipment_naming" if schema == 2 else ""),
     )
-    integer(m["schema"], 1, 1)
     integer(m["installer_api"], INSTALLER_API, INSTALLER_API)
     demand(
         (m["package_type"], m["product"], m["channel"]) == ("kks-content", "KKS", "release")
@@ -192,7 +196,7 @@ def validate_manifest(m):
     )
     catalog = archive_members(m["profile"])
     permitted_payloads = profile_payloads(m["profile"])
-    capabilities = profile_capabilities(m["profile"])
+    capabilities = profile_capabilities(m["profile"]) + ([CAPABILITY] if schema == 2 else [])
     strings = profile_strings(m["profile"])
     translation = f"interface/translate_{profile_language(m['profile'])}.txt"
     version(m["content_version"])
@@ -352,6 +356,23 @@ def validate_manifest(m):
     fields(m["qa"], "status report_id")
     demand(m["qa"]["status"] in ("candidate", "approved"), "Invalid QA status")
     plain(m["qa"]["report_id"])
+    if schema == 2:
+        demand(m["profile"] == LOCALIZATION_PROFILE and version(m["minimum_installer_version"]) >= (1, 4, 0),
+               "Equipment naming requires the English Localization profile and Installer 1.4.0")
+        option = m["equipment_naming"]
+        fields(option, "algorithm categories sha256 size")
+        demand(option["algorithm"] == CAPABILITY, "Unknown equipment naming algorithm")
+        fields(option["categories"], " ".join(CATEGORIES))
+        seen_ids = set()
+        for ids in option["categories"].values():
+            demand(type(ids) is list and 0 < len(ids) <= 10000, "Invalid equipment category size")
+            for sid in ids:
+                integer(sid, 1, 0xffffffff)
+            demand(ids == sorted(set(ids)) and not seen_ids.intersection(ids),
+                   "Duplicate, overlapping or unsorted equipment IDs")
+            seen_ids.update(ids)
+        hash_size({k: option[k] for k in ("sha256", "size")})
+        integer(option["size"], 8, MAX_ASSET)
     return m
 
 
@@ -382,6 +403,7 @@ class SignedRelease:
         self.raw = raw
         self.signature = signature
         self.manifest_digest = digest(raw)
+        self.naming = FULL
         self.name = "KKS " + self.manifest["content_version"]
         language = self.manifest["game"]["language"]
         if language != "en":
@@ -397,6 +419,49 @@ class SignedRelease:
             "targets": self.targets,
         }
 
+    def with_naming(self, naming):
+        demand(naming in NAMING_PROFILES, "Unknown equipment naming profile")
+        demand(naming == FULL or "equipment_naming" in self.manifest,
+               "This content package does not support Vanilla Equipment Naming")
+        if naming == self.naming:
+            return self
+        result = copy(self)
+        result.naming = naming
+        # Always rebuild the view from authenticated canonical metadata.
+        result.targets = deepcopy(self.manifest["targets"])
+        result.files = {f["path"]: dict(f) for f in self.manifest["files"]}
+        result.name = "KKS " + self.manifest["content_version"]
+        if naming == VANILLA:
+            option = self.manifest["equipment_naming"]
+            target = next(t for t in result.targets if t["path"] == "Data/strings/seventysix_en.strings")
+            target.update(after_sha256=option["sha256"], after_size=option["size"])
+            result.files[target["payload"]].update(sha256=option["sha256"], size=option["size"])
+            result.name += " — Vanilla Equipment Naming"
+        result.by_path = {t["path"]: t for t in result.targets}
+        result.data = dict(self.data, targets=result.targets, release=result.name)
+        return result
+
+    def prepare_naming(self, game):
+        """Generate only in cache, before any game transaction; verify the signed output."""
+        if self.naming == FULL:
+            return
+        source = self.with_naming(FULL)
+        source.verify_payloads()
+        target = source.by_path["Data/strings/seventysix_en.strings"]
+        from .ba2 import BA2
+        vanilla = BA2(safe_path(Path(game), LOCALIZATION, regular=True)).extract(
+            "strings/seventysix_en.strings"
+        )
+        demand(len(vanilla) == target["vanilla_size"] and digest(vanilla) == target["vanilla_sha256"],
+               "Equipment naming requires the certified vanilla string baseline")
+        canonical = source.payload(target["payload"], target["after_sha256"]).read_bytes()
+        option = self.manifest["equipment_naming"]
+        derived = reset_equipment(canonical, vanilla, option["categories"])
+        demand(len(derived) == option["size"] and digest(derived) == option["sha256"],
+               "Derived equipment naming output does not match its signed checksum")
+        path = safe_path(self.folder, "derived/vanilla-equipment.strings", regular=True)
+        durable_bytes(path, derived)
+
     @classmethod
     def load(cls, folder, keys=None):
         folder = Path(folder)
@@ -409,7 +474,12 @@ class SignedRelease:
             relative in self.files and self.files[relative]["sha256"] == expected,
             "Unexpected payload request",
         )
-        p = safe_path(self.folder, relative, regular=True)
+        cache_path = (
+            "derived/vanilla-equipment.strings"
+            if self.naming == VANILLA and relative == "payload/strings/seventysix_en.strings"
+            else relative
+        )
+        p = safe_path(self.folder, cache_path, regular=True)
         demand(
             p.is_file()
             and p.stat().st_size == self.files[relative]["size"]
@@ -420,6 +490,11 @@ class SignedRelease:
         return p
 
     def verify_payloads(self):
+        if self.naming == VANILLA:
+            # Repairability depends on the canonical authenticated cache. Derived
+            # bytes are regenerated before installation and checked by payload().
+            self.with_naming(FULL).verify_payloads()
+            return
         for f in self.files.values():
             self.payload(f["path"], f["sha256"])
 

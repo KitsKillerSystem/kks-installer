@@ -8,7 +8,7 @@ import launcher
 class LauncherUnicodeTests(unittest.TestCase):
     def test_package_check_on_cp1252_stdout_keeps_utf8_report(self):
         release=SimpleNamespace(name="KKS 1.1.0 Русский Français ✓",manifest_digest="a"*64,
-                                data={"supported_build":"Steam 25636769"},files=dict.fromkeys(range(6)))
+                                data={"supported_build":"Steam 25636769"},files=dict.fromkeys(range(6)),manifest={})
         with tempfile.TemporaryDirectory() as tmp:
             report=Path(tmp)/"report.json"
             raw=io.BytesIO();out=io.TextIOWrapper(raw,encoding="cp1252",errors="strict")

@@ -8,6 +8,7 @@ from .i18n import translate, load_language, save_language, LANGUAGE_NAMES, CONTE
 from .manager import Manager
 from .platforms import discover
 from .windows_drop import enable_file_drop
+from .equipment import FULL, LABELS
 
 BG = "#e8e2d4"
 PANEL = "#f5f0e5"
@@ -22,7 +23,7 @@ DARK = "#27312e"
 
 
 class App:
-    def __init__(self, package=None, game=None, language=None):
+    def __init__(self, package=None, game=None, language=None, naming=FULL):
         self.language = language or load_language()
         self.log_lines = []
         self.status_title_key = "Ready when you are."
@@ -39,6 +40,8 @@ class App:
         self.events = queue.Queue()
         self.last_status = None
         self.selected = None
+        self.naming_available = False
+        self.initial_naming = naming
         self.root.protocol("WM_DELETE_WINDOW", self.close)
         style = ttk.Style()
         style.theme_use("clam")
@@ -186,8 +189,15 @@ class App:
             wraplength=480,
         )
         self.package_label.pack(fill="x", padx=13, pady=(8, 5))
-        self.package_button = self.button(package_row, "Choose package…", self.choose_package)
-        self.package_button.pack(anchor="w", padx=12, pady=(0, 8))
+        package_actions = tk.Frame(package_row, bg=PANEL)
+        package_actions.pack(fill="x", padx=12, pady=(0, 8))
+        self.package_button = self.button(package_actions, "Choose package…", self.choose_package)
+        self.package_button.pack(side="left")
+        self.naming_value = tk.StringVar(value=LABELS[FULL])
+        self.naming_box = ttk.Combobox(package_actions, textvariable=self.naming_value,
+                                       values=tuple(LABELS.values()), state="disabled", width=45)
+        self.naming_box.pack(side="left", fill="x", expand=True, padx=(12, 0))
+        self.naming_box.bind("<<ComboboxSelected>>", lambda event: self.start("check"))
         self.label(outer, "03  /  INSTALLATION STATUS", BG).pack(fill="x", pady=(12, 7))
         status = tk.Frame(outer, bg=PANEL)
         status.pack(fill="x")
@@ -369,6 +379,9 @@ class App:
         if not self.busy:
             self.last_status = None
             self.selected = None
+            self.naming_available = False
+            self.naming_value.set(LABELS[FULL])
+            self.naming_box.configure(state="disabled")
             self.set_package("Drop a ZIP here or choose a package. Keep the ZIP unopened.")
             for b in (self.primary, self.repair, self.restore):
                 b.configure(state="disabled")
@@ -437,6 +450,8 @@ class App:
             self.choose_game()
             return
         self.busy = True
+        naming = next(key for key, label in LABELS.items() if label == self.naming_value.get())
+        self.naming_box.configure(state="disabled")
         self.language_box.configure(state="disabled")
         self.last_status = None
         for w in (
@@ -497,15 +512,16 @@ class App:
                                 release.name,
                                 len(release.files),
                                 release.manifest["game"]["language"],
+                                "equipment_naming" in release.manifest,
                             ),
                         )
                     )
-                    result = manager.inspect(release)
+                    result = manager.inspect(release, naming=self.initial_naming)
                 elif action == "check":
-                    result = manager.inspect(release)
+                    result = manager.inspect(release, naming=naming)
                 else:
                     result = (
-                        manager.recover() if action == "recover" else manager.run(action, release)
+                        manager.recover() if action == "recover" else manager.run(action, release, naming=naming)
                     )
                     self.events.put(("log", result.get("message", result["status"])))
                     result = manager.inspect()
@@ -523,7 +539,9 @@ class App:
                     self.append(data)
                     continue
                 if kind == "selected":
-                    self.selected, name, file_count, language = data
+                    self.selected, name, file_count, language = data[:4]
+                    self.naming_available = bool(len(data) > 4 and data[4])
+                    self.naming_value.set(LABELS[self.initial_naming] if self.naming_available else LABELS[FULL])
                     self.set_package(
                         name
                         + f" · signature and all {file_count} files verified"
@@ -533,6 +551,7 @@ class App:
                     continue
                 self.busy = False
                 self.language_box.configure(state="readonly")
+                self.naming_box.configure(state="readonly" if self.naming_available else "disabled")
                 self.progress.stop()
                 self.progress.configure(value=0)
                 for w in (self.entry, self.browse, self.check, self.package_button):
@@ -592,5 +611,5 @@ class App:
         self.root.mainloop()
 
 
-def launch(package=None, game=None):
-    App(package, game).run()
+def launch(package=None, game=None, naming=FULL):
+    App(package, game, naming=naming).run()

@@ -46,6 +46,21 @@ class UiTests(unittest.TestCase):
         self.assertEqual(str(self.app.primary["state"]), "normal")
         self.assertEqual(self.app.primary["text"], "Install update")
 
+    def test_equipment_choice_requires_support_and_defaults_to_full(self):
+        from kks_installer.equipment import FULL, VANILLA, LABELS
+
+        self.app.events.put(("selected", ("digest", "Candidate", 6, "en", True)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(self.app.naming_value.get(), LABELS[FULL])
+        self.assertEqual(str(self.app.naming_box["state"]), "readonly")
+        self.app.naming_value.set(LABELS[VANILLA])
+        self.app.events.put(("selected", ("old", "Old content", 6, "en", False)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(self.app.naming_value.get(), LABELS[FULL])
+        self.assertEqual(str(self.app.naming_box["state"]), "disabled")
+
     def test_german_switch_preserves_selected_package_and_restore_visibility(self):
         self.app.events.put(("selected", ("digest", "KKS 1.1.0 Deutsch", 6, "de")))
         self.app.events.put(

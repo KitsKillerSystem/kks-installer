@@ -1,7 +1,7 @@
 """Application policy. Content packages cannot expand these capabilities."""
 
-APP_VERSION = "1.3.1"
-BUILD_LABEL = "Private Beta B002"
+APP_VERSION = "1.4.0"
+BUILD_LABEL = "Equipment Naming Preview"
 INSTALLER_API = 1
 PROFILE = "fo76-steam-en-fonts-strings-v1"
 WRITER = "ba2-v1-gnrl-kks-writer-v1"
