@@ -1,6 +1,13 @@
-# Build installer application 1.2.1
+# Build installer application 1.5.0
 
-Content version 1.1.0 is independent. Use the original `v1.0.0` source to reproduce
+Installer 1.5.0 adds independently selectable equipment naming and perk descriptions;
+see OPTIONAL_FEATURES.md. The accepted clean-source build passes 182 tests.
+The exact executable source is `85b6d10ecba99cfdb624900d6acfd08bff7c14d5`, tagged
+`installer-v1.5.0`. [Build evidence](review/installer-1.5.0/README.md) records one
+clean build and the accepted executable hash. Historical reproduction details below
+remain tied to their named commits; the two-build identity result belongs to 1.2.1.
+
+Content version 1.1.1 is independent. Use the original `v1.0.0` source to reproduce
 the older bundled installer. This branch's runtime build never includes
 `source/release`, publisher tooling, tests, game files or private signing keys.
 No game installation or publisher key is needed for synthetic tests or building.
@@ -30,7 +37,7 @@ python -m venv .venv
 ```
 
 Both output directories must be new. The script rejects uncommitted/untracked
-source, checks Python/dependency versions, runs all **138** tests, then invokes
+source, checks Python/dependency versions, runs all **182** tests, then invokes
 PyInstaller with `--clean --noupx --onefile --windowed`. A failed step stops the
 build. Accept the output only when `build-receipt.json` exists and logs pass;
 a partially created EXE alone is not success. Do not edit source during a build.
@@ -48,9 +55,9 @@ Get-FileHash C:\KKSBuild\run2\app\KKSInstaller.exe -Algorithm SHA256
 ```
 
 These controls follow [PyInstaller's reproducible-build guidance](https://pyinstaller.org/en/stable/advanced-topics.html#creating-a-reproducible-build).
-The release handoff reports the actual two-build result, rather than promising
-cross-machine identity. Published source/environment/hash receipts and full
-test/build logs identify both clean builds. The source tag preserves the exact
+Historical Installer 1.2.1 records two byte-identical builds; Installer 1.5.0
+records one clean build. No cross-machine identity is promised. Published
+source/environment/hash receipts and test/build logs identify the recorded builds. The source tag preserves the exact
 reviewed revision; the later content release tag also includes release documentation.
 
 ## Limits of reproduction and provenance

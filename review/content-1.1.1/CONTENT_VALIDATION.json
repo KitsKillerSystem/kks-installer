@@ -1,0 +1,48 @@
+{
+  "sha256": "10669ca71cf993f9e2f65af261c33be5b8ed81d2e5bef4867649b4b32e33e192",
+  "size": 14781452,
+  "manifest_sha256": "7fdf1dc7f154753390e4a0f946bbdf55c2685218b9bd2e90f8be2ce1d8d8e770",
+  "content_version": "1.1.1",
+  "payload_files": [
+    {
+      "path": "payload/interface/fontconfig_en.txt",
+      "sha256": "2040df15a0a655c51592dcde4d7ed9b33f6c881bba14b69d8bd19dedb877b675",
+      "size": 5062
+    },
+    {
+      "path": "payload/interface/fonts_en.swf",
+      "sha256": "babb0d9c202b53d56fcb3f015ae640811d8a4f2c7537a136c5e7b97e5fd1aba3",
+      "size": 9058279
+    },
+    {
+      "path": "payload/interface/translate_en.txt",
+      "sha256": "1a48280f8619870d929d51f8b71aac87d50adf676a1e2416872f6d40494e07c7",
+      "size": 375988
+    },
+    {
+      "path": "payload/strings/seventysix_en.dlstrings",
+      "sha256": "1e5763125f0e68a953194e62a04e3e5eb2e8c30f2293a54abed5339cad41b355",
+      "size": 3285987
+    },
+    {
+      "path": "payload/strings/seventysix_en.ilstrings",
+      "sha256": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2",
+      "size": 5662443
+    },
+    {
+      "path": "payload/strings/seventysix_en.strings",
+      "sha256": "b4f0c3781b7738a387610aa47abda59f1b8b448ea711dc2237dbeb8243537b8d",
+      "size": 7179800
+    }
+  ],
+  "perk_category_count": 1488,
+  "restored_perk_values": 451,
+  "unrelated_description_changes_preserved": 19,
+  "standard_cards": 240,
+  "dormant_panel_codepoints": 2806,
+  "canonical_matches_accepted_E001_and_final_underarmor": true,
+  "independent_xml_deck_and_binary_parity": true,
+  "perk_off_sha256": "2bb6bc97a8da3eeed5d96dceb01154e3b99506264f7982497bb035db7c91b318",
+  "equipment_off_sha256": "e428f6c0c0dda2b8267b361dd8ffcc71dbbbe730f1ec5d5031c3a01d5c206969",
+  "live_unchanged": true
+}

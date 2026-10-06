@@ -10,10 +10,10 @@ class UiTests(unittest.TestCase):
     def setUp(self):
         from kks_installer.ui import App
 
-        with patch.object(App, "start"):
-            self.app = App(game=r"C:\KKS fixture only")
-            self.app.root.geometry("900x700")
-            self.app.root.update()
+        self.enterContext(patch.object(App, "start"))
+        self.app = App(game=r"C:\KKS fixture only", language="en")
+        self.app.root.geometry("900x700")
+        self.app.root.update()
 
     def tearDown(self):
         self.app.close()
@@ -33,7 +33,7 @@ class UiTests(unittest.TestCase):
         self.assertEqual(str(self.app.primary["state"]), "disabled")
 
     def test_six_payload_selection_and_update_count(self):
-        self.app.events.put(("selected", ("digest", "Candidate", 6)))
+        self.app.events.put(("selected", ("digest", "Candidate", 6, "en")))
         self.app.events.put(
             (
                 "success",
@@ -46,6 +46,76 @@ class UiTests(unittest.TestCase):
         self.assertEqual(str(self.app.primary["state"]), "normal")
         self.assertEqual(self.app.primary["text"], "Install update")
 
+    def test_equipment_choice_requires_support_and_defaults_to_full(self):
+        from kks_installer.equipment import FULL, VANILLA, LABELS
+
+        self.app.events.put(("selected", ("digest", "Candidate", 6, "en", True)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(self.app.naming_value.get(), LABELS[FULL])
+        self.assertEqual(str(self.app.naming_box["state"]), "readonly")
+        self.app.naming_value.set(LABELS[VANILLA])
+        self.app.events.put(("selected", ("old", "Old content", 6, "en", False)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(self.app.naming_value.get(), LABELS[FULL])
+        self.assertEqual(str(self.app.naming_box["state"]), "disabled")
+
+    def test_german_switch_preserves_selected_package_and_restore_visibility(self):
+        self.app.events.put(("selected", ("digest", "KKS 1.1.0 Deutsch", 6, "de")))
+        self.app.events.put(
+            (
+                "success",
+                {
+                    "status": "installed",
+                    "restore_available": True,
+                    "repair_available": True,
+                    "message": "KKS is installed and verified.",
+                },
+            )
+        )
+        self.app.pump()
+        with patch("kks_installer.ui.save_language"):
+            self.app.language_value.set("Deutsch")
+            self.app.change_language()
+        self.app.root.update()
+        self.assertEqual(self.app.selected, "digest")
+        self.assertIn("Inhaltssprache: Deutsch", self.app.package_text.get())
+        self.assertEqual(self.app.restore["text"], "Original wiederherstellen")
+        self.assertEqual(self.app.status_title["text"], "KKS ist installiert.")
+        self.assertEqual(str(self.app.restore["state"]), "normal")
+        bottom = self.app.root.winfo_rooty() + self.app.root.winfo_height()
+        for w in (self.app.primary, self.app.repair, self.app.restore, self.app.log):
+            self.assertLessEqual(w.winfo_rooty() + w.winfo_height(), bottom)
+        self.assertGreaterEqual(self.app.log.winfo_height(), 30)
+        with patch("kks_installer.ui.save_language"):
+            self.app.language_value.set("English")
+            self.app.change_language()
+        self.assertEqual(self.app.restore["text"], "Restore vanilla")
+        self.assertEqual(self.app.selected, "digest")
+
+    def test_perk_choice_requires_supported_package_and_is_independent(self):
+        from kks_installer.perks import ON, OFF, LABELS
+        from kks_installer.equipment import VANILLA, LABELS as EQUIPMENT_LABELS
+
+        self.assertEqual(str(self.app.perks_box["state"]), "disabled")
+        self.app.events.put(("selected", ("digest", "Optional features", 6, "en", True, True)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(str(self.app.perks_box["state"]), "readonly")
+        self.assertEqual(self.app.perks_value.get(), LABELS[ON])
+        self.app.perks_value.set(LABELS[OFF])
+        self.app.naming_value.set(EQUIPMENT_LABELS[VANILLA])
+        self.app.events.put(("success", {"status": "update_available"}))
+        self.app.pump()
+        self.assertEqual(self.app.perks_value.get(), LABELS[OFF])
+        self.assertEqual(self.app.naming_value.get(), EQUIPMENT_LABELS[VANILLA])
+        self.app.events.put(("selected", ("equipment", "Equipment only", 6, "en", True)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(str(self.app.perks_box["state"]), "disabled")
+        self.assertEqual(str(self.app.naming_box["state"]), "readonly")
+        self.assertEqual(self.app.perks_value.get(), LABELS[ON])
 
 if __name__ == "__main__":
     unittest.main()

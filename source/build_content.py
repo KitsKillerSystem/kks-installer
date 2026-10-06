@@ -23,6 +23,9 @@ from kks_installer._application import (
     TRANSLATION_PROFILE,
     TRANSLATION_CAPABILITIES,
     LOCALIZATION_PROFILE,
+    GERMAN_PROFILE,
+    LOCALIZED_PROFILES,
+    CONTENT_LANGUAGES,
 )
 from kks_installer.ba2 import BA2, hash_file
 from kks_installer.engine import demand, digest
@@ -38,6 +41,8 @@ from kks_installer.packages import (
     archive_members,
     profile_payloads,
     profile_capabilities,
+    profile_strings,
+    profile_language,
 )
 
 
@@ -48,7 +53,10 @@ def protect(data, decrypt=False):
     )
 
     class Blob(ctypes.Structure):
-        _fields_ = [("cbData", wintypes.DWORD), ("pbData", ctypes.POINTER(ctypes.c_ubyte))]
+        _fields_ = [
+            ("cbData", wintypes.DWORD),
+            ("pbData", ctypes.POINTER(ctypes.c_ubyte)),
+        ]
 
     buf = ctypes.create_string_buffer(data)
     src = Blob(len(data), ctypes.cast(buf, ctypes.POINTER(ctypes.c_ubyte)))
@@ -151,6 +159,9 @@ def build(
     expected_legacy=None,
     include_translation=False,
     translation_localization=False,
+    language="en",
+    equipment_naming=False,
+    perk_cards=False,
 ):
     game = Path(game)
     payload = Path(payload)
@@ -158,11 +169,25 @@ def build(
     demand(not output.exists(), "Refusing to replace an existing package")
     files = []
     targets = []
-    demand(not (include_translation and translation_localization), "Choose one translation profile")
+    demand(
+        not (include_translation and translation_localization),
+        "Choose one translation profile",
+    )
+    demand(language in CONTENT_LANGUAGES, "Unsupported content language")
+    demand(not perk_cards or equipment_naming,
+           "Optional perk cards require the equipment-capable content profile")
+    demand(
+        language == "en" or (translation_localization and not include_translation),
+        "Localized content requires the Localization profile",
+    )
     profile = (
-        LOCALIZATION_PROFILE
-        if translation_localization
-        else TRANSLATION_PROFILE if include_translation else PROFILE
+        LOCALIZED_PROFILES[language]
+        if language != "en"
+        else (
+            LOCALIZATION_PROFILE
+            if translation_localization
+            else TRANSLATION_PROFILE if include_translation else PROFILE
+        )
     )
     catalog = archive_members(profile)
     for p in sorted(profile_payloads(profile)):
@@ -210,7 +235,7 @@ def build(
                 }
             )
         localization = BA2(game / "Data/SeventySix - Localization.ba2")
-        for p in sorted(STRINGS):
+        for p in sorted(profile_strings(profile)):
             raw = localization.extract(p.removeprefix("Data/"))
             f = byfile["payload/" + p[5:]]
             targets.append(
@@ -248,7 +273,7 @@ def build(
                 "id": "fallout76",
                 "platform": "steam",
                 "app_id": 1151340,
-                "language": "en",
+                "language": profile_language(profile),
                 "build_label": build_label,
                 "baseline_id": baseline_id,
                 "identity": identity,
@@ -257,6 +282,36 @@ def build(
             "targets": targets,
             "qa": {"status": "candidate", "report_id": report_id},
         }
+        if equipment_naming:
+            from equipment_catalog import equipment_categories
+            from kks_installer.equipment import CAPABILITY, reset_equipment
+
+            demand(language == "en" and translation_localization,
+                   "The equipment naming preview requires English Localization content")
+            categories = equipment_categories(game / "Data/SeventySix.esm")
+            member = "strings/seventysix_en.strings"
+            derived = reset_equipment((payload / member).read_bytes(), localization.extract(member), categories)
+            m["schema"] = 2
+            m["required_capabilities"] = m["required_capabilities"] + [CAPABILITY]
+            m["equipment_naming"] = dict(algorithm=CAPABILITY, categories=categories,
+                                         sha256=digest(derived), size=len(derived))
+            for item in identity:
+                demand(hash_file(game / item["path"]) == item["sha256"],
+                       "Game identity changed during equipment certification")
+        if perk_cards:
+            from equipment_catalog import perk_categories
+            from kks_installer.perks import CAPABILITY, reset_perks
+
+            categories = perk_categories(game / "Data/SeventySix.esm")
+            member = "strings/seventysix_en.dlstrings"
+            derived = reset_perks((payload / member).read_bytes(), localization.extract(member), categories)
+            m["schema"] = 3
+            m["required_capabilities"] = m["required_capabilities"] + [CAPABILITY]
+            m["perk_cards"] = dict(algorithm=CAPABILITY, categories=categories,
+                                    sha256=digest(derived), size=len(derived))
+            for item in identity:
+                demand(hash_file(game / item["path"]) == item["sha256"],
+                       "Game identity changed during perk certification")
         validate_manifest(m)
         if expected_legacy:
             old = json.loads(Path(expected_legacy).read_bytes())
@@ -269,7 +324,8 @@ def build(
                 previous = next(x for x in old["targets"] if x["path"] == t["path"])
                 for field in ("vanilla_sha256", "after_sha256"):
                     demand(
-                        t[field] == previous[field], "Output differs from frozen 1.0: " + t["path"]
+                        t[field] == previous[field],
+                        "Output differs from frozen 1.0: " + t["path"],
                     )
                 for a, b in zip(t.get("assets", []), previous.get("assets", [])):
                     demand(
@@ -332,6 +388,9 @@ def main():
     b.add_argument("--expected-legacy")
     b.add_argument("--include-translation", action="store_true")
     b.add_argument("--translation-localization", action="store_true")
+    b.add_argument("--language", choices=CONTENT_LANGUAGES, default="en")
+    b.add_argument("--equipment-naming", action="store_true")
+    b.add_argument("--perk-cards", action="store_true")
     a = p.parse_args()
     if a.command == "create-key":
         result = create_key(a.key, a.key_id)
@@ -352,6 +411,9 @@ def main():
             expected_legacy=a.expected_legacy,
             include_translation=a.include_translation,
             translation_localization=a.translation_localization,
+            language=a.language,
+            equipment_naming=a.equipment_naming,
+            perk_cards=a.perk_cards,
         )
     print(json.dumps(result, indent=2))
 

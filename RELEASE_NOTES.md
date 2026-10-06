@@ -1,41 +1,48 @@
-# KKS 1.1.0 + Installer 1.2.1
+# KKS 1.1.1 + Installer 1.5.0 — Modular equipment and perk cards
 
-KKS 1.1.0 brings the artwork and information pass across inventory, crafting,
-CAMP interactions and the full standard perk deck.
+Choose KKS equipment naming and KKS perk cards independently, using one complete
+content package. Keep the full experience, use native equipment with KKS perks,
+keep KKS equipment with native perks, or turn both treatments off while retaining
+the rest of KKS. Both KKS options are enabled by default.
 
-- Refined glyph silhouettes and visual weight, with smaller, balanced legendary wordmarks.
-- Cleaner cooked-food names with mutation identity and useful effect suffixes; primary effect-family sorting is preserved.
-- More consistent CAMP object/action labels and deployment of existing object artwork.
-- Redesigned descriptions for all 240 standard perk cards, including ranks and ghoul variants, with clearer mechanics and flavor text. Legendary perk cards remain outside this update.
-- Plan rarity grouping, unknown plans above Known plans, and a checkmark alongside the retained Plan icon.
-- Targeted Sustain, standalone Clean-food and missed UNIQUE equipment fixes.
+- **Vanilla Equipment Naming** restores native weapon/armor names and naming rules.
+- **KKS Perk Cards Off (Vanilla)** restores Bethesda's native perk descriptions.
+  It does not disable perks or change their gameplay effects.
+- Selectors stay disabled until a verified package supports each option.
+- Switch either feature with the same ZIP. Repair preserves the installed choices;
+  Restore vanilla and interrupted-operation recovery remain supported.
+- Includes finalized English underarmor names without redundant classification text.
 
-Installer 1.2.1 fixes package drag-and-drop, refreshes the interface and adds
-verified English translation-file support with backups, repair and restoration.
+This gives KKS a practical native fallback while feature artwork or wording is
+revised. New Bethesda builds still need a package certified for their current files.
 
 ## Install or update
 
-**Steam English build 25636769. Installer 1.2.1 is required.**
+**Fallout 76 Steam English build 25636769. Installer 1.5.0 is required.**
 
-1. Download both named ZIP assets. Extract `KKS_Installer_1.2.1.zip`.
-2. Close Fallout 76 and run `KKSInstaller.exe`.
-3. Select the game folder, then drop in or choose the intact `KKS_1.1.0_Steam_EN_25636769.zip`.
-4. After verification, click **Install content** or **Install update**.
+1. Download [KKS_Installer_1.5.0.zip](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.1.1/KKS_Installer_1.5.0.zip) and extract it.
+2. Download [KKS_1.1.1_Steam_EN_25636769.zip](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.1.1/KKS_1.1.1_Steam_EN_25636769.zip) and keep it intact.
+3. Close Fallout 76, run `KKSInstaller.exe`, and select your game folder.
+4. Choose or drop in the content ZIP, select your options, and click Install.
 
-Existing supported KKS installations can update directly without restoring first.
-Keep the game's KKS backup folders and use Installer 1.2.1 for Repair or Restore
-vanilla afterward. This is a complete package; no intermediate versions are needed.
-If Bethesda updates the game, wait for a package certified for that new build.
+Existing supported installations can update directly without restoring first.
+Keep the game's KKS backups. Use Installer 1.5.0 for subsequent Repair/Restore,
+including after restoring and reinstalling; older installers cannot read the new
+saved history. Re-enable features with this same package instead of downgrading.
+The content package is English; changing the installer UI language does not translate it.
 
 ## Validation
 
-The package is the exact content accepted in the maintainer's final playtest.
-Installer validation includes 138 automated tests, two byte-identical clean builds,
-actual install/upgrade/repair/restore checks and repeated packaged drag-and-drop.
-Content signatures are separate from Windows signing; the EXE is not Authenticode-signed.
+The exact executable and signed content passed maintainer in-game acceptance:
+Restore Vanilla, Full KKS, both equipment/perk hybrids, profile-aware Repair, and
+return to Full KKS. No regressions observed. **182 automated tests and 28 compiled-EXE
+checks passed**, including all four combinations and forced-interruption recovery.
 
-[Content evidence](https://github.com/KitsKillerSystem/kks-installer/tree/v1.1.0/review/content-1.1.0)
-and [installer build evidence](https://github.com/KitsKillerSystem/kks-installer/tree/v1.1.0/review/installer-1.2.1).
+[Installer build evidence](https://github.com/KitsKillerSystem/kks-installer/tree/v1.1.1/review/installer-1.5.0) and
+[content acceptance](https://github.com/KitsKillerSystem/kks-installer/tree/v1.1.1/review/content-1.1.1) identify the exact tested bytes.
+Historical preview/candidate labels remain in the accepted artifacts; the release
+acceptance supersedes them. Content is publisher-signed; the EXE is not Authenticode-signed.
+
 `SHA256SUMS.txt` covers both download ZIPs. GitHub's automatic Source code archives
-are for developers; players need the two named assets. Application and content
-versions are independent. Previous releases remain available unchanged.
+are for developers; players need the two named ZIPs. Installer and content versions
+are independent. Prior releases remain available unchanged.

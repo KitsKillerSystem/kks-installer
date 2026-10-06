@@ -1,6 +1,7 @@
 """Authenticated, bounded content packages with fixed asset profiles; no hooks."""
 
 from pathlib import Path
+from copy import copy, deepcopy
 import base64
 import hashlib
 import json
@@ -13,12 +14,23 @@ import zipfile
 
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
-from ._application import APP_VERSION, INSTALLER_API, PROFILE, WRITER, CAPABILITIES, TRUSTED_KEYS
+from ._application import (
+    APP_VERSION,
+    INSTALLER_API,
+    PROFILE,
+    WRITER,
+    CAPABILITIES,
+    TRUSTED_KEYS,
+)
 from ._application import TRANSLATION_PROFILE, TRANSLATION_CAPABILITIES
 from ._application import LOCALIZATION_PROFILE, LOCALIZATION_CAPABILITIES
+from ._application import GERMAN_PROFILE, GERMAN_CAPABILITIES
+from ._application import RUSSIAN_PROFILE, FRENCH_PROFILE, LOCALIZED_PROFILES
 from .engine import demand, digest, is_digest, durable_bytes, sync_directory
 from .ba2 import hash_file
 from .platforms import SafetyError, safe_path
+from .equipment import FULL, VANILLA, NAMING_PROFILES, CAPABILITY, CATEGORIES, reset_equipment
+from .perks import ON, OFF, PERK_PROFILES, CAPABILITY as PERK_CAPABILITY, CATEGORIES as PERK_CATEGORIES, reset_perks
 
 DOMAIN = b"KKS-CONTENT-MANIFEST-v1\0"
 MAX_MANIFEST = 1024 * 1024
@@ -27,6 +39,7 @@ MAX_ASSET = 256 * 1024 * 1024
 MAX_PACKAGE = 512 * 1024 * 1024
 MAX_FILE = 32 * 1024 * 1024 * 1024
 FONT = "Data/SeventySix - Interface_en.ba2"
+RUSSIAN_FONT = "Data/SeventySix - Interface_ru.ba2"
 CONFIG = "Data/SeventySix - Interface.ba2"
 LOCALIZATION = "Data/SeventySix - Localization.ba2"
 ARCHIVES = {FONT: "interface/fonts_en.swf", CONFIG: "interface/fontconfig_en.txt"}
@@ -34,19 +47,48 @@ TRANSLATION = "interface/translate_en.txt"
 TRANSLATION_PAYLOAD = "payload/" + TRANSLATION
 MAX_TRANSLATION = 4 * 1024 * 1024
 STRINGS = {f"Data/strings/seventysix_en.{ext}" for ext in ("strings", "dlstrings", "ilstrings")}
-IDENTITIES = {"Fallout76.exe", "Data/SeventySix.esm", "Data/SeventySix - Localization.ba2"}
+IDENTITIES = {
+    "Fallout76.exe",
+    "Data/SeventySix.esm",
+    "Data/SeventySix - Localization.ba2",
+}
 PAYLOADS = {"payload/" + p for p in ARCHIVES.values()} | {"payload/" + p[5:] for p in STRINGS}
 FILES = PAYLOADS | {"manifest.json", "manifest.sig.json"}
 DIRECTORIES = {"payload/", "payload/interface/", "payload/strings/"}
+PROFILES = (
+    PROFILE,
+    TRANSLATION_PROFILE,
+    LOCALIZATION_PROFILE,
+    *LOCALIZED_PROFILES.values(),
+)
+
+
+def profile_language(profile):
+    demand(profile in PROFILES, "Unsupported asset profile")
+    return next((lang for lang, value in LOCALIZED_PROFILES.items() if value == profile), "en")
+
+
+def profile_strings(profile):
+    language = profile_language(profile)
+    return {
+        f"Data/strings/seventysix_{language}.{ext}" for ext in ("strings", "dlstrings", "ilstrings")
+    }
 
 
 def archive_members(profile):
     """The application, never package-provided paths, controls both catalogs."""
-    demand(
-        profile in (PROFILE, TRANSLATION_PROFILE, LOCALIZATION_PROFILE), "Unsupported asset profile"
-    )
+    demand(profile in PROFILES, "Unsupported asset profile")
     result = {path: (name,) for path, name in ARCHIVES.items()}
-    if profile == TRANSLATION_PROFILE:
+    if profile == RUSSIAN_PROFILE:
+        result = {
+            RUSSIAN_FONT: ("interface/fonts_ru.swf",),
+            CONFIG: ("interface/fontconfig_ru.txt",),
+        }
+    if profile in LOCALIZED_PROFILES.values():
+        language = profile_language(profile)
+        result[CONFIG] = (f"interface/fontconfig_{language}.txt",)
+        result[LOCALIZATION] = (f"interface/translate_{language}.txt",)
+    elif profile == TRANSLATION_PROFILE:
         result[CONFIG] += (TRANSLATION,)
     elif profile == LOCALIZATION_PROFILE:
         result[LOCALIZATION] = (TRANSLATION,)
@@ -54,16 +96,20 @@ def archive_members(profile):
 
 
 def profile_payloads(profile):
-    archive_members(profile)  # Reject unknown profiles even for standalone callers.
-    return PAYLOADS | ({TRANSLATION_PAYLOAD} if profile != PROFILE else set())
+    catalog = archive_members(profile)
+    return {"payload/" + name for names in catalog.values() for name in names} | {
+        "payload/" + p[5:] for p in profile_strings(profile)
+    }
 
 
 def profile_capabilities(profile):
     archive_members(profile)
+    if profile in LOCALIZED_PROFILES.values():
+        return [WRITER, f"localization-translate-{profile_language(profile)}-v1"]
     return (
         LOCALIZATION_CAPABILITIES
         if profile == LOCALIZATION_PROFILE
-        else TRANSLATION_CAPABILITIES if profile == TRANSLATION_PROFILE else CAPABILITIES
+        else (TRANSLATION_CAPABILITIES if profile == TRANSLATION_PROFILE else CAPABILITIES)
     )
 
 
@@ -136,20 +182,27 @@ def hash_size(value):
 
 
 def validate_manifest(m):
+    schema = m.get("schema") if isinstance(m, dict) else None
+    integer(schema, 1, 3)
     fields(
         m,
-        "schema package_type product channel content_version package_revision release_sequence created_utc installer_api minimum_installer_version required_capabilities profile game files targets qa",
+        "schema package_type product channel content_version package_revision release_sequence created_utc installer_api minimum_installer_version required_capabilities profile game files targets qa"
+        + (" equipment_naming" if schema >= 2 else "")
+        + (" perk_cards" if schema == 3 else ""),
     )
-    integer(m["schema"], 1, 1)
     integer(m["installer_api"], INSTALLER_API, INSTALLER_API)
     demand(
         (m["package_type"], m["product"], m["channel"]) == ("kks-content", "KKS", "release")
-        and m["profile"] in (PROFILE, TRANSLATION_PROFILE, LOCALIZATION_PROFILE),
+        and m["profile"] in PROFILES,
         "Unsupported product, channel or asset profile",
     )
     catalog = archive_members(m["profile"])
     permitted_payloads = profile_payloads(m["profile"])
-    capabilities = profile_capabilities(m["profile"])
+    capabilities = (profile_capabilities(m["profile"])
+                    + ([CAPABILITY] if schema >= 2 else [])
+                    + ([PERK_CAPABILITY] if schema == 3 else []))
+    strings = profile_strings(m["profile"])
+    translation = f"interface/translate_{profile_language(m['profile'])}.txt"
     version(m["content_version"])
     demand(
         version(m["minimum_installer_version"]) <= version(APP_VERSION),
@@ -171,6 +224,16 @@ def validate_manifest(m):
             version(m["minimum_installer_version"]) >= (1, 2, 1),
             "Localization packages require Installer 1.2.1 or newer",
         )
+    if m["profile"] == GERMAN_PROFILE:
+        demand(
+            version(m["minimum_installer_version"]) >= (1, 3, 0),
+            "German packages require Installer 1.3.0 or newer",
+        )
+    if m["profile"] in (RUSSIAN_PROFILE, FRENCH_PROFILE):
+        demand(
+            version(m["minimum_installer_version"]) >= (1, 3, 1),
+            "Russian and French packages require Installer 1.3.1 or newer",
+        )
     demand(
         type(m["created_utc"]) is str
         and re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ", m["created_utc"]),
@@ -179,8 +242,9 @@ def validate_manifest(m):
     game = m["game"]
     fields(game, "id platform app_id language build_label baseline_id identity")
     demand(
-        (game["id"], game["platform"], game["language"]) == ("fallout76", "steam", "en"),
-        "This application supports Fallout 76 Steam English packages only",
+        (game["id"], game["platform"], game["language"])
+        == ("fallout76", "steam", profile_language(m["profile"])),
+        "Content language must match the fixed Steam asset profile",
     )
     integer(game["app_id"], 1151340, 1151340)
     plain(game["build_label"])
@@ -192,7 +256,10 @@ def validate_manifest(m):
     for item in game["identity"]:
         fields(item, "path sha256 size")
         hash_size({k: item[k] for k in ("sha256", "size")})
-    demand({x["path"] for x in game["identity"]} == IDENTITIES, "Unexpected game identity path")
+    demand(
+        {x["path"] for x in game["identity"]} == IDENTITIES,
+        "Unexpected game identity path",
+    )
     demand(
         type(m["files"]) is list and len(m["files"]) == len(permitted_payloads),
         "The selected asset profile requires its complete payload set",
@@ -205,14 +272,18 @@ def validate_manifest(m):
             "Unexpected or duplicate payload path",
         )
         hash_size({k: f[k] for k in ("sha256", "size")})
-        integer(f["size"], 1, MAX_TRANSLATION if f["path"] == TRANSLATION_PAYLOAD else MAX_ASSET)
+        integer(
+            f["size"],
+            1,
+            MAX_TRANSLATION if f["path"] == "payload/" + translation else MAX_ASSET,
+        )
         payloads[f["path"]] = f
     demand(
         sum(f["size"] for f in payloads.values()) <= MAX_PACKAGE,
         "Payload exceeds the supported total size",
     )
     demand(
-        type(m["targets"]) is list and len(m["targets"]) == len(catalog) + len(STRINGS),
+        type(m["targets"]) is list and len(m["targets"]) == len(catalog) + len(strings),
         "The selected profile requires its exact game targets",
     )
     seen = set()
@@ -246,7 +317,9 @@ def validate_manifest(m):
                 demand(a["payload"] == "payload/" + a["name"], "Forbidden archive payload")
                 demand(is_digest(a["vanilla_sha256"]), "Invalid original member digest")
                 integer(
-                    a["vanilla_size"], 1, MAX_TRANSLATION if a["name"] == TRANSLATION else MAX_ASSET
+                    a["vanilla_size"],
+                    1,
+                    MAX_TRANSLATION if a["name"] == translation else MAX_ASSET,
                 )
                 demand(
                     {k: a[k] for k in ("sha256", "size")}
@@ -254,9 +327,12 @@ def validate_manifest(m):
                     "Archive member does not match payload",
                 )
         else:
-            fields(t, "path kind payload vanilla_sha256 vanilla_size after_sha256 after_size")
+            fields(
+                t,
+                "path kind payload vanilla_sha256 vanilla_size after_sha256 after_size",
+            )
             demand(
-                t["path"] in STRINGS
+                t["path"] in strings
                 and t["kind"] == "loose"
                 and t["payload"] == "payload/" + t["path"][5:],
                 "Forbidden loose-file operation",
@@ -267,11 +343,12 @@ def validate_manifest(m):
                 "Loose target does not match payload",
             )
         demand(
-            is_digest(t["vanilla_sha256"]) and is_digest(t["after_sha256"]), "Invalid target digest"
+            is_digest(t["vanilla_sha256"]) and is_digest(t["after_sha256"]),
+            "Invalid target digest",
         )
         integer(t["vanilla_size"], 1)
         integer(t["after_size"], 1)
-    demand(seen == set(catalog) | STRINGS, "Unexpected target set")
+    demand(seen == set(catalog) | strings, "Unexpected target set")
     if LOCALIZATION in catalog:
         identity = next(i for i in game["identity"] if i["path"] == LOCALIZATION)
         target = next(t for t in m["targets"] if t["path"] == LOCALIZATION)
@@ -283,6 +360,30 @@ def validate_manifest(m):
     fields(m["qa"], "status report_id")
     demand(m["qa"]["status"] in ("candidate", "approved"), "Invalid QA status")
     plain(m["qa"]["report_id"])
+    if schema >= 2:
+        demand(m["profile"] == LOCALIZATION_PROFILE and version(m["minimum_installer_version"]) >= (1, 4, 0),
+               "Equipment naming requires the English Localization profile and Installer 1.4.0")
+    if schema == 3:
+        demand(version(m["minimum_installer_version"]) >= (1, 5, 0),
+               "Optional perk cards require Installer 1.5.0 or newer")
+    options = [("equipment_naming", CAPABILITY, CATEGORIES)] if schema >= 2 else []
+    if schema == 3:
+        options.append(("perk_cards", PERK_CAPABILITY, PERK_CATEGORIES))
+    for key, capability, categories in options:
+        option = m[key]
+        fields(option, "algorithm categories sha256 size")
+        demand(option["algorithm"] == capability, "Unknown optional feature algorithm")
+        fields(option["categories"], " ".join(categories))
+        seen_ids = set()
+        for ids in option["categories"].values():
+            demand(type(ids) is list and 0 < len(ids) <= 10000, "Invalid optional feature category size")
+            for sid in ids:
+                integer(sid, 1, 0xffffffff)
+            demand(ids == sorted(set(ids)) and not seen_ids.intersection(ids),
+                   "Duplicate, overlapping or unsorted feature IDs")
+            seen_ids.update(ids)
+        hash_size({k: option[k] for k in ("sha256", "size")})
+        integer(option["size"], 8, MAX_ASSET)
     return m
 
 
@@ -295,7 +396,10 @@ class SignedRelease:
         demand(envelope["algorithm"] == "Ed25519", "Unsupported signature algorithm")
         plain(envelope["key_id"], 100)
         keys = TRUSTED_KEYS if keys is None else keys
-        demand(envelope["key_id"] in keys, "This package is not signed by a trusted KKS publisher")
+        demand(
+            envelope["key_id"] in keys,
+            "This package is not signed by a trusted KKS publisher",
+        )
         demand(type(envelope["signature"]) is str, "Invalid signature encoding")
         demand(len(raw) <= MAX_MANIFEST, "Manifest is too large")
         try:
@@ -310,7 +414,12 @@ class SignedRelease:
         self.raw = raw
         self.signature = signature
         self.manifest_digest = digest(raw)
+        self.naming = FULL
+        self.perks = ON
         self.name = "KKS " + self.manifest["content_version"]
+        language = self.manifest["game"]["language"]
+        if language != "en":
+            self.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français"}[language]
         self.targets = self.manifest["targets"]
         self.by_path = {t["path"]: t for t in self.targets}
         self.files = {f["path"]: f for f in self.manifest["files"]}
@@ -321,6 +430,72 @@ class SignedRelease:
             "identity": self.manifest["game"]["identity"],
             "targets": self.targets,
         }
+
+    def with_naming(self, naming):
+        return self.with_features(naming=naming)
+
+    def with_perks(self, perks):
+        return self.with_features(perks=perks)
+
+    def with_features(self, *, naming=None, perks=None):
+        naming = self.naming if naming is None else naming
+        perks = self.perks if perks is None else perks
+        demand(naming in NAMING_PROFILES, "Unknown equipment naming profile")
+        demand(perks in PERK_PROFILES, "Unknown perk card choice")
+        demand(naming == FULL or "equipment_naming" in self.manifest,
+               "This content package does not support Vanilla Equipment Naming")
+        demand(perks == ON or "perk_cards" in self.manifest,
+               "This content package does not support turning off KKS Perk Cards")
+        if naming == self.naming and perks == self.perks:
+            return self
+        result = copy(self)
+        result.naming = naming
+        result.perks = perks
+        # Always rebuild the view from authenticated canonical metadata.
+        result.targets = deepcopy(self.manifest["targets"])
+        result.files = {f["path"]: dict(f) for f in self.manifest["files"]}
+        result.name = "KKS " + self.manifest["content_version"]
+        for key, extension, cache_path, transform in result._derived():
+            option = self.manifest[key]
+            target = next(t for t in result.targets if t["path"] == f"Data/strings/seventysix_en.{extension}")
+            target.update(after_sha256=option["sha256"], after_size=option["size"])
+            result.files[target["payload"]].update(sha256=option["sha256"], size=option["size"])
+        if naming == VANILLA:
+            result.name += " — Vanilla Equipment Naming"
+        if perks == OFF:
+            result.name += " — Vanilla Perk Cards"
+        result.by_path = {t["path"]: t for t in result.targets}
+        result.data = dict(self.data, targets=result.targets, release=result.name)
+        return result
+
+    def _derived(self):
+        if self.naming == VANILLA:
+            yield "equipment_naming", "strings", "derived/vanilla-equipment.strings", reset_equipment
+        if self.perks == OFF:
+            yield "perk_cards", "dlstrings", "derived/vanilla-perks.dlstrings", reset_perks
+
+    def prepare_naming(self, game):
+        self.prepare_features(game)
+
+    def prepare_features(self, game):
+        """Generate only in cache, before any game transaction; verify the signed output."""
+        if self.naming == FULL and self.perks == ON:
+            return
+        source = self.with_features(naming=FULL, perks=ON)
+        source.verify_payloads()
+        from .ba2 import BA2
+        archive = BA2(safe_path(Path(game), LOCALIZATION, regular=True))
+        for key, extension, cache_path, transform in self._derived():
+            target = source.by_path[f"Data/strings/seventysix_en.{extension}"]
+            vanilla = archive.extract(f"strings/seventysix_en.{extension}")
+            demand(len(vanilla) == target["vanilla_size"] and digest(vanilla) == target["vanilla_sha256"],
+                   "Optional features require the certified vanilla string baseline")
+            canonical = source.payload(target["payload"], target["after_sha256"]).read_bytes()
+            option = self.manifest[key]
+            derived = transform(canonical, vanilla, option["categories"])
+            demand(len(derived) == option["size"] and digest(derived) == option["sha256"],
+                   "Derived feature output does not match its signed checksum")
+            durable_bytes(safe_path(self.folder, cache_path, regular=True), derived)
 
     @classmethod
     def load(cls, folder, keys=None):
@@ -334,7 +509,9 @@ class SignedRelease:
             relative in self.files and self.files[relative]["sha256"] == expected,
             "Unexpected payload request",
         )
-        p = safe_path(self.folder, relative, regular=True)
+        cache_path = next((path for _, ext, path, _ in self._derived()
+                           if relative == f"payload/strings/seventysix_en.{ext}"), relative)
+        p = safe_path(self.folder, cache_path, regular=True)
         demand(
             p.is_file()
             and p.stat().st_size == self.files[relative]["size"]
@@ -345,6 +522,11 @@ class SignedRelease:
         return p
 
     def verify_payloads(self):
+        if self.naming == VANILLA or self.perks == OFF:
+            # Repairability depends on the canonical authenticated cache. Derived
+            # bytes are regenerated before installation and checked by payload().
+            self.with_features(naming=FULL, perks=ON).verify_payloads()
+            return
         for f in self.files.values():
             self.payload(f["path"], f["sha256"])
 
@@ -359,9 +541,15 @@ def bounded_file(path, limit):
 def _container(file):
     file.seek(0, 2)
     size = file.tell()
-    demand(22 <= size <= MAX_PACKAGE, "Content ZIP is incomplete or exceeds the supported size")
+    demand(
+        22 <= size <= MAX_PACKAGE,
+        "Content ZIP is incomplete or exceeds the supported size",
+    )
     file.seek(0)
-    demand(file.read(4) == b"PK\x03\x04", "Self-extracting or prefixed ZIP files are not supported")
+    demand(
+        file.read(4) == b"PK\x03\x04",
+        "Self-extracting or prefixed ZIP files are not supported",
+    )
     # Small fixed entry count: bound the central directory before ZipFile allocates it.
     file.seek(size - 22)
     eocd = file.read(22)
@@ -388,7 +576,10 @@ def _container(file):
         demand(
             name == i.orig_filename
             and name not in seen
-            and name in FILES | {TRANSLATION_PAYLOAD} | DIRECTORIES,
+            and name
+            in set().union(*(profile_payloads(p) for p in PROFILES))
+            | {"manifest.json", "manifest.sig.json"}
+            | DIRECTORIES,
             "Unexpected, duplicate or unsafe ZIP path",
         )
         seen.add(name)
@@ -411,7 +602,9 @@ def _container(file):
             limit = MAX_SIGNATURE
         elif name in DIRECTORIES:
             limit = 0
-        elif name == TRANSLATION_PAYLOAD:
+        elif name in {TRANSLATION_PAYLOAD} | {
+            f"payload/interface/translate_{lang}.txt" for lang in LOCALIZED_PROFILES
+        }:
             limit = MAX_TRANSLATION
         else:
             limit = MAX_ASSET
@@ -421,7 +614,8 @@ def _container(file):
         )
         total += i.file_size
     demand(
-        FILES <= seen and total <= MAX_PACKAGE + MAX_MANIFEST + MAX_SIGNATURE,
+        any(profile_payloads(p) | {"manifest.json", "manifest.sig.json"} <= seen for p in PROFILES)
+        and total <= MAX_PACKAGE + MAX_MANIFEST + MAX_SIGNATURE,
         "Incomplete or oversized content package",
     )
     # Reject hidden data/local aliases and central/local size disagreement.
@@ -454,7 +648,10 @@ def _container(file):
             )
             end += 16
         else:
-            demand(h[6:9] == (i.CRC, i.compress_size, i.file_size), "Local ZIP sizes disagree")
+            demand(
+                h[6:9] == (i.CRC, i.compress_size, i.file_size),
+                "Local ZIP sizes disagree",
+            )
         expected = end
     demand(expected == cd_offset, "Hidden or truncated ZIP content")
     return z
@@ -492,7 +689,8 @@ def import_package(path, cache, keys=None):
                         while block := src.read(min(1024 * 1024, f["size"] - count + 1)):
                             count += len(block)
                             demand(
-                                count <= f["size"], "Decompressed payload exceeds its signed size"
+                                count <= f["size"],
+                                "Decompressed payload exceeds its signed size",
                             )
                             h.update(block)
                             dst.write(block)

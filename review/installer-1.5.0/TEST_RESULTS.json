@@ -1,0 +1,783 @@
+{
+  "status": "PASS",
+  "automated_tests": 182,
+  "clean_builds": 1,
+  "source_commit": "85b6d10ecba99cfdb624900d6acfd08bff7c14d5",
+  "exe_sha256": "32f0ac62ff39c0466318d0570437a2d200f6d6f01c717008cec609c1ed53433d",
+  "compiled_executable_checks": [
+    {
+      "name": "verified_independent_real_game_fixture",
+      "passed": true
+    },
+    {
+      "name": "version",
+      "passed": true,
+      "result": {
+        "application_version": "1.5.0",
+        "embedded_payload": false
+      },
+      "seconds": 1.75
+    },
+    {
+      "name": "verify_single_canonical_package",
+      "passed": true,
+      "result": {
+        "status": "verified",
+        "content": "KKS 1.1.1",
+        "manifest": "7fdf1dc7f154753390e4a0f946bbdf55c2685218b9bd2e90f8be2ce1d8d8e770",
+        "supported_build": "Steam English 25636769 - Optional Features Preview M001",
+        "payload_files": 6,
+        "equipment_naming_available": true,
+        "perk_cards_available": true
+      },
+      "seconds": 1.77
+    },
+    {
+      "name": "read_only_both_off_check",
+      "passed": true,
+      "result": {
+        "application_version": "1.5.0",
+        "game": "<USERPROFILE>\\Documents\\KKS_TestGames\\EN_M001\\game",
+        "game_running": false,
+        "status": "ready",
+        "message": "The selected package matches this game and is ready to install.",
+        "selected_content": "KKS 1.1.1 — Vanilla Equipment Naming — Vanilla Perk Cards",
+        "selected_naming": "vanilla-equipment",
+        "equipment_naming_available": true,
+        "selected_perks": "off",
+        "perk_cards_available": true,
+        "selected_manifest": "7fdf1dc7f154753390e4a0f946bbdf55c2685218b9bd2e90f8be2ce1d8d8e770",
+        "supported_build": "Steam English 25636769 - Optional Features Preview M001",
+        "qa_status": "candidate",
+        "activity": [
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 3.25
+    },
+    {
+      "name": "check_creates_no_game_state",
+      "passed": true
+    },
+    {
+      "name": "E001_installed_by_previous_1_4_exe",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.1.1 installed and verified.",
+        "content": "KKS 1.1.1",
+        "activity": [
+          "Verified KKS 1.1.1 content package.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Building and validating SeventySix - Interface_en.ba2…",
+          "Building and validating SeventySix - Interface.ba2…",
+          "Building and validating SeventySix - Localization.ba2…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "KKS installed and verified.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 20.75
+    },
+    {
+      "name": "upgrade_E001_to_M001_defaults",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.1.1 installed and verified.",
+        "content": "KKS 1.1.1",
+        "activity": [
+          "Verified KKS 1.1.1 content package.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Building and validating SeventySix - Interface_en.ba2…",
+          "Building and validating SeventySix - Interface.ba2…",
+          "Building and validating SeventySix - Localization.ba2…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "KKS installed and verified.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 34.88
+    },
+    {
+      "name": "same_package_offers_perk_switch",
+      "passed": true,
+      "result": {
+        "application_version": "1.5.0",
+        "game": "<USERPROFILE>\\Documents\\KKS_TestGames\\EN_M001\\game",
+        "game_running": false,
+        "status": "update_available",
+        "release": "KKS 1.1.1",
+        "supported_build": "Steam English 25636769 - Optional Features Preview M001",
+        "targets": [
+          {
+            "path": "Data/SeventySix - Interface_en.ba2",
+            "state": "installed",
+            "sha256": "718fa8cb6cb8995eb595ee631dc7175a8ab165d918ca7230a74e5f1fef8f9b6a"
+          },
+          {
+            "path": "Data/SeventySix - Interface.ba2",
+            "state": "installed",
+            "sha256": "d94d35538720ba2b5606b4272d7a7b48b044dc06c103b79ff75126c78d50968d"
+          },
+          {
+            "path": "Data/SeventySix - Localization.ba2",
+            "state": "installed",
+            "sha256": "3b4063e974631d9d0b75645d6f5ea55685c4da518b9915a5f62f58e2cf6c583b"
+          },
+          {
+            "path": "Data/strings/seventysix_en.dlstrings",
+            "state": "installed",
+            "sha256": "1e5763125f0e68a953194e62a04e3e5eb2e8c30f2293a54abed5339cad41b355"
+          },
+          {
+            "path": "Data/strings/seventysix_en.ilstrings",
+            "state": "installed",
+            "sha256": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2"
+          },
+          {
+            "path": "Data/strings/seventysix_en.strings",
+            "state": "installed",
+            "sha256": "b4f0c3781b7738a387610aa47abda59f1b8b448ea711dc2237dbeb8243537b8d"
+          }
+        ],
+        "message": "This complete package can be installed directly; intermediate updates are not required.",
+        "installed_content": "KKS 1.1.1",
+        "installed_naming": "full-kks",
+        "installed_perks": "on",
+        "repair_available": true,
+        "restore_available": true,
+        "changed_payload_files": 1,
+        "payload_file_count": 6,
+        "selected_content": "KKS 1.1.1 — Vanilla Perk Cards",
+        "selected_naming": "full-kks",
+        "equipment_naming_available": true,
+        "selected_perks": "off",
+        "perk_cards_available": true,
+        "selected_manifest": "7fdf1dc7f154753390e4a0f946bbdf55c2685218b9bd2e90f8be2ce1d8d8e770",
+        "qa_status": "candidate",
+        "activity": [
+          "Verifying the supported game build…",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 4.78
+    },
+    {
+      "name": "switch_perks_off_keep_KKS_equipment",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.1.1 — Vanilla Perk Cards installed and verified.",
+        "content": "KKS 1.1.1 — Vanilla Perk Cards",
+        "activity": [
+          "Verified KKS 1.1.1 content package.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Building and validating SeventySix - Interface_en.ba2…",
+          "Building and validating SeventySix - Interface.ba2…",
+          "Building and validating SeventySix - Localization.ba2…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "KKS installed and verified.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 35.3
+    },
+    {
+      "name": "switch_both_features_off",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.1.1 — Vanilla Equipment Naming — Vanilla Perk Cards installed and verified.",
+        "content": "KKS 1.1.1 — Vanilla Equipment Naming — Vanilla Perk Cards",
+        "activity": [
+          "Verified KKS 1.1.1 content package.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Building and validating SeventySix - Interface_en.ba2…",
+          "Building and validating SeventySix - Interface.ba2…",
+          "Building and validating SeventySix - Localization.ba2…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "KKS installed and verified.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 35.0
+    },
+    {
+      "name": "repair_retains_both_off_and_rebuilds_cache",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.1.1 — Vanilla Equipment Naming — Vanilla Perk Cards installed and verified.",
+        "content": "KKS 1.1.1 — Vanilla Equipment Naming — Vanilla Perk Cards",
+        "activity": [
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "KKS installed and verified.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 21.44
+    },
+    {
+      "name": "switch_perks_on_keep_vanilla_equipment",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.1.1 — Vanilla Equipment Naming installed and verified.",
+        "content": "KKS 1.1.1 — Vanilla Equipment Naming",
+        "activity": [
+          "Verified KKS 1.1.1 content package.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Building and validating SeventySix - Interface_en.ba2…",
+          "Building and validating SeventySix - Interface.ba2…",
+          "Building and validating SeventySix - Localization.ba2…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "KKS installed and verified.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 34.16
+    },
+    {
+      "name": "switch_back_to_all_KKS",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.1.1 installed and verified.",
+        "content": "KKS 1.1.1",
+        "activity": [
+          "Verified KKS 1.1.1 content package.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Building and validating SeventySix - Interface_en.ba2…",
+          "Building and validating SeventySix - Interface.ba2…",
+          "Building and validating SeventySix - Localization.ba2…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "KKS installed and verified.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 34.8
+    },
+    {
+      "name": "all_four_combinations_match_all_six_signed_targets",
+      "passed": true
+    },
+    {
+      "name": "restore_from_defaults",
+      "passed": true,
+      "result": {
+        "status": "restored",
+        "message": "Verified vanilla files restored. All restoration history is retained.",
+        "activity": [
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 18.61
+    },
+    {
+      "name": "fresh_both_off_install",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.1.1 — Vanilla Equipment Naming — Vanilla Perk Cards installed and verified.",
+        "content": "KKS 1.1.1 — Vanilla Equipment Naming — Vanilla Perk Cards",
+        "activity": [
+          "Verified KKS 1.1.1 content package.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Building and validating SeventySix - Interface_en.ba2…",
+          "Building and validating SeventySix - Interface.ba2…",
+          "Building and validating SeventySix - Localization.ba2…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "KKS installed and verified.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 20.05
+    },
+    {
+      "name": "repair_without_canonical_cache_refused",
+      "passed": true,
+      "result": {
+        "status": "blocked",
+        "message": "A cached payload is missing or damaged. Select the same content ZIP again: payload/interface/fontconfig_en.txt"
+      },
+      "seconds": 2.97
+    },
+    {
+      "name": "restore_both_off_without_payload_cache",
+      "passed": true,
+      "result": {
+        "status": "restored",
+        "message": "Verified vanilla files restored. All restoration history is retained.",
+        "activity": [
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 18.92
+    },
+    {
+      "name": "restore_preserves_exact_original_absence_without_payload_cache",
+      "passed": true
+    },
+    {
+      "name": "reimport_defaults_before_process_interruption",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.1.1 installed and verified.",
+        "content": "KKS 1.1.1",
+        "activity": [
+          "Verified KKS 1.1.1 content package.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Building and validating SeventySix - Interface_en.ba2…",
+          "Building and validating SeventySix - Interface.ba2…",
+          "Building and validating SeventySix - Localization.ba2…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "KKS installed and verified.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 19.55
+    },
+    {
+      "name": "test_process_tree_terminated_after_real_archive_write",
+      "passed": true
+    },
+    {
+      "name": "interrupted_both_off_switch_detected",
+      "passed": true,
+      "result": {
+        "application_version": "1.5.0",
+        "game": "<USERPROFILE>\\Documents\\KKS_TestGames\\EN_M001\\game",
+        "game_running": false,
+        "status": "recovery_required",
+        "message": "An interrupted change needs recovery before another operation.",
+        "phase": "restore_pending",
+        "activity": []
+      },
+      "seconds": 1.39
+    },
+    {
+      "name": "interrupted_both_off_switch_recovered",
+      "passed": true,
+      "result": {
+        "status": "recovered",
+        "message": "The previous managed file state was recovered; retry the update when ready.",
+        "activity": [
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Recovering the interrupted operation…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Previous file state restored. All backups are retained."
+        ]
+      },
+      "seconds": 11.42
+    },
+    {
+      "name": "recovered_state_check",
+      "passed": true,
+      "result": {
+        "application_version": "1.5.0",
+        "game": "<USERPROFILE>\\Documents\\KKS_TestGames\\EN_M001\\game",
+        "game_running": false,
+        "status": "installed",
+        "release": "KKS 1.1.1",
+        "supported_build": "Steam English 25636769 - Optional Features Preview M001",
+        "targets": [
+          {
+            "path": "Data/SeventySix - Interface_en.ba2",
+            "state": "installed",
+            "sha256": "718fa8cb6cb8995eb595ee631dc7175a8ab165d918ca7230a74e5f1fef8f9b6a"
+          },
+          {
+            "path": "Data/SeventySix - Interface.ba2",
+            "state": "installed",
+            "sha256": "d94d35538720ba2b5606b4272d7a7b48b044dc06c103b79ff75126c78d50968d"
+          },
+          {
+            "path": "Data/SeventySix - Localization.ba2",
+            "state": "installed",
+            "sha256": "3b4063e974631d9d0b75645d6f5ea55685c4da518b9915a5f62f58e2cf6c583b"
+          },
+          {
+            "path": "Data/strings/seventysix_en.dlstrings",
+            "state": "installed",
+            "sha256": "1e5763125f0e68a953194e62a04e3e5eb2e8c30f2293a54abed5339cad41b355"
+          },
+          {
+            "path": "Data/strings/seventysix_en.ilstrings",
+            "state": "installed",
+            "sha256": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2"
+          },
+          {
+            "path": "Data/strings/seventysix_en.strings",
+            "state": "installed",
+            "sha256": "b4f0c3781b7738a387610aa47abda59f1b8b448ea711dc2237dbeb8243537b8d"
+          }
+        ],
+        "message": "KKS is installed and verified.",
+        "installed_content": "KKS 1.1.1",
+        "installed_naming": "full-kks",
+        "installed_perks": "on",
+        "repair_available": true,
+        "restore_available": true,
+        "activity": [
+          "Verifying the supported game build…",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 4.69
+    },
+    {
+      "name": "restore_recovered_profile",
+      "passed": true,
+      "result": {
+        "status": "restored",
+        "message": "Verified vanilla files restored. All restoration history is retained.",
+        "activity": [
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 19.69
+    },
+    {
+      "name": "both_off_reinstall_after_recovery",
+      "passed": true,
+      "result": {
+        "status": "installed",
+        "message": "KKS 1.1.1 — Vanilla Equipment Naming — Vanilla Perk Cards installed and verified.",
+        "content": "KKS 1.1.1 — Vanilla Equipment Naming — Vanilla Perk Cards",
+        "activity": [
+          "Verified KKS 1.1.1 content package.",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Building and validating SeventySix - Interface_en.ba2…",
+          "Building and validating SeventySix - Interface.ba2…",
+          "Building and validating SeventySix - Localization.ba2…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "KKS installed and verified.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 19.52
+    },
+    {
+      "name": "final_restore",
+      "passed": true,
+      "result": {
+        "status": "restored",
+        "message": "Verified vanilla files restored. All restoration history is retained.",
+        "activity": [
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Saving and verifying restoration backups…",
+          "Verifying the supported game build…",
+          "Applying verified files…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Verifying the supported game build…",
+          "Reopening and validating installed files…",
+          "Verifying the supported game build…",
+          "Vanilla files restored. Backups retained.",
+          "Verifying the supported game build…"
+        ]
+      },
+      "seconds": 18.69
+    },
+    {
+      "name": "fixture_restored_and_live_game_and_manager_unchanged",
+      "passed": true
+    }
+  ],
+  "maintainer_acceptance": {
+    "status": "OWNER_ACCEPTED_IN_GAME",
+    "date": "2026-10-06",
+    "installer_version": "1.5.0",
+    "content_version": "1.1.1",
+    "content_revision": 7,
+    "english_sequence": 17,
+    "installer_source_commit": "85b6d10ecba99cfdb624900d6acfd08bff7c14d5",
+    "exe_sha256": "32f0ac62ff39c0466318d0570437a2d200f6d6f01c717008cec609c1ed53433d",
+    "content_zip_sha256": "10669ca71cf993f9e2f65af261c33be5b8ed81d2e5bef4867649b4b32e33e192",
+    "reported_checks_passed": [
+      "Restore Vanilla",
+      "Full KKS",
+      "KKS equipment with native perk descriptions",
+      "Vanilla equipment naming with KKS perk cards",
+      "Profile-aware Repair",
+      "Return to Full KKS"
+    ],
+    "regressions": "No regressions observed, as reported by the owner.",
+    "architecture_status": "VALIDATED_BY_OWNER_IN_GAME",
+    "final_owner_reported_profile": "Full KKS",
+    "evidence_type": "Direct maintainer in-game report; separate from automated/file checks",
+    "promotion": "Exact accepted M001 executable and signed content bytes; public filenames only.",
+    "historical_labels": "Build-time preview and signed candidate metadata remain unchanged. This acceptance supersedes their pending status."
+  },
+  "scope": "Automated writes used an independent disposable game copy, restored at completion. The maintainer subsequently performed in-game acceptance."
+}
