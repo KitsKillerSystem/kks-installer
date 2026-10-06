@@ -1,7 +1,7 @@
 """Application policy. Content packages cannot expand these capabilities."""
 
-APP_VERSION = "1.4.0"
-BUILD_LABEL = "Equipment Naming Preview"
+APP_VERSION = "1.5.0"
+BUILD_LABEL = "Optional Features Preview"
 INSTALLER_API = 1
 PROFILE = "fo76-steam-en-fonts-strings-v1"
 WRITER = "ba2-v1-gnrl-kks-writer-v1"

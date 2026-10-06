@@ -8,6 +8,7 @@ from kks_installer.manager import Manager
 from kks_installer.packages import import_package
 from kks_installer.platforms import discover
 from kks_installer.equipment import NAMING_PROFILES, FULL
+from kks_installer.perks import PERK_PROFILES, ON
 
 
 def main():
@@ -30,6 +31,8 @@ def main():
     parser.add_argument("--package", help="Complete signed KKS content ZIP")
     parser.add_argument("--naming", choices=NAMING_PROFILES, default=FULL,
                         help="Equipment naming for check/install; repair preserves the installed choice")
+    parser.add_argument("--perk-cards", choices=PERK_PROFILES, default=ON,
+                        help="KKS perk cards for check/install; repair preserves the installed choice")
     parser.add_argument(
         "package_path", nargs="?", help="A ZIP dropped onto the application or supplied at launch"
     )
@@ -55,6 +58,7 @@ def main():
                     "supported_build": release.data["supported_build"],
                     "payload_files": len(release.files),
                     "equipment_naming_available": "equipment_naming" in release.manifest,
+                    "perk_cards_available": "perk_cards" in release.manifest,
                 }
         else:
             action = next(
@@ -68,7 +72,7 @@ def main():
             if action is None:
                 from kks_installer.ui import launch
 
-                launch(package, args.game, naming=args.naming)
+                launch(package, args.game, naming=args.naming, perks=args.perk_cards)
                 return 0
             if not args.game:
                 raise ValueError("--game is required for command-line operations")
@@ -79,14 +83,14 @@ def main():
                 if package:
                     with tempfile.TemporaryDirectory(prefix="kks-check-") as cache:
                         selected = import_package(package, cache)
-                        result = manager.inspect(selected, naming=args.naming)
+                        result = manager.inspect(selected, naming=args.naming, perks=args.perk_cards)
                 else:
                     result = manager.inspect()
             elif action == "recover":
                 result = manager.recover()
             else:
                 selected = manager.select(package) if package else None
-                result = manager.run(action, selected, naming=args.naming)
+                result = manager.run(action, selected, naming=args.naming, perks=args.perk_cards)
             result["activity"] = logs
         code = 0
     except Exception as e:

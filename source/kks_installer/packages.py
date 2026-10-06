@@ -30,6 +30,7 @@ from .engine import demand, digest, is_digest, durable_bytes, sync_directory
 from .ba2 import hash_file
 from .platforms import SafetyError, safe_path
 from .equipment import FULL, VANILLA, NAMING_PROFILES, CAPABILITY, CATEGORIES, reset_equipment
+from .perks import ON, OFF, PERK_PROFILES, CAPABILITY as PERK_CAPABILITY, CATEGORIES as PERK_CATEGORIES, reset_perks
 
 DOMAIN = b"KKS-CONTENT-MANIFEST-v1\0"
 MAX_MANIFEST = 1024 * 1024
@@ -182,11 +183,12 @@ def hash_size(value):
 
 def validate_manifest(m):
     schema = m.get("schema") if isinstance(m, dict) else None
-    integer(schema, 1, 2)
+    integer(schema, 1, 3)
     fields(
         m,
         "schema package_type product channel content_version package_revision release_sequence created_utc installer_api minimum_installer_version required_capabilities profile game files targets qa"
-        + (" equipment_naming" if schema == 2 else ""),
+        + (" equipment_naming" if schema >= 2 else "")
+        + (" perk_cards" if schema == 3 else ""),
     )
     integer(m["installer_api"], INSTALLER_API, INSTALLER_API)
     demand(
@@ -196,7 +198,9 @@ def validate_manifest(m):
     )
     catalog = archive_members(m["profile"])
     permitted_payloads = profile_payloads(m["profile"])
-    capabilities = profile_capabilities(m["profile"]) + ([CAPABILITY] if schema == 2 else [])
+    capabilities = (profile_capabilities(m["profile"])
+                    + ([CAPABILITY] if schema >= 2 else [])
+                    + ([PERK_CAPABILITY] if schema == 3 else []))
     strings = profile_strings(m["profile"])
     translation = f"interface/translate_{profile_language(m['profile'])}.txt"
     version(m["content_version"])
@@ -356,20 +360,27 @@ def validate_manifest(m):
     fields(m["qa"], "status report_id")
     demand(m["qa"]["status"] in ("candidate", "approved"), "Invalid QA status")
     plain(m["qa"]["report_id"])
-    if schema == 2:
+    if schema >= 2:
         demand(m["profile"] == LOCALIZATION_PROFILE and version(m["minimum_installer_version"]) >= (1, 4, 0),
                "Equipment naming requires the English Localization profile and Installer 1.4.0")
-        option = m["equipment_naming"]
+    if schema == 3:
+        demand(version(m["minimum_installer_version"]) >= (1, 5, 0),
+               "Optional perk cards require Installer 1.5.0 or newer")
+    options = [("equipment_naming", CAPABILITY, CATEGORIES)] if schema >= 2 else []
+    if schema == 3:
+        options.append(("perk_cards", PERK_CAPABILITY, PERK_CATEGORIES))
+    for key, capability, categories in options:
+        option = m[key]
         fields(option, "algorithm categories sha256 size")
-        demand(option["algorithm"] == CAPABILITY, "Unknown equipment naming algorithm")
-        fields(option["categories"], " ".join(CATEGORIES))
+        demand(option["algorithm"] == capability, "Unknown optional feature algorithm")
+        fields(option["categories"], " ".join(categories))
         seen_ids = set()
         for ids in option["categories"].values():
-            demand(type(ids) is list and 0 < len(ids) <= 10000, "Invalid equipment category size")
+            demand(type(ids) is list and 0 < len(ids) <= 10000, "Invalid optional feature category size")
             for sid in ids:
                 integer(sid, 1, 0xffffffff)
             demand(ids == sorted(set(ids)) and not seen_ids.intersection(ids),
-                   "Duplicate, overlapping or unsorted equipment IDs")
+                   "Duplicate, overlapping or unsorted feature IDs")
             seen_ids.update(ids)
         hash_size({k: option[k] for k in ("sha256", "size")})
         integer(option["size"], 8, MAX_ASSET)
@@ -404,6 +415,7 @@ class SignedRelease:
         self.signature = signature
         self.manifest_digest = digest(raw)
         self.naming = FULL
+        self.perks = ON
         self.name = "KKS " + self.manifest["content_version"]
         language = self.manifest["game"]["language"]
         if language != "en":
@@ -420,47 +432,70 @@ class SignedRelease:
         }
 
     def with_naming(self, naming):
+        return self.with_features(naming=naming)
+
+    def with_perks(self, perks):
+        return self.with_features(perks=perks)
+
+    def with_features(self, *, naming=None, perks=None):
+        naming = self.naming if naming is None else naming
+        perks = self.perks if perks is None else perks
         demand(naming in NAMING_PROFILES, "Unknown equipment naming profile")
+        demand(perks in PERK_PROFILES, "Unknown perk card choice")
         demand(naming == FULL or "equipment_naming" in self.manifest,
                "This content package does not support Vanilla Equipment Naming")
-        if naming == self.naming:
+        demand(perks == ON or "perk_cards" in self.manifest,
+               "This content package does not support turning off KKS Perk Cards")
+        if naming == self.naming and perks == self.perks:
             return self
         result = copy(self)
         result.naming = naming
+        result.perks = perks
         # Always rebuild the view from authenticated canonical metadata.
         result.targets = deepcopy(self.manifest["targets"])
         result.files = {f["path"]: dict(f) for f in self.manifest["files"]}
         result.name = "KKS " + self.manifest["content_version"]
-        if naming == VANILLA:
-            option = self.manifest["equipment_naming"]
-            target = next(t for t in result.targets if t["path"] == "Data/strings/seventysix_en.strings")
+        for key, extension, cache_path, transform in result._derived():
+            option = self.manifest[key]
+            target = next(t for t in result.targets if t["path"] == f"Data/strings/seventysix_en.{extension}")
             target.update(after_sha256=option["sha256"], after_size=option["size"])
             result.files[target["payload"]].update(sha256=option["sha256"], size=option["size"])
+        if naming == VANILLA:
             result.name += " — Vanilla Equipment Naming"
+        if perks == OFF:
+            result.name += " — Vanilla Perk Cards"
         result.by_path = {t["path"]: t for t in result.targets}
         result.data = dict(self.data, targets=result.targets, release=result.name)
         return result
 
+    def _derived(self):
+        if self.naming == VANILLA:
+            yield "equipment_naming", "strings", "derived/vanilla-equipment.strings", reset_equipment
+        if self.perks == OFF:
+            yield "perk_cards", "dlstrings", "derived/vanilla-perks.dlstrings", reset_perks
+
     def prepare_naming(self, game):
+        self.prepare_features(game)
+
+    def prepare_features(self, game):
         """Generate only in cache, before any game transaction; verify the signed output."""
-        if self.naming == FULL:
+        if self.naming == FULL and self.perks == ON:
             return
-        source = self.with_naming(FULL)
+        source = self.with_features(naming=FULL, perks=ON)
         source.verify_payloads()
-        target = source.by_path["Data/strings/seventysix_en.strings"]
         from .ba2 import BA2
-        vanilla = BA2(safe_path(Path(game), LOCALIZATION, regular=True)).extract(
-            "strings/seventysix_en.strings"
-        )
-        demand(len(vanilla) == target["vanilla_size"] and digest(vanilla) == target["vanilla_sha256"],
-               "Equipment naming requires the certified vanilla string baseline")
-        canonical = source.payload(target["payload"], target["after_sha256"]).read_bytes()
-        option = self.manifest["equipment_naming"]
-        derived = reset_equipment(canonical, vanilla, option["categories"])
-        demand(len(derived) == option["size"] and digest(derived) == option["sha256"],
-               "Derived equipment naming output does not match its signed checksum")
-        path = safe_path(self.folder, "derived/vanilla-equipment.strings", regular=True)
-        durable_bytes(path, derived)
+        archive = BA2(safe_path(Path(game), LOCALIZATION, regular=True))
+        for key, extension, cache_path, transform in self._derived():
+            target = source.by_path[f"Data/strings/seventysix_en.{extension}"]
+            vanilla = archive.extract(f"strings/seventysix_en.{extension}")
+            demand(len(vanilla) == target["vanilla_size"] and digest(vanilla) == target["vanilla_sha256"],
+                   "Optional features require the certified vanilla string baseline")
+            canonical = source.payload(target["payload"], target["after_sha256"]).read_bytes()
+            option = self.manifest[key]
+            derived = transform(canonical, vanilla, option["categories"])
+            demand(len(derived) == option["size"] and digest(derived) == option["sha256"],
+                   "Derived feature output does not match its signed checksum")
+            durable_bytes(safe_path(self.folder, cache_path, regular=True), derived)
 
     @classmethod
     def load(cls, folder, keys=None):
@@ -474,11 +509,8 @@ class SignedRelease:
             relative in self.files and self.files[relative]["sha256"] == expected,
             "Unexpected payload request",
         )
-        cache_path = (
-            "derived/vanilla-equipment.strings"
-            if self.naming == VANILLA and relative == "payload/strings/seventysix_en.strings"
-            else relative
-        )
+        cache_path = next((path for _, ext, path, _ in self._derived()
+                           if relative == f"payload/strings/seventysix_en.{ext}"), relative)
         p = safe_path(self.folder, cache_path, regular=True)
         demand(
             p.is_file()
@@ -490,10 +522,10 @@ class SignedRelease:
         return p
 
     def verify_payloads(self):
-        if self.naming == VANILLA:
+        if self.naming == VANILLA or self.perks == OFF:
             # Repairability depends on the canonical authenticated cache. Derived
             # bytes are regenerated before installation and checked by payload().
-            self.with_naming(FULL).verify_payloads()
+            self.with_features(naming=FULL, perks=ON).verify_payloads()
             return
         for f in self.files.values():
             self.payload(f["path"], f["sha256"])

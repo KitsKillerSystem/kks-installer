@@ -9,6 +9,7 @@ from .manager import Manager
 from .platforms import discover
 from .windows_drop import enable_file_drop
 from .equipment import FULL, LABELS
+from .perks import ON, LABELS as PERK_LABELS
 
 BG = "#e8e2d4"
 PANEL = "#f5f0e5"
@@ -23,7 +24,7 @@ DARK = "#27312e"
 
 
 class App:
-    def __init__(self, package=None, game=None, language=None, naming=FULL):
+    def __init__(self, package=None, game=None, language=None, naming=FULL, perks=ON):
         self.language = language or load_language()
         self.log_lines = []
         self.status_title_key = "Ready when you are."
@@ -42,6 +43,8 @@ class App:
         self.selected = None
         self.naming_available = False
         self.initial_naming = naming
+        self.perks_available = False
+        self.initial_perks = perks
         self.root.protocol("WM_DELETE_WINDOW", self.close)
         style = ttk.Style()
         style.theme_use("clam")
@@ -125,7 +128,7 @@ class App:
         self.language_box.bind("<<ComboboxSelected>>", self.change_language)
 
         outer = tk.Frame(self.root, bg=BG)
-        outer.pack(side="left", fill="both", expand=True, padx=28, pady=12)
+        outer.pack(side="left", fill="both", expand=True, padx=28, pady=10)
         tk.Label(
             outer,
             text="A BETTER-ORDERED WASTELAND.",
@@ -149,7 +152,7 @@ class App:
             bg=BG,
             anchor="w",
         ).pack(fill="x")
-        tk.Frame(outer, bg=INK, height=2).pack(fill="x", pady=(12, 10))
+        tk.Frame(outer, bg=INK, height=2).pack(fill="x", pady=(8, 6))
 
         self.label(outer, "01  /  GAME DIRECTORY", BG).pack(fill="x", pady=(0, 7))
         row = tk.Frame(outer, bg=BG)
@@ -198,7 +201,14 @@ class App:
                                        values=tuple(LABELS.values()), state="disabled", width=45)
         self.naming_box.pack(side="left", fill="x", expand=True, padx=(12, 0))
         self.naming_box.bind("<<ComboboxSelected>>", lambda event: self.start("check"))
-        self.label(outer, "03  /  INSTALLATION STATUS", BG).pack(fill="x", pady=(12, 7))
+        perk_actions = tk.Frame(package_row, bg=PANEL)
+        perk_actions.pack(fill="x", padx=12, pady=(0, 8))
+        self.perks_value = tk.StringVar(value=PERK_LABELS[ON])
+        self.perks_box = ttk.Combobox(perk_actions, textvariable=self.perks_value,
+                                      values=tuple(PERK_LABELS.values()), state="disabled")
+        self.perks_box.pack(fill="x")
+        self.perks_box.bind("<<ComboboxSelected>>", lambda event: self.start("check"))
+        self.label(outer, "03  /  INSTALLATION STATUS", BG).pack(fill="x", pady=(8, 7))
         status = tk.Frame(outer, bg=PANEL)
         status.pack(fill="x")
         self.status_title = tk.Label(
@@ -244,7 +254,7 @@ class App:
         self.restore.pack(side="left")
         for button in (self.primary, self.repair, self.restore):
             button.configure(state="disabled")
-        self.label(outer, "ACTIVITY", BG).pack(fill="x", pady=(10, 6))
+        self.label(outer, "ACTIVITY", BG).pack(fill="x", pady=(6, 6))
         self.log = tk.Text(
             outer,
             height=4,
@@ -382,6 +392,9 @@ class App:
             self.naming_available = False
             self.naming_value.set(LABELS[FULL])
             self.naming_box.configure(state="disabled")
+            self.perks_available = False
+            self.perks_value.set(PERK_LABELS[ON])
+            self.perks_box.configure(state="disabled")
             self.set_package("Drop a ZIP here or choose a package. Keep the ZIP unopened.")
             for b in (self.primary, self.repair, self.restore):
                 b.configure(state="disabled")
@@ -451,7 +464,9 @@ class App:
             return
         self.busy = True
         naming = next(key for key, label in LABELS.items() if label == self.naming_value.get())
+        perks = next(key for key, label in PERK_LABELS.items() if label == self.perks_value.get())
         self.naming_box.configure(state="disabled")
+        self.perks_box.configure(state="disabled")
         self.language_box.configure(state="disabled")
         self.last_status = None
         for w in (
@@ -513,15 +528,18 @@ class App:
                                 len(release.files),
                                 release.manifest["game"]["language"],
                                 "equipment_naming" in release.manifest,
+                                "perk_cards" in release.manifest,
                             ),
                         )
                     )
-                    result = manager.inspect(release, naming=self.initial_naming)
+                    result = manager.inspect(release,
+                        naming=self.initial_naming if "equipment_naming" in release.manifest else FULL,
+                        perks=self.initial_perks if "perk_cards" in release.manifest else ON)
                 elif action == "check":
-                    result = manager.inspect(release, naming=naming)
+                    result = manager.inspect(release, naming=naming, perks=perks)
                 else:
                     result = (
-                        manager.recover() if action == "recover" else manager.run(action, release, naming=naming)
+                        manager.recover() if action == "recover" else manager.run(action, release, naming=naming, perks=perks)
                     )
                     self.events.put(("log", result.get("message", result["status"])))
                     result = manager.inspect()
@@ -542,6 +560,8 @@ class App:
                     self.selected, name, file_count, language = data[:4]
                     self.naming_available = bool(len(data) > 4 and data[4])
                     self.naming_value.set(LABELS[self.initial_naming] if self.naming_available else LABELS[FULL])
+                    self.perks_available = bool(len(data) > 5 and data[5])
+                    self.perks_value.set(PERK_LABELS[self.initial_perks] if self.perks_available else PERK_LABELS[ON])
                     self.set_package(
                         name
                         + f" · signature and all {file_count} files verified"
@@ -552,6 +572,7 @@ class App:
                 self.busy = False
                 self.language_box.configure(state="readonly")
                 self.naming_box.configure(state="readonly" if self.naming_available else "disabled")
+                self.perks_box.configure(state="readonly" if self.perks_available else "disabled")
                 self.progress.stop()
                 self.progress.configure(value=0)
                 for w in (self.entry, self.browse, self.check, self.package_button):
@@ -611,5 +632,5 @@ class App:
         self.root.mainloop()
 
 
-def launch(package=None, game=None, naming=FULL):
-    App(package, game, naming=naming).run()
+def launch(package=None, game=None, naming=FULL, perks=ON):
+    App(package, game, naming=naming, perks=perks).run()

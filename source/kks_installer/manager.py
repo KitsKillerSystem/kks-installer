@@ -33,6 +33,7 @@ from .packages import (
 from ._application import PROFILE, CONTENT_LANGUAGES
 from .managed_engine import ManagedEngine, LegacyDescriptor, LEGACY_STATE
 from .equipment import FULL, NAMING_PROFILES
+from .perks import ON, PERK_PROFILES
 
 STATE = ".kks-manager"
 
@@ -156,7 +157,7 @@ class Manager:
         }
 
     def _validate_state(self, data):
-        integer(data.get("schema") if isinstance(data, dict) else None, 2, 5)
+        integer(data.get("schema") if isinstance(data, dict) else None, 2, 6)
         fields(
             data,
             "schema root installation_id active highest_sequence release_ids baseline_ids retired"
@@ -232,11 +233,16 @@ class Manager:
         return self._validate_state(strict_json(bounded_file(p, MAX_MANIFEST)))
 
     def _validate_ref(self, ref):
-        fields(ref, "kind manifest state baseline" + (" naming" if isinstance(ref, dict) and "naming" in ref else ""))
+        fields(ref, "kind manifest state baseline"
+               + (" naming" if isinstance(ref, dict) and "naming" in ref else "")
+               + (" perks" if isinstance(ref, dict) and "perks" in ref else ""))
         demand(ref["kind"] in ("managed", "legacy"), "Unknown installation owner")
         if "naming" in ref:
             demand(ref["kind"] == "managed" and ref["naming"] in NAMING_PROFILES,
                    "Invalid saved equipment naming profile")
+        if "perks" in ref:
+            demand(ref["kind"] == "managed" and ref["perks"] in PERK_PROFILES,
+                   "Invalid saved perk card choice")
         demand(
             type(ref["manifest"]) is str and re.fullmatch("[0-9a-f]{64}", ref["manifest"]),
             "Invalid descriptor reference",
@@ -264,8 +270,10 @@ class Manager:
             "Saved descriptor does not match its identity",
         )
         if "naming" in ref:
-            demand(result.manifest["schema"] == 2, "Saved naming profile requires a supported package")
-        return result.with_naming(ref.get("naming", FULL))
+            demand(result.manifest["schema"] >= 2, "Saved naming profile requires a supported package")
+        if "perks" in ref:
+            demand(result.manifest["schema"] == 3, "Saved perk choice requires a supported package")
+        return result.with_features(naming=ref.get("naming", FULL), perks=ref.get("perks", ON))
 
     def package(self, manifest):
         demand(
@@ -568,9 +576,9 @@ class Manager:
             "This package is older than or conflicts with an installed release. Select a newer complete package",
         )
 
-    def inspect(self, selected=None, *, naming=None):
-        if selected is not None and naming is not None:
-            selected = selected.with_naming(naming)
+    def inspect(self, selected=None, *, naming=None, perks=None):
+        if selected is not None:
+            selected = selected.with_features(naming=naming, perks=perks)
         state = self._read_state()
         result = {
             "application_version": APP_VERSION,
@@ -626,6 +634,7 @@ class Manager:
             result["application_version"] = APP_VERSION
             result["installed_content"] = engine.release.name
             result["installed_naming"] = getattr(engine.release, "naming", FULL)
+            result["installed_perks"] = getattr(engine.release, "perks", ON)
             result["repair_available"] = cache_ready
             result["restore_available"] = True
             if active["kind"] == "legacy":
@@ -655,7 +664,8 @@ class Manager:
                     payload_file_count=len(selected.files),
                 )
                 if (active["kind"] == "legacy" or active["manifest"] != selected.manifest_digest
-                        or active.get("naming", FULL) != selected.naming):
+                        or active.get("naming", FULL) != selected.naming
+                        or active.get("perks", ON) != selected.perks):
                     result.update(
                         status="update_available",
                         message="This complete package can be installed directly; intermediate updates are not required.",
@@ -675,6 +685,8 @@ class Manager:
                 selected_content=selected.name,
                 selected_naming=selected.naming,
                 equipment_naming_available="equipment_naming" in selected.manifest,
+                selected_perks=selected.perks,
+                perk_cards_available="perk_cards" in selected.manifest,
                 selected_manifest=selected.manifest_digest,
                 supported_build=selected.data["supported_build"],
                 qa_status=selected.manifest["qa"]["status"],
@@ -866,11 +878,13 @@ class Manager:
             package = self._release(plan["new"])
             m = package.manifest
             language = content_language(package)
-            if m["schema"] == 2 and state["schema"] < 5:
+            if m["schema"] >= 2 and state["schema"] < 5:
                 state["language_sequences"] = {
                     code: sequence_highest(state, code) for code in CONTENT_LANGUAGES
                 }
                 state["schema"] = 5
+            if m["schema"] == 3:
+                state["schema"] = 6
             if language != "en" and state["schema"] == 2:
                 state["schema"] = 3
                 state["language_sequences"] = {"en": state["highest_sequence"], "de": 0}
@@ -899,14 +913,15 @@ class Manager:
         sync_directory(self.state)
         self.event("after_plan_retirement", plan)
 
-    def run(self, operation, selected=None, *, naming=None):
+    def run(self, operation, selected=None, *, naming=None, perks=None):
         demand(operation in ("install", "repair", "restore"), "Unknown operation")
         if selected is not None:
             naming = getattr(selected, "naming", FULL) if naming is None else naming
+            perks = getattr(selected, "perks", ON) if perks is None else perks
             # Reopen the authenticated local descriptor rather than use a stale UI object.
             selected = self.package(
                 selected.manifest_digest if isinstance(selected, SignedRelease) else selected
-            ).with_naming(naming)
+            ).with_features(naming=naming, perks=perks)
         with self._locks():
             demand(
                 not self.saved("pending.json").exists(),
@@ -976,7 +991,7 @@ class Manager:
                 )
                 tx = uuid.uuid4().hex
                 if operation != "restore":
-                    selected.prepare_naming(self.root)
+                    selected.prepare_features(self.root)
                     self._preflight_output(selected, None if reconcile else old, tx)
                 if state["installation_id"] is None:
                     state["installation_id"] = uuid.uuid4().hex
@@ -1052,8 +1067,10 @@ class Manager:
                         }
                     )
                 )
-                if new is not None and selected.manifest["schema"] == 2:
+                if new is not None and selected.manifest["schema"] >= 2:
                     new = dict(new, naming=selected.naming)
+                if new is not None and selected.manifest["schema"] == 3:
+                    new = dict(new, perks=selected.perks)
                 plan = {
                     "schema": 2,
                     "root": str(self.root),

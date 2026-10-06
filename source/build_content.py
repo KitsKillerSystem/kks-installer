@@ -161,6 +161,7 @@ def build(
     translation_localization=False,
     language="en",
     equipment_naming=False,
+    perk_cards=False,
 ):
     game = Path(game)
     payload = Path(payload)
@@ -173,6 +174,8 @@ def build(
         "Choose one translation profile",
     )
     demand(language in CONTENT_LANGUAGES, "Unsupported content language")
+    demand(not perk_cards or equipment_naming,
+           "Optional perk cards require the equipment-capable content profile")
     demand(
         language == "en" or (translation_localization and not include_translation),
         "Localized content requires the Localization profile",
@@ -295,6 +298,20 @@ def build(
             for item in identity:
                 demand(hash_file(game / item["path"]) == item["sha256"],
                        "Game identity changed during equipment certification")
+        if perk_cards:
+            from equipment_catalog import perk_categories
+            from kks_installer.perks import CAPABILITY, reset_perks
+
+            categories = perk_categories(game / "Data/SeventySix.esm")
+            member = "strings/seventysix_en.dlstrings"
+            derived = reset_perks((payload / member).read_bytes(), localization.extract(member), categories)
+            m["schema"] = 3
+            m["required_capabilities"] = m["required_capabilities"] + [CAPABILITY]
+            m["perk_cards"] = dict(algorithm=CAPABILITY, categories=categories,
+                                    sha256=digest(derived), size=len(derived))
+            for item in identity:
+                demand(hash_file(game / item["path"]) == item["sha256"],
+                       "Game identity changed during perk certification")
         validate_manifest(m)
         if expected_legacy:
             old = json.loads(Path(expected_legacy).read_bytes())
@@ -373,6 +390,7 @@ def main():
     b.add_argument("--translation-localization", action="store_true")
     b.add_argument("--language", choices=CONTENT_LANGUAGES, default="en")
     b.add_argument("--equipment-naming", action="store_true")
+    b.add_argument("--perk-cards", action="store_true")
     a = p.parse_args()
     if a.command == "create-key":
         result = create_key(a.key, a.key_id)
@@ -395,6 +413,7 @@ def main():
             translation_localization=a.translation_localization,
             language=a.language,
             equipment_naming=a.equipment_naming,
+            perk_cards=a.perk_cards,
         )
     print(json.dumps(result, indent=2))
 

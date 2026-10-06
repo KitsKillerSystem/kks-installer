@@ -8,9 +8,9 @@ from kks_installer.engine import demand
 from kks_installer.equipment import CATEGORIES
 
 
-def equipment_categories(path):
-    found = {name: set() for name in CATEGORIES}
-    selected = {b"WEAP", b"ARMO", b"INNR"}
+def record_string_categories(path, categories):
+    found = {name: set() for name in categories}
+    selected = {name.split(":")[0].encode("ascii") for name in categories}
     with open(path, "rb") as handle, mmap.mmap(handle.fileno(), 0, access=mmap.ACCESS_READ) as data:
         def visit(start, end, depth=0):
             demand(depth <= 64, "ESM group nesting is too deep")
@@ -26,7 +26,7 @@ def equipment_categories(path):
                     continue
                 demand(pos + 24 + size <= end, "Invalid ESM record bounds")
                 if sig in selected:
-                    demand(size <= 16 * 1024 * 1024, "Equipment ESM record is too large")
+                    demand(size <= 16 * 1024 * 1024, "Localized ESM record is too large")
                     raw = data[pos + 24 : pos + 24 + size]
                     if flags & 0x40000:
                         demand(len(raw) >= 4, "Truncated compressed ESM record")
@@ -52,7 +52,7 @@ def equipment_categories(path):
                         demand(offset + length <= len(raw), "Invalid ESM field bounds")
                         category = sig.decode("ascii") + ":" + field.decode("ascii")
                         if category in found:
-                            demand(length == 4, "Expected a localized equipment string reference")
+                            demand(length == 4, "Expected a localized string reference")
                             sid = struct.unpack_from("<I", raw, offset)[0]
                             if sid:
                                 found[category].add(sid)
@@ -60,5 +60,15 @@ def equipment_categories(path):
                     demand(extended is None, "Dangling extended ESM field")
                 pos += 24 + size
         visit(0, len(data))
-    demand(all(found.values()), "ESM does not contain the complete equipment naming categories")
-    return {name: sorted(found[name]) for name in CATEGORIES}
+    demand(all(found.values()), "ESM does not contain the complete feature string categories")
+    return {name: sorted(found[name]) for name in categories}
+
+
+def equipment_categories(path):
+    return record_string_categories(path, CATEGORIES)
+
+
+def perk_categories(path):
+    from kks_installer.perks import CATEGORIES as PERK_CATEGORIES
+
+    return record_string_categories(path, PERK_CATEGORIES)

@@ -94,6 +94,28 @@ class UiTests(unittest.TestCase):
         self.assertEqual(self.app.restore["text"], "Restore vanilla")
         self.assertEqual(self.app.selected, "digest")
 
+    def test_perk_choice_requires_supported_package_and_is_independent(self):
+        from kks_installer.perks import ON, OFF, LABELS
+        from kks_installer.equipment import VANILLA, LABELS as EQUIPMENT_LABELS
+
+        self.assertEqual(str(self.app.perks_box["state"]), "disabled")
+        self.app.events.put(("selected", ("digest", "Optional features", 6, "en", True, True)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(str(self.app.perks_box["state"]), "readonly")
+        self.assertEqual(self.app.perks_value.get(), LABELS[ON])
+        self.app.perks_value.set(LABELS[OFF])
+        self.app.naming_value.set(EQUIPMENT_LABELS[VANILLA])
+        self.app.events.put(("success", {"status": "update_available"}))
+        self.app.pump()
+        self.assertEqual(self.app.perks_value.get(), LABELS[OFF])
+        self.assertEqual(self.app.naming_value.get(), EQUIPMENT_LABELS[VANILLA])
+        self.app.events.put(("selected", ("equipment", "Equipment only", 6, "en", True)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(str(self.app.perks_box["state"]), "disabled")
+        self.assertEqual(str(self.app.naming_box["state"]), "readonly")
+        self.assertEqual(self.app.perks_value.get(), LABELS[ON])
 
 if __name__ == "__main__":
     unittest.main()
