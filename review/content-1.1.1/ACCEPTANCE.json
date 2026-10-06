@@ -1,0 +1,25 @@
+{
+  "status": "OWNER_ACCEPTED_IN_GAME",
+  "date": "2026-10-06",
+  "installer_version": "1.5.0",
+  "content_version": "1.1.1",
+  "content_revision": 7,
+  "english_sequence": 17,
+  "installer_source_commit": "85b6d10ecba99cfdb624900d6acfd08bff7c14d5",
+  "exe_sha256": "32f0ac62ff39c0466318d0570437a2d200f6d6f01c717008cec609c1ed53433d",
+  "content_zip_sha256": "10669ca71cf993f9e2f65af261c33be5b8ed81d2e5bef4867649b4b32e33e192",
+  "reported_checks_passed": [
+    "Restore Vanilla",
+    "Full KKS",
+    "KKS equipment with native perk descriptions",
+    "Vanilla equipment naming with KKS perk cards",
+    "Profile-aware Repair",
+    "Return to Full KKS"
+  ],
+  "regressions": "No regressions observed, as reported by the owner.",
+  "architecture_status": "VALIDATED_BY_OWNER_IN_GAME",
+  "final_owner_reported_profile": "Full KKS",
+  "evidence_type": "Direct maintainer in-game report; separate from automated/file checks",
+  "promotion": "Exact accepted M001 executable and signed content bytes; public filenames only.",
+  "historical_labels": "Build-time preview and signed candidate metadata remain unchanged. This acceptance supersedes their pending status."
+}

@@ -1,6 +1,6 @@
 # Independent installer and complete content packages
 
-Status: **Installer 1.2.1 / Content 1.1.0**, 3 October 2026. The maintainer has accepted the final content in game. The installer adds the fixed English translation profile and retains earlier package/state compatibility. See review/installer-1.2.1 and review/content-1.1.0 for exact build and acceptance evidence.
+Status: **Installer 1.5.0 / English Content 1.1.1**, 6 October 2026. The maintainer has accepted the modular architecture in game. See review/installer-1.5.0, review/content-1.1.1 and OPTIONAL_FEATURES.md for build, acceptance and optional-feature contracts.
 
 ## User workflow
 
@@ -8,7 +8,7 @@ Keep `KKSInstaller.exe`. Download one complete content ZIP, close Fallout 76, op
 
 Application and content versions appear separately. The app compares the selected profile’s five or six payload hashes with the installed package. Complete packages permit A to E without B, C or D. Repair uses the authenticated cache. Restore needs the signed descriptor and original backups, but neither cached payloads, the downloaded ZIP nor the old EXE. Selecting the exact signed package again repairs damaged cached descriptors/payloads. Mod content cannot reconstruct missing original game backups.
 
-The fixed profiles support Fallout 76, Steam, English, five or six targets, BA2 version 1 GNRL. The initial content 1.0.0 package supports Slasher build 25258219; the [content 1.0.1 compatibility release](review/content-1.0.1/README.md) certifies build 25636769 with unchanged mod files and the same installer. Exact hashes govern compatibility, never display labels. Other platforms/languages and future Bethesda fingerprints need explicit certification/support. There is no network update service or automatic download-folder scanning.
+The published content supports Fallout 76, Steam, English, six targets and BA2 version 1 GNRL. The app retains historical five-target profiles and certified DE/RU/FR package support; those language content packages are not published by this release. The initial content 1.0.0 package supports Slasher build 25258219; the [content 1.0.1 compatibility release](review/content-1.0.1/README.md) certifies build 25636769 with unchanged mod files and the same installer. Exact hashes govern compatibility, never display labels. Additional platforms, language packages and future Bethesda fingerprints need explicit certification/support. There is no network update service or automatic download-folder scanning.
 
 ## Package and trust contract
 
@@ -38,7 +38,7 @@ Ed25519 signs `KKS-CONTENT-MANIFEST-v1\0` followed by the exact UTF-8 manifest b
 
 The strict manifest binds content version/revision, monotonic sequence, installer API/minimum version/capabilities, fixed product/profile/platform/language, exact game identities, payload lengths/hashes, before/after target lengths/hashes, embedded asset hashes, baseline ID and QA report. Packages cannot add paths, commands, scripts or settings. The builder retains `qa.status: candidate` in signed metadata; public acceptance is recorded separately without changing the tested ZIP or its signature.
 
-Validation bounds the central directory before allocating it. It rejects extra/duplicate/aliased paths, traversal, links, alternate streams, header disagreement, hidden/trailing data, encryption, unsupported compression, duplicate JSON keys, BOM and unknown schemas. Limits: 512 MiB ZIP/combined payload, 256 MiB per payload, 1 MiB manifest, 16 KiB signature, 10 ZIP entries. Streaming decompression checks signed lengths/hashes before publication to the cache. Failed `import-*` staging is untrusted and never selected as a release.
+Validation bounds the central directory before allocating it. It rejects extra/duplicate/aliased paths, traversal, links, alternate streams, header disagreement, hidden/trailing data, encryption, unsupported compression, duplicate JSON keys, BOM and unknown schemas. Limits: 512 MiB ZIP/combined payload, 256 MiB per payload, 1 MiB manifest, 16 KiB signature, 11 ZIP entries. Streaming decompression checks signed lengths/hashes before publication to the cache. Failed `import-*` staging is untrusted and never selected as a release.
 
 Content signatures establish the publisher key that authorized these bytes. They are not Windows Authenticode or Nexus approval. SWF is the existing game font container: describe the download as a **font/configuration/string data package without an installer executable or update script**, not a promise that every format is incapable of code. The app never executes package assets.
 
@@ -102,8 +102,19 @@ The command prompts privately for a matching passphrase of at least 16 character
 
 ## Acceptance and boundaries
 
-The 138 tests include all 59 original tests, strict signature/ZIP/schema cases, source-process termination, changed/foreign game files, low space, backup permission failures, locks/links, cache damage, preserved file presence, A→B→C and A→E updates, legacy migration, each file boundary, metadata commit boundaries, interrupted recovery and new-baseline reconciliation. Synthetic future baselines prove the protocol, not compatibility with an unreleased game build.
+The 182 tests include all 59 original tests, strict signature/ZIP/schema cases, source-process termination, changed/foreign game files, low space, backup permission failures, locks/links, cache damage, preserved file presence, A→B→C and A→E updates, legacy migration, each file boundary, metadata commit boundaries, interrupted recovery and new-baseline reconciliation. Synthetic future baselines prove the protocol, not compatibility with an unreleased game build.
 
-Local acceptance additionally records real-file tests of the built EXE: exact frozen 1.0 parity, repair/restore, forced process-tree termination/recovery, legacy migration and changed-file refusals. The maintainer accepted the unchanged 1.0 content in-game and recovery-key backup verification is complete. Nexus submission/review remains separate; see review/installer-1.2.1 for current evidence and review/installer-1.1.0 for historical evidence. Existing 1.0 gameplay approval applies to identical payload bytes, not every new workflow. Nexus may still review data packages, and the app can still need future security/compatibility updates.
+Local acceptance additionally records real-file tests of the built EXE: exact frozen 1.0 parity, repair/restore, forced process-tree termination/recovery, legacy migration and changed-file refusals. The maintainer accepted the unchanged 1.0 content in-game and recovery-key backup verification is complete. Nexus submission/review remains separate; see review/installer-1.5.0 for current evidence and review/installer-1.1.0 for historical evidence. Existing 1.0 gameplay approval applies to identical payload bytes, not every new workflow. Nexus may still review data packages, and the app can still need future security/compatibility updates.
 
 Content 1.1.0 has owner acceptance for artwork, the standard perk deck and final Known checkmark/sorting. Its six final real-file installer checks and unchanged accepted bytes are recorded in review/content-1.1.0.
+
+
+## Modular profiles (1.5.0)
+
+Schema 3 adds complete, signed category metadata for optional equipment naming and
+perk descriptions. Both options default to KKS. Alternate outputs are generated
+from certified native members and must match signed hashes before game changes.
+All four combinations use one canonical package. Manager schema 6 saves both
+choices; Repair preserves them and Restore retains original file presence.
+Use Installer 1.5.0 after installing schema-3 content, including after Restore.
+See OPTIONAL_FEATURES.md for exact categories and schema-1/2 compatibility.

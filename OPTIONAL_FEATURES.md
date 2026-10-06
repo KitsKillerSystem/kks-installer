@@ -1,7 +1,8 @@
-# Optional features preview — Installer 1.5.0
+# Optional features — Installer 1.5.0
 
-Private English M001 accepted in game on 2026-10-06; the owner considers the modular
-installer architecture validated. Publication remains a separate step.
+English content 1.1.1 promotes the exact M001 bytes accepted in game on 2026-10-06.
+The maintainer considers the modular installer architecture validated. Public
+acceptance and build evidence are in review/content-1.1.1 and review/installer-1.5.0.
 The owner authorized independent perk-card on/off control after accepting E001
 equipment naming in game. Both KKS options are recommended and on by default.
 Each selector remains disabled until a valid package advertises its capability.
@@ -56,7 +57,7 @@ Owner acceptance covers Restore Vanilla, Full KKS, both equipment/perk hybrid
 configurations, profile-aware Repair and return to Full KKS. No regressions were
 observed. The final owner-reported state is Full KKS. This report is distinct from
 the 182 automated tests and 28 compiled-executable checks retained in the private
-feature checkpoint. The owner corrected an initial E002 reference as a typo;
-acceptance applies to M001. Public release versioning will be selected during
-future GitHub preparation. Accepted executable/package bytes and their build
-source commit remain unchanged; this documentation update does not rebuild them.
+feature checkpoint. Public release versioning is KKS Content 1.1.1 + Installer
+1.5.0. The executable,
+signed content and their exact build source remain unchanged; release preparation
+updates documentation, filenames and the outer installer ZIP only.
