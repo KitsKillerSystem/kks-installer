@@ -2,7 +2,7 @@
 
 import re
 from .engine import Installer, demand, digest
-from .ba2 import hash_file
+from .ba2 import BA2, hash_file
 from .packages import (
     bounded_file,
     strict_json,
@@ -20,6 +20,7 @@ from .packages import (
 from ._application import PROFILE, GERMAN_PROFILE
 from .platforms import SafetyError
 from . import _legacy
+from .migration import BaselineRelease, inspect_original
 
 LEGACY_STATE = ".kks-installer-1.0.0"
 
@@ -72,6 +73,61 @@ class ManagedEngine(Installer):
             )
         self.event = event or (lambda *args: None)
         super().__init__(game, release, log, state_name=state_name)
+        self.certified = release
+        context = self.state_path("baseline-context.json")
+        self.baseline_context = None
+        if context.exists():
+            demand(not isinstance(release, LegacyDescriptor), "Legacy state cannot use a migrated baseline")
+            data = strict_json(bounded_file(context, MAX_MANIFEST))
+            demand(data.get("root") == str(self.root), "Baseline context belongs to another game")
+            self.release = BaselineRelease(release, data, self._backup_path)
+            self.baseline_context = data
+
+    def migration_info(self, *, ignore_loose=False):
+        originals, overlaps = {}, []
+        modified = False
+        for target in self.certified.targets:
+            path = target["path"]
+            current = self.current(path)
+            originals[path] = current
+            demand(current is not None or target["kind"] == "loose", "Required archive is missing: " + path)
+            if ignore_loose and target["kind"] == "loose":
+                continue
+            if current is not None:
+                overlaps.extend(inspect_original(self.target(path), target))
+                modified |= current != target["vanilla_sha256"]
+        return {"originals": originals, "overlaps": sorted(overlaps), "modified": modified}
+
+    def _validate_current(self, receipt):
+        if isinstance(self.release, LegacyDescriptor):
+            return super()._validate_current(receipt)
+        if not receipt and self.baseline_context is None:
+            info = self.migration_info()
+            return [{"path": p, "sha256": h, "state": "absent" if h is None else
+                     "vanilla" if h == self.certified.by_path[p]["vanilla_sha256"] else "baseline"}
+                    for p, h in info["originals"].items()]
+        result = []
+        for target in self.release.targets:
+            path = target["path"]
+            native = self.certified.by_path[path]
+            current = self.current(path)
+            permitted = {target["vanilla_sha256"], native["vanilla_sha256"]}
+            if target["kind"] == "loose":
+                permitted.add(None)
+            installed = bool(receipt and receipt["status"] == "installed")
+            if installed:
+                permitted.add(target["after_sha256"])
+            demand(current in permitted, "A managed file changed outside KKS: " + path)
+            if target["kind"] == "archive":
+                archive = BA2(self.target(path))
+                for asset in target["assets"]:
+                    expected = asset["sha256"] if installed and current == target["after_sha256"] else (
+                        next(a["vanilla_sha256"] for a in native["assets"] if a["name"] == asset["name"])
+                        if current == native["vanilla_sha256"] else asset["vanilla_sha256"])
+                    demand(digest(archive.extract(asset["name"])) == expected, "Unexpected embedded asset: " + asset["name"])
+            result.append({"path": path, "sha256": current, "state": "installed" if installed and
+                           current == target["after_sha256"] else "absent" if current is None else "baseline"})
+        return result
 
     def _identity(self, *, skip_exe=False):
         self.log("Verifying the supported game build…")
@@ -156,6 +212,7 @@ class ManagedEngine(Installer):
             seen.add(path)
             target = self.release.by_path[path]
             permitted = {target["vanilla_sha256"]}
+            permitted.add(self.certified.by_path[path]["vanilla_sha256"])
             if path in self.strings:
                 permitted.add(None)
             if installed:
@@ -179,6 +236,9 @@ class ManagedEngine(Installer):
             not isinstance(self.release, LegacyDescriptor) or operation == "restore",
             "Legacy state is restore-only",
         )
+        if self.baseline_context is not None and operation == "install" and self._receipt() is None:
+            demand(all(self.current(p) == r["before"] for p, r in self.baseline_context["files"].items()),
+                   "The captured baseline changed before installation")
         return super()._run_locked(operation)
 
     def _after_replace(self, index, entry):

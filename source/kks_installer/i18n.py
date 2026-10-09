@@ -136,9 +136,11 @@ DE.update(
 
 
 def translate(text, language):
+    from . import i18n_baseline
     catalog = {"de": DE, "fr": FR, "ru": RU}.get(language)
     if catalog is None:
         return text
+    catalog = dict(catalog, **getattr(i18n_baseline, language.upper()))
     if text in catalog:
         return catalog[text]
     # Complete user-facing sentence fragments; paths and package names stay exact.

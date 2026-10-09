@@ -240,7 +240,7 @@ class LocalizationTests(unittest.TestCase):
         self.fx.write(p, m, payloads)
         r = manager.select(p)
         before = self.fx.snapshot()
-        with self.assertRaisesRegex(SafetyError, "Restore vanilla"):
+        with self.assertRaisesRegex(SafetyError, "Restore Baseline"):
             manager.run("install", r)
         self.assertEqual(self.fx.snapshot(), before)
         manager.run("restore")

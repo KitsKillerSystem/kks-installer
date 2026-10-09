@@ -1,5 +1,61 @@
 # Independent installer and complete content packages
 
+## 1.6.0 baseline migration preview (unreleased, 9 October 2026)
+
+The current source implements the owner's baseline-migration and Play request.
+Signed content still defines complete resource ownership and payload hashes.
+Existing 1.1.2 packages do not need rebuilding or resigning.
+
+First installation can accept modified Interface/Interface_en/Interface_ru archives
+when the signed native archive hash has a compiled compatibility certificate.
+The certificate binds the exact normalized member set and opaque record metadata;
+all streams are decompressed and bounded. Where unowned native resources exist,
+at least one native compatibility anchor must remain identifiable. Missing/extra
+members, unsupported layouts, unidentified archives, malformed streams and changed
+executable/ESM/Localization identities remain blocked. A changed whole Interface
+archive hash alone is no longer a failure. `certify_archives.py` generates metadata
+from authenticated packages and exact native files. Keep older certificates when
+adding builds: saved migrated installations still require their original evidence.
+
+The installation baseline is the verified state before KKS, including other mods
+and original loose-table presence. Restoration is **Restore Baseline** in all four
+UI languages. Overlapping resources prompt Continue/Cancel; unrelated resources
+are retained without a conflict prompt. CLI installs require the exact
+`--accept-modifications <confirmation_token>` returned by `--check` for overlaps.
+Consent binds the root, package, both optional profiles and all input hashes;
+it expires on a change. There is no force/skip-verification flag.
+
+Migrated baselines use baseline schema 3 and an immutable per-install
+`baseline-context.json`. Original and resulting archives are hash-verified backups.
+The context is not trusted merely because it is local: its original must pass
+compatibility checks, every replaced member must match signed content, and the
+replacement proof must preserve all other stored members, opaque metadata,
+compression policy, names and trailer exactly. This projection feeds the strict
+transaction engine without changing the authenticated manifest. Native inputs
+still must produce the publisher's exact whole-archive output hash.
+
+Updates and all four feature combinations retain the first baseline. Repair can
+recover receipt-owned files reset to native. Restore requires signed descriptors
+and proof/backups, not a content ZIP or payload cache. Unknown post-install external
+edits stop rather than restoring an archive over them. Build identity checks,
+legacy readers, locks, staging and interrupted-operation journals remain mandatory.
+New-build reconciliation accepts native or newly certified modified archives,
+with the same overlap consent. Known old archives and repacked old KKS resources
+are refused before cleanup, so an old KKS archive cannot become the new pre-KKS
+baseline. Only receipt-owned old loose overrides may be retired. Loose
+interface overrides remain conflicts because they supersede archive members
+outside the fixed ownership set. Use 1.6.0 or newer to manage a migrated baseline;
+earlier installers reject it. Local hashes protect integrity, not hostile rewriting
+of every receipt and backup by someone who already controls the machine.
+
+**Play Fallout 76** explicitly launches Steam after a verified installation. It is
+disabled during work, when repair/recovery is needed, for unregistered test copies
+and while the game runs. The backend rechecks state and the selected Steam library,
+then opens the fixed app URI. Packages cannot supply a command; installation never
+starts the game automatically.
+
+The following 1.5.0 release notes remain historical; the preview is not published.
+
 Status: **Installer 1.5.0 / English Content 1.1.1**, 6 October 2026. The maintainer has accepted the modular architecture in game. See review/installer-1.5.0, review/content-1.1.1 and OPTIONAL_FEATURES.md for build, acceptance and optional-feature contracts.
 
 ## User workflow

@@ -220,3 +220,29 @@ def discover():
                 found.append(str(resolved))
                 seen.add(key)
     return found
+
+
+def can_launch(game):
+    """Only the selected, registered Steam installation can use the fixed URI."""
+    root = Path(game).resolve()
+    manifest = root.parent.parent / "appmanifest_1151340.acf"
+    if os.name != "nt" or root.parent.name.casefold() != "common" or not manifest.is_file():
+        return False
+    try:
+        text = manifest.read_text("utf8", errors="strict")
+        registered = {str(Path(p).resolve()).casefold() for p in discover()}
+    except (OSError, UnicodeError):
+        return False
+    directory = re.search(r'"installdir"\s*"([^"/\\]+)"', text)
+    app = re.search(r'"appid"\s*"(\d+)"', text)
+    return bool(directory and app and app[1] == "1151340" and
+                directory[1].casefold() == root.name.casefold() and
+                str(root).casefold() in registered)
+
+
+def launch_game(game):
+    if game_running():
+        raise SafetyError("Fallout 76 is already running")
+    if not can_launch(game):
+        raise SafetyError("Play is available for the selected registered Steam installation only")
+    os.startfile("steam://rungameid/1151340")
