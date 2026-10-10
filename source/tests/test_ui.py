@@ -126,6 +126,28 @@ class UiTests(unittest.TestCase):
         self.assertEqual(self.app.restore["text"], "Restore Baseline")
         self.assertEqual(self.app.selected, "digest")
 
+    def test_russian_modular_package_enables_both_choices_and_old_package_disables_them(self):
+        self.app.events.put(("selected", ("ru-modular", "KKS Русский", 6, "ru", True, True)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(str(self.app.naming_box["state"]), "readonly")
+        self.assertEqual(str(self.app.perks_box["state"]), "readonly")
+        self.app.naming_box.current(1)
+        self.app.perks_box.current(1)
+        self.app.language = "ru"
+        self.app.render_language()
+        self.assertEqual(self.app.naming_value.get(), "Обычные названия оружия и брони")
+        self.assertEqual(self.app.perks_value.get(), "Обычные карты способностей")
+        self.app.language = "en"
+        self.app.render_language()
+        self.assertEqual(self.app.naming_box.current(), 1)
+        self.assertEqual(self.app.perks_box.current(), 1)
+        self.app.events.put(("selected", ("ru-b008", "KKS Русский B008", 6, "ru", False, False)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(str(self.app.naming_box["state"]), "disabled")
+        self.assertEqual(str(self.app.perks_box["state"]), "disabled")
+
     def test_perk_choice_requires_supported_package_and_is_independent(self):
         from kks_installer.perks import ON, OFF, LABELS
         from kks_installer.equipment import VANILLA, LABELS as EQUIPMENT_LABELS

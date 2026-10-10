@@ -26,6 +26,7 @@ from ._application import TRANSLATION_PROFILE, TRANSLATION_CAPABILITIES
 from ._application import LOCALIZATION_PROFILE, LOCALIZATION_CAPABILITIES
 from ._application import GERMAN_PROFILE, GERMAN_CAPABILITIES
 from ._application import RUSSIAN_PROFILE, FRENCH_PROFILE, LOCALIZED_PROFILES
+from ._application import RUSSIAN_OPTIONAL_CAPABILITY
 from .engine import demand, digest, is_digest, durable_bytes, sync_directory
 from .ba2 import hash_file
 from .platforms import SafetyError, safe_path
@@ -200,7 +201,9 @@ def validate_manifest(m):
     permitted_payloads = profile_payloads(m["profile"])
     capabilities = (profile_capabilities(m["profile"])
                     + ([CAPABILITY] if schema >= 2 else [])
-                    + ([PERK_CAPABILITY] if schema == 3 else []))
+                    + ([PERK_CAPABILITY] if schema == 3 else [])
+                    + ([RUSSIAN_OPTIONAL_CAPABILITY]
+                       if schema >= 2 and m["profile"] == RUSSIAN_PROFILE else []))
     strings = profile_strings(m["profile"])
     translation = f"interface/translate_{profile_language(m['profile'])}.txt"
     version(m["content_version"])
@@ -361,8 +364,12 @@ def validate_manifest(m):
     demand(m["qa"]["status"] in ("candidate", "approved"), "Invalid QA status")
     plain(m["qa"]["report_id"])
     if schema >= 2:
-        demand(m["profile"] == LOCALIZATION_PROFILE and version(m["minimum_installer_version"]) >= (1, 4, 0),
-               "Equipment naming requires the English Localization profile and Installer 1.4.0")
+        demand(m["profile"] in (LOCALIZATION_PROFILE, RUSSIAN_PROFILE)
+               and version(m["minimum_installer_version"]) >= (1, 4, 0),
+               "Equipment naming requires a supported Localization profile and Installer 1.4.0")
+        if m["profile"] == RUSSIAN_PROFILE:
+            demand(version(m["minimum_installer_version"]) >= (1, 6, 0),
+                   "Russian optional features require Installer 1.6.0 or newer")
     if schema == 3:
         demand(version(m["minimum_installer_version"]) >= (1, 5, 0),
                "Optional perk cards require Installer 1.5.0 or newer")
@@ -455,9 +462,12 @@ class SignedRelease:
         result.targets = deepcopy(self.manifest["targets"])
         result.files = {f["path"]: dict(f) for f in self.manifest["files"]}
         result.name = "KKS " + self.manifest["content_version"]
+        language = profile_language(self.manifest["profile"])
+        if language != "en":
+            result.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français"}[language]
         for key, extension, cache_path, transform in result._derived():
             option = self.manifest[key]
-            target = next(t for t in result.targets if t["path"] == f"Data/strings/seventysix_en.{extension}")
+            target = next(t for t in result.targets if t["path"] == f"Data/strings/seventysix_{language}.{extension}")
             target.update(after_sha256=option["sha256"], after_size=option["size"])
             result.files[target["payload"]].update(sha256=option["sha256"], size=option["size"])
         if naming == VANILLA:
@@ -485,9 +495,10 @@ class SignedRelease:
         source.verify_payloads()
         from .ba2 import BA2
         archive = BA2(safe_path(Path(game), LOCALIZATION, regular=True))
+        language = profile_language(self.manifest["profile"])
         for key, extension, cache_path, transform in self._derived():
-            target = source.by_path[f"Data/strings/seventysix_en.{extension}"]
-            vanilla = archive.extract(f"strings/seventysix_en.{extension}")
+            target = source.by_path[f"Data/strings/seventysix_{language}.{extension}"]
+            vanilla = archive.extract(f"strings/seventysix_{language}.{extension}")
             demand(len(vanilla) == target["vanilla_size"] and digest(vanilla) == target["vanilla_sha256"],
                    "Optional features require the certified vanilla string baseline")
             canonical = source.payload(target["payload"], target["after_sha256"]).read_bytes()
@@ -509,8 +520,9 @@ class SignedRelease:
             relative in self.files and self.files[relative]["sha256"] == expected,
             "Unexpected payload request",
         )
+        language = profile_language(self.manifest["profile"])
         cache_path = next((path for _, ext, path, _ in self._derived()
-                           if relative == f"payload/strings/seventysix_en.{ext}"), relative)
+                           if relative == f"payload/strings/seventysix_{language}.{ext}"), relative)
         p = safe_path(self.folder, cache_path, regular=True)
         demand(
             p.is_file()

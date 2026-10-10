@@ -1,5 +1,26 @@
 # Optional features — Installer 1.5.0
 
+## Russian parity in 1.6.0 (unreleased)
+
+The current 1.6.0 source adds the same independent equipment/perk choices to
+certified Russian content. Russian schema-2/3 packages require 1.6.0 and the
+explicit `optional-features-ru-v1` capability. Earlier 1.6.0 previews reject that
+capability; use the Russian Modular Preview or its successor. Existing English
+schemas, signatures and derived hashes retain their previous behavior. German
+and French optional profiles are still rejected until separately implemented.
+
+The same complete ESM categories are restored from `seventysix_ru.strings` and
+`seventysix_ru.dlstrings` in the certified Localization archive. Native Russian
+blanks, controls, placeholders and grammatical forms remain byte-exact; no English
+fallback is used. Both choices are translated in the Russian installer interface.
+Canonical full-KKS payloads and shared fonts are unchanged. All four combinations
+retain the first pre-KKS baseline, including modifications accepted through the
+existing overlap confirmation. Repair preserves the choices; Restore needs no
+payload cache. Upgrade from a nonmodular Russian package preserves language
+sequence history and the original baseline. See `test_russian_modularity.py`.
+
+The English 1.5.0 release record below remains historical.
+
 English content 1.1.1 promotes the exact M001 bytes accepted in game on 2026-10-06.
 The maintainer considers the modular installer architecture validated. Public
 acceptance and build evidence are in review/content-1.1.1 and review/installer-1.5.0.

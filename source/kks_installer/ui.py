@@ -332,6 +332,10 @@ class App:
         self.render_language()
 
     def render_language(self):
+        for box, labels in ((self.naming_box, LABELS), (self.perks_box, PERK_LABELS)):
+            selected = box.current()
+            box.configure(values=tuple(self.t(label) for label in labels.values()))
+            box.current(max(0, selected))
         for widget, text in self.static_text:
             widget.configure(text=self.t(text))
         self.status_title.configure(text=self.t(self.status_title_key))
@@ -397,10 +401,10 @@ class App:
             self.last_status = None
             self.selected = None
             self.naming_available = False
-            self.naming_value.set(LABELS[FULL])
+            self.naming_value.set(self.t(LABELS[FULL]))
             self.naming_box.configure(state="disabled")
             self.perks_available = False
-            self.perks_value.set(PERK_LABELS[ON])
+            self.perks_value.set(self.t(PERK_LABELS[ON]))
             self.perks_box.configure(state="disabled")
             self.set_package("Drop a ZIP here or choose a package. Keep the ZIP unopened.")
             for b in (self.primary, self.repair, self.restore, self.play):
@@ -496,8 +500,8 @@ class App:
             self.choose_game()
             return
         self.busy = True
-        naming = next(key for key, label in LABELS.items() if label == self.naming_value.get())
-        perks = next(key for key, label in PERK_LABELS.items() if label == self.perks_value.get())
+        naming = next(key for key, label in LABELS.items() if self.t(label) == self.naming_value.get())
+        perks = next(key for key, label in PERK_LABELS.items() if self.t(label) == self.perks_value.get())
         self.naming_box.configure(state="disabled")
         self.perks_box.configure(state="disabled")
         self.language_box.configure(state="disabled")
@@ -619,9 +623,9 @@ class App:
                 if kind == "selected":
                     self.selected, name, file_count, language = data[:4]
                     self.naming_available = bool(len(data) > 4 and data[4])
-                    self.naming_value.set(LABELS[self.initial_naming] if self.naming_available else LABELS[FULL])
+                    self.naming_value.set(self.t(LABELS[self.initial_naming] if self.naming_available else LABELS[FULL]))
                     self.perks_available = bool(len(data) > 5 and data[5])
-                    self.perks_value.set(PERK_LABELS[self.initial_perks] if self.perks_available else PERK_LABELS[ON])
+                    self.perks_value.set(self.t(PERK_LABELS[self.initial_perks] if self.perks_available else PERK_LABELS[ON]))
                     self.set_package(
                         name
                         + f" · signature and all {file_count} files verified"

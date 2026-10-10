@@ -1,6 +1,8 @@
 # Build installer application 1.5.0
 
-Current development source: **1.6.0 Baseline Migration Preview**, unreleased.
+Current development source: **1.6.0 Russian Modular Preview**, unreleased.
+This adds Russian optional-feature support to the baseline-migration/Play source;
+see OPTIONAL_FEATURES.md. The complete approved Russian font payload is unchanged.
 Build through the same clean-source process below. See INDEPENDENT_INSTALLER.md
 for migration compatibility and state requirements. Current content is separately
 versioned 1.1.2; this installer change does not rebuild content. The 1.5.0 evidence

@@ -241,6 +241,12 @@ FR = {
 }
 
 RU = {
+    "KKS Weapon & Armor Treatment (Recommended)": "Оружие и броня KKS (рекомендуется)",
+    "Vanilla Equipment Naming": "Обычные названия оружия и брони",
+    "KKS Perk Cards On (Recommended)": "Карты способностей KKS (рекомендуется)",
+    "KKS Perk Cards Off (Vanilla)": "Обычные карты способностей",
+    "Vanilla Perk Cards": "Обычные карты способностей",
+    "Russian optional features require Installer 1.6.0 or newer": "Выбор компонентов русского пакета требует установщик версии 1.6.0 или новее.",
     "Language": "Язык",
     "Vanilla files restored. Backups retained.": "Исходные файлы восстановлены. Резервные копии сохранены.",
     "KKS installed and verified.": "KKS установлен и проверен.",

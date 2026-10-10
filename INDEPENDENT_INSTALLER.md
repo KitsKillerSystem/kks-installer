@@ -1,5 +1,16 @@
 # Independent installer and complete content packages
 
+## Russian modular parity (1.6.0, unreleased, 10 October 2026)
+
+The Russian Modular Preview retains the migration and Play behavior below and adds
+Russian equipment/perk options. The closed Russian profile now accepts schema 2/3
+only with minimum 1.6.0 and `optional-features-ru-v1`. Locale-specific native tables
+and signed alternate hashes control every option. Full-KKS content remains the
+approved B008 payload. Older nonmodular RU packages remain supported. Earlier
+1.6.0 previews do not implement the new capability and must be replaced to use it.
+See OPTIONAL_FEATURES.md. No additional game targets, trust keys, bypass flags,
+archive certificates or gameplay changes are introduced.
+
 ## 1.6.0 baseline migration preview (unreleased, 9 October 2026)
 
 The current source implements the owner's baseline-migration and Play request.
