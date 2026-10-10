@@ -6,6 +6,23 @@ for migration compatibility and state requirements. Current content is separatel
 versioned 1.1.2; this installer change does not rebuild content. The 1.5.0 evidence
 below remains frozen and describes that released executable.
 
+Packaging review, 10 October 2026: `review_build.py --layout onedir` (or
+`build.ps1 -Layout onedir`) builds the same runtime as an inspectable folder.
+The output is `KKSInstaller/KKSInstaller.exe` with its `_internal` dependencies.
+Distribute/extract the entire folder and keep those dependencies together; the
+EXE alone is insufficient. The default remains `onefile`, preserving prior build
+commands. Both modes retain `--noupx`, the locked toolchain, full regression suite,
+clean-source verification and receipts. The receipt now inventories every bundled
+file. Neither layout requests administrator privileges or disables antivirus.
+
+The folder option avoids onefile's extraction/loading of runtime DLLs from a
+temporary `_MEI` directory. It is a review candidate for the reported 1.5.0
+VirusTotal detections, not a confirmed detection fix or malware-free guarantee.
+Assess the complete distributable, not only its small launcher. An existing public
+scan must be tied to its exact ZIP/EXE hash; changing a build's hash is not proof
+of safety. No code obfuscation or security-check removal is part of this option.
+Windows Authenticode signing and vendor determinations remain separate work.
+
 Installer 1.5.0 adds independently selectable equipment naming and perk descriptions;
 see OPTIONAL_FEATURES.md. The accepted clean-source build passes 182 tests.
 The exact executable source is `85b6d10ecba99cfdb624900d6acfd08bff7c14d5`, tagged

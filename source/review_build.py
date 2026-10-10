@@ -21,6 +21,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--destination", required=True, type=Path)
     parser.add_argument("--build-directory", required=True, type=Path)
+    parser.add_argument(
+        "--layout", choices=("onefile", "onedir"), default="onefile",
+        help="Keep runtime beside the EXE with onedir; default preserves released onefile packaging.",
+    )
     args = parser.parse_args()
     source = Path(__file__).resolve().parent
     repository = source.parent
@@ -61,7 +65,7 @@ def main():
         "--noconfirm",
         "--clean",
         "--noupx",
-        "--onefile",
+        "--" + args.layout,
         "--windowed",
         "--name",
         "KKSInstaller",
@@ -91,8 +95,15 @@ def main():
         raise SystemExit("Source changed during build; output is not accepted.")
     if any(sha256(repository / name) != digest for name, digest in source_files.items()):
         raise SystemExit("Source bytes changed during build; output is not accepted.")
-    executable = destination / "KKSInstaller.exe"
+    bundle = destination / "KKSInstaller" if args.layout == "onedir" else destination
+    executable = bundle / "KKSInstaller.exe"
+    bundle_files = (
+        sorted(p for p in bundle.rglob("*") if p.is_file())
+        if args.layout == "onedir" else [executable]
+    )
     receipt = {
+        "layout": args.layout,
+        "bundle_files_sha256": {p.relative_to(bundle).as_posix(): sha256(p) for p in bundle_files},
         "source_commit": commit,
         "source_tree": git("rev-parse", "HEAD^{tree}"),
         "source_files_sha256": source_files,
