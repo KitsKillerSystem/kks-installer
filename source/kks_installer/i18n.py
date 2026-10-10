@@ -13,6 +13,12 @@ CONTENT_HINTS = {
 }
 
 DE = {
+    "KKS Weapon & Armor Treatment (Recommended)": "KKS-Waffen- und Rüstungsnamen (empfohlen)",
+    "Vanilla Equipment Naming": "Originale Ausrüstungsnamen",
+    "KKS Perk Cards On (Recommended)": "KKS-Perkkarten (empfohlen)",
+    "KKS Perk Cards Off (Vanilla)": "Originale Perkkarten",
+    "Vanilla Perk Cards": "Originale Perkkarten",
+    "Russian optional features require Installer 1.6.0 or newer": "Russische Zusatzoptionen benötigen Installer 1.6.0 oder neuer.",
     "Language": "Sprache",
     "Vanilla files restored. Backups retained.": "Originaldateien wiederhergestellt. Sicherungen bleiben erhalten.",
     "KKS installed and verified.": "KKS installiert und geprüft.",
