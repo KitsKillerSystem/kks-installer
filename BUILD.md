@@ -2,7 +2,7 @@
 
 Released application: **1.6.0**, built from `8cad8b2195c069518ab0fc4334b77a816c25347d` (`installer-v1.6.0`). The production title is `KKS Installer · 1.6.0`. The published EXE is the unchanged scanned candidate; later publication commits update documentation only. [Build, tests and acceptance](review/installer-1.6.0/README.md) and [security disposition](review/installer-1.6.0/SECURITY_REVIEW.md) preserve the eight unresolved detections and owner release authorization.
 
-Russian modular choices, baseline migration and guarded Play are included. English/Russian content 1.1.2 is separately distributed on Nexus. Content packages do not require VirusTotal scans. Use the exact source tag and recorded runtime to reproduce this build. Historical receipts below remain tied to their named versions.
+Russian modular choices, baseline migration and guarded Play are included. English/Russian content 1.2.0 is separately distributed on Nexus. Content packages do not require VirusTotal scans. Use the exact source tag and recorded runtime to reproduce this build. Historical receipts below remain tied to their named versions.
 
 Packaging review, 10 October 2026: `review_build.py --layout onedir` (or
 `build.ps1 -Layout onedir`) builds the same runtime as an inspectable folder.

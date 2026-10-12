@@ -1,0 +1,95 @@
+{
+  "status": "OWNER_AUTHORIZED_METADATA_ONLY_VERSION_OVERRIDE",
+  "content_version": "1.2.0",
+  "package_revision": 1,
+  "installer_version": "1.6.0",
+  "installer_exe_sha256": "46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589",
+  "installer_zip_sha256": "2e21c1d7ee1b9647264ab0c92a604f0f947738e33feacc9cbe3ff84ca9e3f7fb",
+  "reason": "Owner confirms previous public English release already occupies 1.1.2. Reissue new English/Russian candidates as 1.2.0.",
+  "languages": {
+    "en": {
+      "filename": "KKS_1.2.0_English_Steam_25636769.zip",
+      "sha256": "e4e48f74b6e9987cfab8b8975a6cbb2205003eb15c974982e6357a52b8ba9801",
+      "size": 92341943,
+      "version": "1.2.0",
+      "revision": 1,
+      "sequence": 23,
+      "manifest_sha256": "29aa868a745b907d7b326ba9f8c4f443d3c428668fe0b7512b8a83ebd2cc9038",
+      "payload_files": 6,
+      "changed_zip_members": [
+        "manifest.json",
+        "manifest.sig.json"
+      ],
+      "prior_signed_package_sha256": "43ffa74c5c1ca44caf1dc6849d459ef9cdd35ac7de902e81f15b1d4958b38ab1",
+      "all_runtime_bytes_exact": true,
+      "all_four_profile_hashes_preserved": true,
+      "game_baseline_unchanged": true
+    },
+    "ru": {
+      "filename": "KKS_1.2.0_Russian_Steam_25636769.zip",
+      "sha256": "2156e9ebc91c58fd4b15bb0997febecf01853db59af8edeb2ebb875bcceb00f5",
+      "size": 51070745,
+      "version": "1.2.0",
+      "revision": 1,
+      "sequence": 12,
+      "manifest_sha256": "2743354d54a8b0bd887528c64ded2cf736b05d5ec444dd4e9ae92b0849744d94",
+      "payload_files": 6,
+      "changed_zip_members": [
+        "manifest.json",
+        "manifest.sig.json"
+      ],
+      "prior_signed_package_sha256": "138da8275101d7b4879dc5a797007562551fa14f250c976ec33157a9e7902fb8",
+      "all_runtime_bytes_exact": true,
+      "all_four_profile_hashes_preserved": true,
+      "game_baseline_unchanged": true
+    }
+  },
+  "manual_packages": {
+    "en": {
+      "status": "PASS",
+      "filename": "KKS_1.2.0_English_Manual_Steam_25636769.zip",
+      "sha256": "09fe91b34e43fe23f6c393fe63ab8e6429e670207a248816330b14821afcd480",
+      "size": 105194711,
+      "content_version": "1.2.0",
+      "revision": 1,
+      "sequence": 23,
+      "signed_package_sha256": "e4e48f74b6e9987cfab8b8975a6cbb2205003eb15c974982e6357a52b8ba9801",
+      "runtime_resources_exact": 6,
+      "optional_tables_exact": 2,
+      "xml_contents_exact": true,
+      "all_four_profiles_exact": true,
+      "manual_tool_ui_tested": false,
+      "changed_content": "Only documentation/reference/checksums and versioned XML filename; data resources unchanged."
+    },
+    "ru": {
+      "status": "PASS",
+      "filename": "KKS_1.2.0_Russian_Manual_Steam_25636769.zip",
+      "sha256": "18d55824164458a52462ec70b18b6744bf29fddd005da696b22158e0b54ddd85",
+      "size": 67473935,
+      "content_version": "1.2.0",
+      "revision": 1,
+      "sequence": 12,
+      "signed_package_sha256": "2156e9ebc91c58fd4b15bb0997febecf01853db59af8edeb2ebb875bcceb00f5",
+      "runtime_resources_exact": 6,
+      "optional_tables_exact": 2,
+      "xml_contents_exact": true,
+      "all_four_profiles_exact": true,
+      "manual_tool_ui_tested": false,
+      "changed_content": "Only documentation/reference/checksums and versioned XML filename; data resources unchanged."
+    }
+  },
+  "payloads_and_all_four_profile_hashes_unchanged": true,
+  "new_signed_manifest_fields": [
+    "content_version",
+    "package_revision",
+    "release_sequence",
+    "created_utc",
+    "game.build_label",
+    "qa.report_id"
+  ],
+  "signatures": "New Ed25519 signatures from established publisher key; no key change.",
+  "compiled_checks": 16,
+  "nexus_publication": false,
+  "installer_assets_and_release_tags_unchanged": true,
+  "prior_candidate_metadata": "Historical; superseded by this owner override, not for Nexus publication."
+}

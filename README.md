@@ -2,7 +2,7 @@
 
 KKS adds custom glyphs, clearer item information, useful sorting and redesigned perk-card descriptions to Fallout 76.
 
-## Installer 1.6.0 · English and Russian content 1.1.2
+## Installer 1.6.0 · English and Russian content 1.2.0
 
 - [Installer 1.6.0 release and downloads](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.6.0) — extract the installer ZIP and run `KKSInstaller.exe`.
 - [English/Russian content on Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301) — keep the signed content ZIP unopened. Content and installer are separate downloads and versions.
@@ -26,6 +26,6 @@ The exact installer has a recorded **8/71 VirusTotal result** dated October 11, 
 
 EXE SHA-256: `46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589`
 
-The release preserves the scanned executable, with 210 passing regressions, 15 final compiled checks and 48 broader checks on the branding-equivalent predecessor. [Build and acceptance evidence](review/installer-1.6.0/README.md), [content validation](review/content-1.1.2/README.md), [build instructions](BUILD.md), [optional feature contract](OPTIONAL_FEATURES.md), and [restoration contract](INDEPENDENT_INSTALLER.md).
+The release preserves the scanned executable, with 210 passing regressions, 15 final compiled checks and 48 broader checks on the branding-equivalent predecessor. [Build and acceptance evidence](review/installer-1.6.0/README.md), [content validation](review/content-1.2.0/README.md), [build instructions](BUILD.md), [optional feature contract](OPTIONAL_FEATURES.md), and [restoration contract](INDEPENDENT_INSTALLER.md).
 
 KKS is an offline resource patcher; it does not inject code into the game or automatically download updates. Content is publisher-signed; the Windows EXE is not Authenticode-signed. Python and xTranslator are not needed by installer users. Source is in `source/kks_installer/` and `source/launcher.py`; exact build tag: `installer-v1.6.0`. GitHub distributes the installer; new content downloads belong on Nexus. Earlier release assets and evidence remain historical. Game archives, backups, signing private keys and private authoring history do not belong in this public repository.
