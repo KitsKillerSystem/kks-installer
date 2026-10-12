@@ -1,6 +1,11 @@
-# Build installer application 1.5.0
+# Build installer application 1.6.0
 
-Current development source: **1.6.0 Russian Modular Preview**, unreleased.
+Current development source: **1.6.0 release candidate**, unreleased.
+The production window title is `KKS Installer · 1.6.0`; the language-specific
+preview label has been removed. Install/profile/Repair/Restore logic is unchanged
+from the validated Russian modular source. The exact final executable requires
+validation and VirusTotal review before public promotion. Content packages are
+validated separately and do not require VirusTotal scans.
 This adds Russian optional-feature support to the baseline-migration/Play source;
 see OPTIONAL_FEATURES.md. The complete approved Russian font payload is unchanged.
 Build through the same clean-source process below. See INDEPENDENT_INSTALLER.md

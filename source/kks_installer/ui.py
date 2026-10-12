@@ -3,7 +3,7 @@
 from pathlib import Path
 import queue, threading, tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-from ._application import APP_VERSION, BUILD_LABEL
+from ._application import APP_VERSION
 from .i18n import translate, load_language, save_language, LANGUAGE_NAMES, CONTENT_HINTS
 from .manager import Manager
 from .platforms import discover
@@ -30,7 +30,7 @@ class App:
         self.status_title_key = "Ready when you are."
         self.primary_key = "Install content"
         self.root = tk.Tk()
-        self.root.title("KKS Installer · " + APP_VERSION + " · " + BUILD_LABEL)
+        self.root.title("KKS Installer · " + APP_VERSION)
         width = min(1080, self.root.winfo_screenwidth() - 60)
         height = min(790, self.root.winfo_screenheight() - 80)
         self.root.geometry(f"{width}x{height}")
