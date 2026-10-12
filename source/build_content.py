@@ -287,8 +287,8 @@ def build(
             from equipment_catalog import equipment_categories
             from kks_installer.equipment import CAPABILITY, reset_equipment
 
-            demand(language in ("en", "ru") and translation_localization,
-                   "Equipment naming requires English or Russian Localization content")
+            demand(language in CONTENT_LANGUAGES and translation_localization,
+                   "Equipment naming requires supported Localization content")
             categories = equipment_categories(game / "Data/SeventySix.esm")
             member = f"strings/seventysix_{language}.strings"
             derived = reset_equipment((payload / member).read_bytes(), localization.extract(member), categories)
@@ -315,6 +315,9 @@ def build(
                        "Game identity changed during perk certification")
         if equipment_naming and language == "ru":
             m["required_capabilities"].append(RUSSIAN_OPTIONAL_CAPABILITY)
+        if equipment_naming and language in ("fr", "de"):
+            from kks_installer._application import FR_DE_OPTIONAL_CAPABILITY
+            m["required_capabilities"].append(FR_DE_OPTIONAL_CAPABILITY)
         validate_manifest(m)
         if expected_legacy:
             old = json.loads(Path(expected_legacy).read_bytes())

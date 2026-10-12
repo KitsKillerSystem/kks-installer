@@ -1,4 +1,14 @@
-# Optional features — Installer 1.6.0
+# Optional features — Installer 1.7.0
+
+## French/German parity in 1.7.0
+
+Certified French/German schema-2/3 packages require Installer 1.7.0 and the explicit
+`optional-features-fr-de-v1` capability. Both independent choices restore complete
+ESM-defined categories from the matching native language tables. No English fallback,
+new writer target or hand-maintained exclusion list is introduced. Native blanks,
+controls and placeholders survive. B003 upgrades preserve the original baseline;
+all four profiles, profile-preserving Repair and cacheless Restore pass using the
+exact compiled EXE. See `test_fr_de_modularity.py` and review/installer-1.7.0.
 
 ## Russian parity in released 1.6.0
 
@@ -6,8 +16,7 @@ The current 1.6.0 source adds the same independent equipment/perk choices to
 certified Russian content. Russian schema-2/3 packages require 1.6.0 and the
 explicit `optional-features-ru-v1` capability. Earlier 1.6.0 previews reject that
 capability; use the final Installer 1.6.0 release. Existing English
-schemas, signatures and derived hashes retain their previous behavior. German
-and French optional profiles are still rejected until separately implemented.
+schemas, signatures and derived hashes retain their previous behavior. French/German optional profiles are added by 1.7.0 as described above.
 
 The same complete ESM categories are restored from `seventysix_ru.strings` and
 `seventysix_ru.dlstrings` in the certified Localization archive. Native Russian

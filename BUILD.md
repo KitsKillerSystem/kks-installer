@@ -1,8 +1,8 @@
-# Build installer application 1.6.0
+# Build installer application 1.7.0
 
-Released application: **1.6.0**, built from `8cad8b2195c069518ab0fc4334b77a816c25347d` (`installer-v1.6.0`). The production title is `KKS Installer · 1.6.0`. The published EXE is the unchanged scanned candidate; later publication commits update documentation only. [Build, tests and acceptance](review/installer-1.6.0/README.md) and [security disposition](review/installer-1.6.0/SECURITY_REVIEW.md) preserve the eight unresolved detections and owner release authorization.
+Released application: **1.7.0**, built from `28e8f7edb277d767ddebb062682f66b7955b9341` (`installer-v1.7.0`). The production title is `KKS Installer · 1.7.0`. The published EXE preserves the exact scanned candidate. Later publication commits change documentation/evidence only. [Build and tests](review/installer-1.7.0/README.md), [security review](review/installer-1.7.0/SECURITY_REVIEW.md) and [owner release decision](review/installer-1.7.0/OWNER_RELEASE_DECISION.json) record the seven unresolved detections and coverage limits.
 
-Russian modular choices, baseline migration and guarded Play are included. English/Russian content 1.2.0 is separately distributed on Nexus. Content packages do not require VirusTotal scans. Use the exact source tag and recorded runtime to reproduce this build. Historical receipts below remain tied to their named versions.
+French/German packages can now use independent equipment/perk options, matching English/Russian support. Baseline restoration, Unicode handling, drag-and-drop and guarded Play remain unchanged. Content is distributed separately on Nexus; this release does not claim the pending French/German owner visual inspection. Content packages do not require VirusTotal scans. Use the source tag and recorded runtime to reproduce this build. Historical receipts below remain tied to their named versions.
 
 Packaging review, 10 October 2026: `review_build.py --layout onedir` (or
 `build.ps1 -Layout onedir`) builds the same runtime as an inspectable folder.
@@ -58,7 +58,7 @@ python -m venv .venv
 ```
 
 Both output directories must be new. The script rejects uncommitted/untracked
-source, checks Python/dependency versions, runs all **210** tests, then invokes
+source, checks Python/dependency versions, runs all **212** tests, then invokes
 PyInstaller with `--clean --noupx --onefile --windowed`. A failed step stops the
 build. Accept the output only when `build-receipt.json` exists and logs pass;
 a partially created EXE alone is not success. Do not edit source during a build.

@@ -1,0 +1,19 @@
+{
+  "recorded_utc": "2026-10-12T14:46:45.239398+00:00",
+  "owner_date_local": "2026-10-12 America/Chicago",
+  "authority": "Direct user authorization in this chat after the exact-file scan result and residual warnings were disclosed.",
+  "owner_instruction": "Yes publish following our established procedure",
+  "scope": "Publish Installer 1.7.0 source/evidence and installer-only GitHub release quietly. No Nexus edits, announcements, executable or content uploads.",
+  "release_authorized": true,
+  "installer_version": "1.7.0",
+  "installer_exe_sha256": "85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749",
+  "build_source_commit": "28e8f7edb277d767ddebb062682f66b7955b9341",
+  "security_release_disposition": "OWNER_ACCEPTED_REMAINING_DETECTIONS_AND_COVERAGE_LIMITATIONS",
+  "recorded_virustotal": "7/71, 4 additional unsupported; 2026-10-12T14:24:38+00:00",
+  "scan_url": "https://www.virustotal.com/gui/file/85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749/detection",
+  "residual_findings": "Seven vendor triggers unresolved. No confirmed false positives or security certification. Sandbox coverage limits and recurring certificate rule remain disclosed in SECURITY_REVIEW.md.",
+  "certificate_inquiry": "Prior LIKELY BENIGN / PARTIALLY EXPLAINED inquiry remains closed; VM cancelled; not reopened.",
+  "validation": "212 regression tests and 24 exact-EXE release checks; publication revalidates hashes, ZIP contents and source continuity.",
+  "content_acceptance": "Separate French/German content awaits owner in-game inspection. Installer publication does not claim that inspection or content upload.",
+  "wrapper_change": "Publication notes and owner decision only; unchanged tested/scanned executable, no rebuild."
+}

@@ -1,0 +1,284 @@
+- generic: We use cookies and related technologies to remember user preferences, for security, to analyse our traffic, and to enable website functionality. Learn more about cookies in our .
+- banner:
+  - button "Menu":
+  - link:
+    - /url: /
+  - button "Search":
+  - button "Apps":
+  - button "Close search":
+  - textbox
+  - textbox "URL, IP address, domain, or file hash"
+  - button "Submit search":
+- complementary
+- main:
+  - text: 7/71 security vendors flagged this file as malicious
+  - button "Reanalyze":
+    - text: Reanalyze
+  - generic "Similar":
+    - button "Similar":
+      - text: Similar
+  - generic "More":
+    - button "More"
+  - generic: 85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749
+  - generic: KKSInstaller.exe
+  - generic: Size
+  - generic: 15.04 MB
+  - generic: Last Analysis Date
+  - generic "Mon Oct 12 2026 09:24:38 GMT-0500 (Central Daylight Time)":
+    - generic: a moment ago
+  - link "peexe":
+    - /url: https://www.virustotal.com/gui/search?query=entity%3Afile%20tag%3Apeexe
+  - link "overlay":
+    - /url: https://www.virustotal.com/gui/search?query=entity%3Afile%20tag%3Aoverlay
+  - link "64bits":
+    - /url: https://www.virustotal.com/gui/search?query=entity%3Afile%20tag%3A64bits
+  - tablist:
+    - button "Detection"
+    - button "Details"
+    - button "Behavior"
+    - button "Community"
+  - link "Join our Community":
+    - /url: https://www.virustotal.com/gui/join-us
+  - text: and enjoy additional community insights and crowdsourced detections, plus an API key to
+  - link "automate checks.":
+    - /url: https://docs.virustotal.com/reference/overview
+  - generic: Popular threat label
+  - link "trojan.blank":
+    - /url: https://www.virustotal.com/gui/search?query=engines%3Atrojan%20AND%20engines%3Ablank
+    - text: trojan.blank
+  - generic: Threat categories
+  - link "trojan":
+    - /url: https://www.virustotal.com/gui/search?query=engines%3Atrojan
+  - generic: Family labels
+  - link "blank":
+    - /url: https://www.virustotal.com/gui/search?query=engines%3Ablank
+  - text: Security vendors' analysis
+  - button:
+  - link "Do you want to automate checks?":
+    - /url: https://docs.virustotal.com/reference/overview
+  - generic: Bkav Pro
+  - img "malicious":
+  - generic: W32.Malware.7B1CF3CE
+  - generic: DeepInstinct
+  - img "malicious":
+  - generic: MALICIOUS
+  - generic: Elastic
+  - img "malicious":
+  - generic: Malicious (moderate Confidence)
+  - generic: SecureAge
+  - img "malicious":
+  - generic: Malicious
+  - generic: SentinelOne (Static ML)
+  - img "malicious":
+  - generic: Static AI - Suspicious PE
+  - generic: Skyhigh (SWG)
+  - img "malicious":
+  - generic: BehavesLike.Win64.Backdoor.wc
+  - generic: Zillya
+  - img "malicious":
+  - generic: Trojan.Blank.Script.2228
+  - generic: Acronis (Static ML)
+  - img "undetected":
+  - generic: Undetected
+  - generic: AhnLab-V3
+  - img "undetected":
+  - generic: Undetected
+  - generic: Alibaba
+  - img "undetected":
+  - generic: Undetected
+  - generic: AliCloud
+  - img "undetected":
+  - generic: Undetected
+  - generic: ALYac
+  - img "undetected":
+  - generic: Undetected
+  - generic: Antiy-AVL
+  - img "undetected":
+  - generic: Undetected
+  - generic: Arcabit
+  - img "undetected":
+  - generic: Undetected
+  - generic: Arctic Wolf
+  - img "undetected":
+  - generic: Undetected
+  - generic: Avast
+  - img "undetected":
+  - generic: Undetected
+  - generic: AVG
+  - img "undetected":
+  - generic: Undetected
+  - generic: Avira (no cloud)
+  - img "undetected":
+  - generic: Undetected
+  - generic: BitDefender
+  - img "undetected":
+  - generic: Undetected
+  - generic: ClamAV
+  - img "undetected":
+  - generic: Undetected
+  - generic: CMC
+  - img "undetected":
+  - generic: Undetected
+  - generic: CrowdStrike Falcon
+  - img "undetected":
+  - generic: Undetected
+  - generic: CTX
+  - img "undetected":
+  - generic: Undetected
+  - generic: Cynet
+  - img "undetected":
+  - generic: Undetected
+  - generic: DrWeb
+  - img "undetected":
+  - generic: Undetected
+  - generic: Emsisoft
+  - img "undetected":
+  - generic: Undetected
+  - generic: eScan
+  - img "undetected":
+  - generic: Undetected
+  - generic: ESET-NOD32
+  - img "undetected":
+  - generic: Undetected
+  - generic: Fortinet
+  - img "undetected":
+  - generic: Undetected
+  - generic: GData
+  - img "undetected":
+  - generic: Undetected
+  - generic: Google
+  - img "undetected":
+  - generic: Undetected
+  - generic: Gridinsoft (no cloud)
+  - img "undetected":
+  - generic: Undetected
+  - generic: Huorong
+  - img "undetected":
+  - generic: Undetected
+  - generic: Ikarus
+  - img "undetected":
+  - generic: Undetected
+  - generic: Jiangmin
+  - img "undetected":
+  - generic: Undetected
+  - generic: K7AntiVirus
+  - img "undetected":
+  - generic: Undetected
+  - generic: K7GW
+  - img "undetected":
+  - generic: Undetected
+  - generic: Kaspersky
+  - img "undetected":
+  - generic: Undetected
+  - generic: Kingsoft
+  - img "undetected":
+  - generic: Undetected
+  - generic: Lionic
+  - img "undetected":
+  - generic: Undetected
+  - generic: Malwarebytes
+  - img "undetected":
+  - generic: Undetected
+  - generic: MaxSecure
+  - img "undetected":
+  - generic: Undetected
+  - generic: McAfee Scanner
+  - img "undetected":
+  - generic: Undetected
+  - generic: Microsoft
+  - img "undetected":
+  - generic: Undetected
+  - generic: NANO-Antivirus
+  - img "undetected":
+  - generic: Undetected
+  - generic: Palo Alto Networks
+  - img "undetected":
+  - generic: Undetected
+  - generic: Panda
+  - img "undetected":
+  - generic: Undetected
+  - generic: QuickHeal
+  - img "undetected":
+  - generic: Undetected
+  - generic: Rising
+  - img "undetected":
+  - generic: Undetected
+  - generic: Sangfor Engine Zero
+  - img "undetected":
+  - generic: Undetected
+  - generic: Sophos
+  - img "undetected":
+  - generic: Undetected
+  - generic: SUPERAntiSpyware
+  - img "undetected":
+  - generic: Undetected
+  - generic: Symantec
+  - img "undetected":
+  - generic: Undetected
+  - generic: TACHYON
+  - img "undetected":
+  - generic: Undetected
+  - generic: TEHTRIS
+  - img "undetected":
+  - generic: Undetected
+  - generic: Tencent
+  - img "undetected":
+  - generic: Undetected
+  - generic: Trapmine
+  - img "undetected":
+  - generic: Undetected
+  - generic: Trellix ENS
+  - img "undetected":
+  - generic: Undetected
+  - generic: TrendMicro
+  - img "undetected":
+  - generic: Undetected
+  - generic: TrendMicro-HouseCall
+  - img "undetected":
+  - generic: Undetected
+  - generic: Varist
+  - img "undetected":
+  - generic: Undetected
+  - generic: VBA32
+  - img "undetected":
+  - generic: Undetected
+  - generic: VIPRE
+  - img "undetected":
+  - generic: Undetected
+  - generic: VirIT
+  - img "undetected":
+  - generic: Undetected
+  - generic: ViRobot
+  - img "undetected":
+  - generic: Undetected
+  - generic: Webroot
+  - img "undetected":
+  - generic: Undetected
+  - generic: WithSecure
+  - img "undetected":
+  - generic: Undetected
+  - generic: Xcitium
+  - img "undetected":
+  - generic: Undetected
+  - generic: Yandex
+  - img "undetected":
+  - generic: Undetected
+  - generic: ZoneAlarm by Check Point
+  - img "undetected":
+  - generic: Undetected
+  - generic: Zoner
+  - img "undetected":
+  - generic: Undetected
+  - generic: Avast-Mobile
+  - img "type-unsupported":
+  - generic: Unable to process file type
+  - generic: BitDefenderFalx
+  - img "type-unsupported":
+  - generic: Unable to process file type
+  - generic: Symantec Mobile Insight
+  - img "type-unsupported":
+  - generic: Unable to process file type
+  - generic: Trustlook
+  - img "type-unsupported":
+  - generic: Unable to process file type
+- contentinfo

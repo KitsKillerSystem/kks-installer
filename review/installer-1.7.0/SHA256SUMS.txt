@@ -1,0 +1,2 @@
+30a70bf5462e3bcc84d4e050c0782f08c0f0bf0eb55dc99e18d4e00d5fb88b5e  KKS_Installer_1.7.0.zip
+85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749  KKSInstaller.exe

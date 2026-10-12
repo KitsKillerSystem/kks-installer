@@ -1,0 +1,137 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "fr-verify",
+      "status": "verified",
+      "seconds": 4.62
+    },
+    {
+      "name": "fr-prior-B003",
+      "status": "installed",
+      "seconds": 26.31
+    },
+    {
+      "name": "fr-update-check",
+      "status": "update_available",
+      "seconds": 8.02
+    },
+    {
+      "name": "fr-full-kks-on",
+      "status": "installed",
+      "seconds": 42.31
+    },
+    {
+      "name": "fr-full-kks-on-repair",
+      "status": "installed",
+      "seconds": 23.45
+    },
+    {
+      "name": "fr-vanilla-equipment-on",
+      "status": "installed",
+      "seconds": 41.33
+    },
+    {
+      "name": "fr-vanilla-equipment-on-repair",
+      "status": "installed",
+      "seconds": 24.44
+    },
+    {
+      "name": "fr-full-kks-off",
+      "status": "installed",
+      "seconds": 41.19
+    },
+    {
+      "name": "fr-full-kks-off-repair",
+      "status": "installed",
+      "seconds": 23.2
+    },
+    {
+      "name": "fr-vanilla-equipment-off",
+      "status": "installed",
+      "seconds": 41.59
+    },
+    {
+      "name": "fr-vanilla-equipment-off-repair",
+      "status": "installed",
+      "seconds": 23.78
+    },
+    {
+      "name": "fr-cacheless-restore",
+      "status": "restored",
+      "seconds": 19.69
+    },
+    {
+      "name": "de-verify",
+      "status": "verified",
+      "seconds": 4.59
+    },
+    {
+      "name": "de-prior-B003",
+      "status": "installed",
+      "seconds": 25.48
+    },
+    {
+      "name": "de-update-check",
+      "status": "update_available",
+      "seconds": 8.08
+    },
+    {
+      "name": "de-full-kks-on",
+      "status": "installed",
+      "seconds": 41.41
+    },
+    {
+      "name": "de-full-kks-on-repair",
+      "status": "installed",
+      "seconds": 23.59
+    },
+    {
+      "name": "de-vanilla-equipment-on",
+      "status": "installed",
+      "seconds": 42.8
+    },
+    {
+      "name": "de-vanilla-equipment-on-repair",
+      "status": "installed",
+      "seconds": 24.14
+    },
+    {
+      "name": "de-full-kks-off",
+      "status": "installed",
+      "seconds": 42.39
+    },
+    {
+      "name": "de-full-kks-off-repair",
+      "status": "installed",
+      "seconds": 23.31
+    },
+    {
+      "name": "de-vanilla-equipment-off",
+      "status": "installed",
+      "seconds": 42.8
+    },
+    {
+      "name": "de-vanilla-equipment-off-repair",
+      "status": "installed",
+      "seconds": 24.19
+    },
+    {
+      "name": "de-cacheless-restore",
+      "status": "restored",
+      "seconds": 20.72
+    }
+  ],
+  "count": 24,
+  "installer_sha256": "85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749",
+  "both_languages_all_four_profiles": true,
+  "upgrade_B003": true,
+  "repair_each_profile": true,
+  "cacheless_restore_exact": true,
+  "all_six_resources_exact": true,
+  "unrelated_archive_members_preserved": true,
+  "native_fixture_restored": true,
+  "reference_fixture_unchanged": true,
+  "live_game_writes": false,
+  "in_game_smoke_test": false
+}

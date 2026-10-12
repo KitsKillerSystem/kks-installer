@@ -26,7 +26,7 @@ from ._application import TRANSLATION_PROFILE, TRANSLATION_CAPABILITIES
 from ._application import LOCALIZATION_PROFILE, LOCALIZATION_CAPABILITIES
 from ._application import GERMAN_PROFILE, GERMAN_CAPABILITIES
 from ._application import RUSSIAN_PROFILE, FRENCH_PROFILE, LOCALIZED_PROFILES
-from ._application import RUSSIAN_OPTIONAL_CAPABILITY
+from ._application import RUSSIAN_OPTIONAL_CAPABILITY, FR_DE_OPTIONAL_CAPABILITY
 from .engine import demand, digest, is_digest, durable_bytes, sync_directory
 from .ba2 import hash_file
 from .platforms import SafetyError, safe_path
@@ -203,7 +203,9 @@ def validate_manifest(m):
                     + ([CAPABILITY] if schema >= 2 else [])
                     + ([PERK_CAPABILITY] if schema == 3 else [])
                     + ([RUSSIAN_OPTIONAL_CAPABILITY]
-                       if schema >= 2 and m["profile"] == RUSSIAN_PROFILE else []))
+                       if schema >= 2 and m["profile"] == RUSSIAN_PROFILE else [])
+                    + ([FR_DE_OPTIONAL_CAPABILITY]
+                       if schema >= 2 and m["profile"] in (FRENCH_PROFILE, GERMAN_PROFILE) else []))
     strings = profile_strings(m["profile"])
     translation = f"interface/translate_{profile_language(m['profile'])}.txt"
     version(m["content_version"])
@@ -364,12 +366,15 @@ def validate_manifest(m):
     demand(m["qa"]["status"] in ("candidate", "approved"), "Invalid QA status")
     plain(m["qa"]["report_id"])
     if schema >= 2:
-        demand(m["profile"] in (LOCALIZATION_PROFILE, RUSSIAN_PROFILE)
+        demand(m["profile"] in (LOCALIZATION_PROFILE, RUSSIAN_PROFILE, FRENCH_PROFILE, GERMAN_PROFILE)
                and version(m["minimum_installer_version"]) >= (1, 4, 0),
                "Equipment naming requires a supported Localization profile and Installer 1.4.0")
         if m["profile"] == RUSSIAN_PROFILE:
             demand(version(m["minimum_installer_version"]) >= (1, 6, 0),
                    "Russian optional features require Installer 1.6.0 or newer")
+        if m["profile"] in (FRENCH_PROFILE, GERMAN_PROFILE):
+            demand(version(m["minimum_installer_version"]) >= (1, 7, 0),
+                   "French and German optional features require Installer 1.7.0 or newer")
     if schema == 3:
         demand(version(m["minimum_installer_version"]) >= (1, 5, 0),
                "Optional perk cards require Installer 1.5.0 or newer")
