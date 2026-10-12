@@ -1,6 +1,6 @@
 """Application policy. Content packages cannot expand these capabilities."""
 
-APP_VERSION = "1.6.0"
+APP_VERSION = "1.7.0"
 BUILD_LABEL = "Release"
 INSTALLER_API = 1
 PROFILE = "fo76-steam-en-fonts-strings-v1"
@@ -15,6 +15,7 @@ GERMAN_PROFILE = "fo76-steam-de-fonts-strings-localization-v1"
 GERMAN_CAPABILITIES = [WRITER, "localization-translate-de-v1"]
 RUSSIAN_PROFILE = "fo76-steam-ru-fonts-strings-localization-v1"
 RUSSIAN_OPTIONAL_CAPABILITY = "optional-features-ru-v1"
+FR_DE_OPTIONAL_CAPABILITY = "optional-features-fr-de-v1"
 FRENCH_PROFILE = "fo76-steam-fr-fonts-strings-localization-v1"
 LOCALIZED_PROFILES = {"de": GERMAN_PROFILE, "ru": RUSSIAN_PROFILE, "fr": FRENCH_PROFILE}
 CONTENT_LANGUAGES = ("en", "de", "ru", "fr")
