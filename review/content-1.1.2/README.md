@@ -1,4 +1,6 @@
-# English and Russian content 1.1.2
+# Historical R001 candidates labeled 1.1.2
+
+**Superseded for publication:** the owner confirms public English 1.1.2 was already occupied. These new candidates have been reissued as [content 1.2.0](../content-1.2.0/README.md), with the same resources and new signed metadata. Do not upload the candidate 1.1.2 ZIPs to Nexus. The following evidence retains its original identity.
 
 Both releases are director-authorized for Nexus publication using unchanged signed packages: English revision 5 / sequence 22; Russian revision 8 / sequence 11. This is the first public Russian release, under the shared content version 1.1.2. [Acceptance, package hashes and limits](ACCEPTANCE.json).
 

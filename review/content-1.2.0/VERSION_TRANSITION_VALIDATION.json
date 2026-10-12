@@ -1,0 +1,143 @@
+{
+  "status": "PASS",
+  "count": 16,
+  "checks": [
+    {
+      "name": "en-signature",
+      "status": "verified",
+      "seconds": 4.12,
+      "report": "evidence\\exe\\en-signature.json"
+    },
+    {
+      "name": "en-old-1.1.2-install",
+      "status": "installed",
+      "seconds": 25.36,
+      "report": "evidence\\exe\\en-old-1.1.2-install.json"
+    },
+    {
+      "name": "en-1.2.0-update-check",
+      "status": "update_available",
+      "seconds": 8.22,
+      "report": "evidence\\exe\\en-1.2.0-update-check.json"
+    },
+    {
+      "name": "en-1.2.0-update",
+      "status": "installed",
+      "seconds": 41.53,
+      "report": "evidence\\exe\\en-1.2.0-update.json"
+    },
+    {
+      "name": "en-1.2.0-repair",
+      "status": "installed",
+      "seconds": 23.23,
+      "report": "evidence\\exe\\en-1.2.0-repair.json"
+    },
+    {
+      "name": "en-1.2.0-cacheless-restore",
+      "status": "restored",
+      "seconds": 20.2,
+      "report": "evidence\\exe\\en-1.2.0-cacheless-restore.json"
+    },
+    {
+      "name": "en-old-downgrade-rejected",
+      "status": "blocked",
+      "seconds": 6.75,
+      "report": "evidence\\exe\\en-old-downgrade-rejected.json"
+    },
+    {
+      "name": "en-1.2.0-reinstall-ready",
+      "status": "ready",
+      "seconds": 6.72,
+      "report": "evidence\\exe\\en-1.2.0-reinstall-ready.json"
+    },
+    {
+      "name": "ru-signature",
+      "status": "verified",
+      "seconds": 2.91,
+      "report": "evidence\\exe\\ru-signature.json"
+    },
+    {
+      "name": "ru-old-1.1.2-install",
+      "status": "installed",
+      "seconds": 25.7,
+      "report": "evidence\\exe\\ru-old-1.1.2-install.json"
+    },
+    {
+      "name": "ru-1.2.0-update-check",
+      "status": "update_available",
+      "seconds": 6.8,
+      "report": "evidence\\exe\\ru-1.2.0-update-check.json"
+    },
+    {
+      "name": "ru-1.2.0-update",
+      "status": "installed",
+      "seconds": 39.17,
+      "report": "evidence\\exe\\ru-1.2.0-update.json"
+    },
+    {
+      "name": "ru-1.2.0-repair",
+      "status": "installed",
+      "seconds": 24.17,
+      "report": "evidence\\exe\\ru-1.2.0-repair.json"
+    },
+    {
+      "name": "ru-1.2.0-cacheless-restore",
+      "status": "restored",
+      "seconds": 21.5,
+      "report": "evidence\\exe\\ru-1.2.0-cacheless-restore.json"
+    },
+    {
+      "name": "ru-old-downgrade-rejected",
+      "status": "blocked",
+      "seconds": 5.2,
+      "report": "evidence\\exe\\ru-old-downgrade-rejected.json"
+    },
+    {
+      "name": "ru-1.2.0-reinstall-ready",
+      "status": "ready",
+      "seconds": 5.05,
+      "report": "evidence\\exe\\ru-1.2.0-reinstall-ready.json"
+    }
+  ],
+  "languages": [
+    {
+      "language": "en",
+      "from_version": "1.1.2",
+      "to_version": "1.2.0",
+      "revision": 1,
+      "sequence": 23,
+      "same_profile_changed_payload_files": 0,
+      "installed_resources_byte_identical": true,
+      "hybrid_options_retained": true,
+      "original_baseline_retained": true,
+      "repair_pass": true,
+      "cacheless_restore_exact": true,
+      "older_package_rejected_after_restore": true,
+      "same_new_package_reinstall_ready": true,
+      "nonselected_languages_unchanged": true,
+      "evidence_reuse": "All English checks/assertions completed before the initial harness stopped on Russian display-name expectation; retained without repeating game writes."
+    },
+    {
+      "language": "ru",
+      "from_version": "1.1.2",
+      "to_version": "1.2.0",
+      "revision": 1,
+      "sequence": 12,
+      "same_profile_changed_payload_files": 0,
+      "installed_resources_byte_identical": true,
+      "hybrid_options_retained": true,
+      "original_baseline_retained": true,
+      "repair_pass": true,
+      "cacheless_restore_exact": true,
+      "older_package_rejected_after_restore": true,
+      "same_new_package_reinstall_ready": true,
+      "nonselected_languages_unchanged": true
+    }
+  ],
+  "fixture": "<DISPOSABLE_FIXTURE>",
+  "live_game_writes": false,
+  "reference_preserved": true,
+  "installer_version": "1.6.0",
+  "installer_sha256": "46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589",
+  "all_profile_output_hashes_exact": "Verified statically against previous four-profile manifests; hybrid exercised at runtime."
+}

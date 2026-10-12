@@ -9,4 +9,6 @@ The project owner authorized publication on October 11, 2026, accepting the eigh
 - [Previous branding validation](evidence/previous-branding-48-checks.json): 48 broader checks; branding-only source/AST comparison retained.
 - [Public-copy provenance](PUBLIC_COPY_PROVENANCE.json): local user-profile paths redacted; original/public hashes retained. Private originals are unchanged.
 
-The final title is `KKS Installer · 1.6.0`. Russian modular choices, baseline-aware migration/restoration and guarded Play are included. No new gameplay or live-game test is claimed by the publication pass. English/Russian content and manual downloads are on [Nexus](https://www.nexusmods.com/fallout76/mods/4301), not attached here. Prior release evidence remains intact.
+The final title is `KKS Installer · 1.6.0`. Russian modular choices, baseline-aware migration/restoration and guarded Play are included. No new gameplay or live-game test is claimed by the publication pass. Current English/Russian content 1.2.0 and manual downloads are on [Nexus](https://www.nexusmods.com/fallout76/mods/4301), not attached here. Prior release evidence remains intact.
+
+Content version was corrected after installer publication; [1.2.0 metadata-only reissue](../content-1.2.0/README.md). The installer executable, ZIP, tags and security evidence remain unchanged.
