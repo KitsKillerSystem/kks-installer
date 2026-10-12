@@ -1,6 +1,6 @@
 # Installer 1.7.0 — French/German modular options
 
-Local prepared release; not yet published. Exact build source: `28e8f7edb277d767ddebb062682f66b7955b9341`.
+[Installer 1.7.0 release](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.7.0), authorized by the owner on October 12, 2026. [Release decision](OWNER_RELEASE_DECISION.json). Exact build source: `28e8f7edb277d767ddebb062682f66b7955b9341`.
 
 Adds French/German signed schema-2/3 optional profiles behind minimum Installer 1.7.0 and `optional-features-fr-de-v1`. Native equipment and native perk descriptions derive from the selected language's certified tables. No new resource targets, writer paths or network behavior.
 

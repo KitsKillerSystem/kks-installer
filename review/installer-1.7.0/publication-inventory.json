@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "recorded_utc": "2026-10-12T14:46:45.239398+00:00",
+  "exe_sha256": "85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749",
+  "zip_sha256": "30a70bf5462e3bcc84d4e050c0782f08c0f0bf0eb55dc99e18d4e00d5fb88b5e",
+  "zip_bytes": 15471729,
+  "original_preparation_zip_sha256": "00d544318427a4286a9805c842f993bd9b406ef561d70c1f178cd1a4f4ddcc87",
+  "source_unchanged_since_build": true,
+  "exact_scanned_exe_preserved": true,
+  "zip_integrity_and_member_checksums": "PASS",
+  "zip_members": [
+    "KKSInstaller.exe",
+    "README.txt",
+    "SECURITY_REVIEW.md",
+    "Nexus_security_note.txt",
+    "virustotal-results.json",
+    "SHA256SUMS.txt",
+    "OWNER_RELEASE_DECISION.json"
+  ],
+  "published": false
+}

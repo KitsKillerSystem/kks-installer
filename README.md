@@ -2,9 +2,9 @@
 
 KKS adds custom glyphs, clearer item information, useful sorting and redesigned perk-card descriptions to Fallout 76.
 
-## Installer 1.7.0 — prepared update
+## Installer 1.7.0
 
-Installer 1.7.0 adds French/German support for the same independent equipment-name and perk-card options available in English and Russian. This branch stages the update; [published Installer 1.6.0](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.6.0) remains unchanged until 1.7.0 is published.
+Installer 1.7.0 adds French/German support for the same independent equipment-name and perk-card options available in English and Russian. [Download Installer 1.7.0](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.7.0). Earlier releases remain unchanged.
 
 Content downloads are separate on [Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301). French/German packages with these options require 1.7.0. Their native-language wording has received less player feedback and may receive corrections. The owner plans an in-game visual inspection before uploading those content editions.
 
@@ -21,7 +21,7 @@ Both selectors require a supporting verified package. Choices affect presentatio
 
 ## Release evidence and antivirus disclosure
 
-The exact new EXE has a recorded **7/71 VirusTotal result** dated October 12, 2026, plus four unsupported engines. The remaining warnings have not been confirmed as false positives. The earlier certificate finding remains **LIKELY BENIGN / PARTIALLY EXPLAINED**; that closed inquiry is not reopened. Public release of this candidate is not claimed.
+The exact new EXE has a recorded **7/71 VirusTotal result** dated October 12, 2026, plus four unsupported engines. The remaining warnings have not been confirmed as false positives. The earlier certificate finding remains **LIKELY BENIGN / PARTIALLY EXPLAINED**; that closed inquiry is not reopened. The owner authorized release with the remaining detections and disclosed coverage limits; that decision does not resolve the warnings.
 
 [Detailed 1.7.0 review](review/installer-1.7.0/SECURITY_REVIEW.md) · [Exact scan](https://www.virustotal.com/gui/file/85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749/detection) · [Release notes](RELEASE_NOTES.md)
 

@@ -1,6 +1,6 @@
 # Installer 1.7.0 — exact-file security review
 
-**Scan and source/bundle review complete; seven residual warnings remain disclosed. This candidate has not been published.** The owner authorized this scan on October 12, 2026 and plans a quiet GitHub update. No claim of a clean result, vendor-confirmed false positives, or VirusTotal certification is made. The closed 1.6.0 certificate investigation and cancelled VM work are not reopened by this update.
+**Scan and source/bundle review complete; the owner authorized publication with the seven residual warnings and disclosed coverage limits on October 12, 2026.** [Release decision](OWNER_RELEASE_DECISION.json). No claim of a clean result, vendor-confirmed false positives, or VirusTotal certification is made. The closed 1.6.0 certificate investigation and cancelled VM work are not reopened by this update.
 
 ## Exact executable and result
 
@@ -42,4 +42,4 @@ The [captured behavior report](virustotal-behavior.txt) shows CAPA, CAPE Sandbox
 
 The certificate-related rule also appeared in the earlier 1.6.0 inquiry. Its recurrence is disclosed, not treated as resolved. The earlier certificate audit remains **LIKELY BENIGN / PARTIALLY EXPLAINED**, with its original uncertainty preserved. Identical native members support continuity with that reviewed runtime; they do not establish the actor or cause of this run's certificate event. The owner closed that inquiry and made vendor remediation non-blocking unless new evidence establishes an actual defect. No additional VM or certificate investigation was performed.
 
-No new confirmed security defect was established by this bounded update review. The seven exact vendor triggers remain unresolved. Public release timing and residual-risk acceptance are separate from this scan authorization; this record does not invent approval of the new scan result. Keep accurate disclosure, do not advise disabling protection, and preserve the exact reviewed bytes for publication.
+No new confirmed security defect was established by this bounded update review. The seven exact vendor triggers remain unresolved. Following disclosure of the scan and review, the owner instructed publication under the established procedure. The linked release decision records acceptance for this exact executable; it does not resolve the warnings or claim vendor clearance. Keep accurate disclosure, do not advise disabling protection, and preserve the exact reviewed bytes for publication.
