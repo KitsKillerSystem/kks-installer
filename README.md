@@ -1,72 +1,31 @@
 # KKS — Kit's Killer System
 
-KKS adds custom glyphs, clearer item information, useful sorting and redesigned
-perk-card descriptions to Fallout 76.
+KKS adds custom glyphs, clearer item information, useful sorting and redesigned perk-card descriptions to Fallout 76.
 
-## Download KKS 1.1.1 and Installer 1.5.0
+## Installer 1.6.0 · English and Russian content 1.1.2
 
-[Release page and downloads](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.1.1)
+- [Installer 1.6.0 release and downloads](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.6.0) — extract the installer ZIP and run `KKSInstaller.exe`.
+- [English/Russian content on Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301) — keep the signed content ZIP unopened. Content and installer are separate downloads and versions.
 
-- [KKS Installer 1.5.0](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.1.1/KKS_Installer_1.5.0.zip) — extract this ZIP and run `KKSInstaller.exe`.
-- [KKS Content 1.1.1](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.1.1/KKS_1.1.1_Steam_EN_25636769.zip) — keep this signed content ZIP intact.
+**Validated content: Fallout 76 Steam build 25636769. Use the final Installer 1.6.0.** Close the game, select its folder, choose/drop your language's content ZIP, choose options, and Install. Package selection verifies only; it does not install. Do not use Manual or source archives as installer inputs. Installer UI language does not translate content; Restore Baseline before changing content languages.
 
-**Supported content: Fallout 76, Steam, English, build 25636769. Installer 1.5.0 is required.**
-Installer and content versions are independent.
-
-1. Download both named ZIPs, including the updated installer.
-2. Close Fallout 76 and open `KKSInstaller.exe`.
-3. Select the game folder, then drop in the intact content ZIP or use Choose package.
-4. After verification, choose your equipment/perk options and click Install content / Install update.
-
-Existing supported installations update directly without a manual restore or
-intermediate release. Selecting a package only verifies it. Keep the game's
-`.kks-manager` and any `.kks-installer-1.0.0` records/backups. Use Installer 1.5.0 for
-Repair and Restore after this update, including after a restore/reinstall cycle.
-
-## Your equipment and perk choices
-
-| Equipment naming | Perk cards | Result |
+| Equipment naming | Perk descriptions | Result |
 |---|---|---|
-| KKS | KKS | Full KKS experience; recommended defaults |
-| Vanilla | KKS | Native equipment names with KKS perk cards |
-| KKS | Vanilla | KKS equipment names with native perk descriptions |
-| Vanilla | Vanilla | Both native treatments; other KKS features remain installed |
+| KKS | KKS | Full KKS; defaults |
+| Native | KKS | Native equipment with KKS cards |
+| KKS | Native | KKS equipment with native perk descriptions |
+| Native | Native | Both native treatments; other KKS features remain |
 
-Both selectors unlock only when the verified package supports them. Perk Cards Off
-restores native descriptions; it does not disable perks or change gameplay effects.
-Close the game and install the same ZIP with another selection to switch back.
-Repair preserves your choices. Restore vanilla returns the managed files to their
-original state. This release also finalizes English underarmor naming while keeping
-the accepted artwork, sorting, Known checkmarks and 240-card standard perk deck.
+Both selectors require a supporting verified package. They change presentation, not perk gameplay. Reinstall the same ZIP with another choice to switch. Repair preserves choices. Restore Baseline restores the verified pre-KKS state, including supported prior modifications; keep `.kks-manager` and older KKS backups. Use 1.6.0 or newer after migration. Overlapping changes require confirmation; incompatible archives, changed game identities and unknown later modifications remain blocked. Play Fallout 76 explicitly opens Steam when the installation is ready.
 
-After a Bethesda update, complete Steam's Verify integrity of game files before
-selecting content certified for that new build. Optional features do not bypass
-compatibility checks. The installer never downloads updates automatically.
-The content ZIP here is English; installer UI language selection does not translate it.
+## Release evidence and antivirus disclosure
 
-## Validation and source
+The exact installer has a recorded **8/71 VirusTotal result** dated October 11, 2026, plus four unsupported engines. The owner authorized release with the unresolved warnings. The certificate finding remains **LIKELY BENIGN / PARTIALLY EXPLAINED**. The detections have not been conclusively established as false positives; vendor remediation continues as non-blocking maintenance.
 
-The maintainer passed six in-game checks: Restore Vanilla, Full KKS, both hybrid
-configurations, profile-aware Repair, and return to Full KKS, with no regressions
-observed. The accepted build also passed **182 automated tests and 28 compiled-EXE
-checks**, including all four combinations, cache-free restoration and interruption recovery.
+[Detailed security review](https://github.com/KitsKillerSystem/kks-installer/blob/v1.6.0/review/installer-1.6.0/SECURITY_REVIEW.md) · [Exact VirusTotal report](https://www.virustotal.com/gui/file/46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589/detection) · [Release notes](RELEASE_NOTES.md)
 
-- [Release notes](RELEASE_NOTES.md)
-- [Content 1.1.1 validation and signed manifest](review/content-1.1.1/README.md)
-- [Installer 1.5.0 build and test evidence](review/installer-1.5.0/README.md)
-- [Optional feature contract](OPTIONAL_FEATURES.md), [build instructions](BUILD.md),
-  [package/restoration contract](INDEPENDENT_INSTALLER.md), and [security scope](SECURITY_REVIEW.md)
+EXE SHA-256: `46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589`
 
-The app is an offline asset patcher; it requires Fallout 76 to be closed and never
-injects code into the game. Content is publisher-signed; the Windows EXE is not
-Authenticode-signed. The exact accepted artifacts retain their historical preview
-labels; release acceptance and build provenance are recorded in the evidence above.
+The release preserves the scanned executable, with 210 passing regressions, 15 final compiled checks and 48 broader checks on the branding-equivalent predecessor. [Build and acceptance evidence](review/installer-1.6.0/README.md), [content validation](review/content-1.1.2/README.md), [build instructions](BUILD.md), [optional feature contract](OPTIONAL_FEATURES.md), and [restoration contract](INDEPENDENT_INSTALLER.md).
 
-Players need the two named downloads, not GitHub's automatic Source code archives.
-Python and xTranslator are not required. Previous releases and their evidence remain
-available unchanged. The application source is in `source/kks_installer/` and
-`source/launcher.py`; publisher tooling and frozen legacy inputs are not embedded.
-Game archives, signing private keys, game backups and private authoring history do
-not belong in this repository. Publication here does not claim Nexus approval.
-
-[KKS on Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301)
+KKS is an offline resource patcher; it does not inject code into the game or automatically download updates. Content is publisher-signed; the Windows EXE is not Authenticode-signed. Python and xTranslator are not needed by installer users. Source is in `source/kks_installer/` and `source/launcher.py`; exact build tag: `installer-v1.6.0`. GitHub distributes the installer; new content downloads belong on Nexus. Earlier release assets and evidence remain historical. Game archives, backups, signing private keys and private authoring history do not belong in this public repository.

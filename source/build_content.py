@@ -26,6 +26,7 @@ from kks_installer._application import (
     GERMAN_PROFILE,
     LOCALIZED_PROFILES,
     CONTENT_LANGUAGES,
+    RUSSIAN_OPTIONAL_CAPABILITY,
 )
 from kks_installer.ba2 import BA2, hash_file
 from kks_installer.engine import demand, digest
@@ -286,10 +287,10 @@ def build(
             from equipment_catalog import equipment_categories
             from kks_installer.equipment import CAPABILITY, reset_equipment
 
-            demand(language == "en" and translation_localization,
-                   "The equipment naming preview requires English Localization content")
+            demand(language in ("en", "ru") and translation_localization,
+                   "Equipment naming requires English or Russian Localization content")
             categories = equipment_categories(game / "Data/SeventySix.esm")
-            member = "strings/seventysix_en.strings"
+            member = f"strings/seventysix_{language}.strings"
             derived = reset_equipment((payload / member).read_bytes(), localization.extract(member), categories)
             m["schema"] = 2
             m["required_capabilities"] = m["required_capabilities"] + [CAPABILITY]
@@ -303,7 +304,7 @@ def build(
             from kks_installer.perks import CAPABILITY, reset_perks
 
             categories = perk_categories(game / "Data/SeventySix.esm")
-            member = "strings/seventysix_en.dlstrings"
+            member = f"strings/seventysix_{language}.dlstrings"
             derived = reset_perks((payload / member).read_bytes(), localization.extract(member), categories)
             m["schema"] = 3
             m["required_capabilities"] = m["required_capabilities"] + [CAPABILITY]
@@ -312,6 +313,8 @@ def build(
             for item in identity:
                 demand(hash_file(game / item["path"]) == item["sha256"],
                        "Game identity changed during perk certification")
+        if equipment_naming and language == "ru":
+            m["required_capabilities"].append(RUSSIAN_OPTIONAL_CAPABILITY)
         validate_manifest(m)
         if expected_legacy:
             old = json.loads(Path(expected_legacy).read_bytes())

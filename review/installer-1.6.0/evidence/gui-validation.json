@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "window_title": "KKS Installer · 1.6.0",
+  "installer_sha256": "46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589",
+  "observed_with": "Windows Computer Use; screenshot and title bar",
+  "preview_text_absent": true,
+  "live_game_write_actions": false,
+  "scope": "Title and layout observation only; startup performs a read-only installed-state check."
+}

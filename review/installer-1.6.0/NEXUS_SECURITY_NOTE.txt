@@ -1,0 +1,5 @@
+KKS Installer 1.6.0 was scanned on October 11, 2026. The recorded VirusTotal result is 8/71 detections, with four additional engines unable to process the file. The investigation found no KKS certificate-import code; the certificate event is assessed as LIKELY BENIGN / PARTIALLY EXPLAINED, with attribution uncertainty remaining. The project owner has authorized release of the unchanged executable. This does not establish that the eight detections are false positives. KKS continues pursuing legitimate false-positive/vendor remediation as non-blocking maintenance. The detailed review documents the findings, limitations and build provenance. Content packages are separate from the installer scan.
+
+EXE SHA-256: 46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589
+VirusTotal: https://www.virustotal.com/gui/file/46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589/detection
+Detailed review: https://github.com/KitsKillerSystem/kks-installer/blob/v1.6.0/review/installer-1.6.0/SECURITY_REVIEW.md

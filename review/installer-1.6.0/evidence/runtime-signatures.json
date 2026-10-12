@@ -1,0 +1,14 @@
+[
+  {
+    "File": "new-python312.dll",
+    "Status": "Valid",
+    "Signer": "CN=\"OpenAI OpCo, LLC\", O=\"OpenAI OpCo, LLC\", L=San Francisco, S=California, C=US",
+    "Issuer": "CN=Microsoft ID Verified CS AOC CA 03, O=Microsoft Corporation, C=US"
+  },
+  {
+    "File": "old-python312.dll",
+    "Status": "Valid",
+    "Signer": "CN=\"OpenAI OpCo, LLC\", O=\"OpenAI OpCo, LLC\", L=San Francisco, S=California, C=US",
+    "Issuer": "CN=Microsoft ID Verified CS EOC CA 03, O=Microsoft Corporation, C=US"
+  }
+]

@@ -1,6 +1,12 @@
 """Private-beta French and Russian UI catalogues; native QA pending."""
 
 FR = {
+    "KKS Weapon & Armor Treatment (Recommended)": "Noms d’armes et d’armures KKS (recommandé)",
+    "Vanilla Equipment Naming": "Noms d’équipement d’origine",
+    "KKS Perk Cards On (Recommended)": "Cartes d’aptitude KKS (recommandé)",
+    "KKS Perk Cards Off (Vanilla)": "Cartes d’aptitude d’origine",
+    "Vanilla Perk Cards": "Cartes d’aptitude d’origine",
+    "Russian optional features require Installer 1.6.0 or newer": "Les options du contenu russe nécessitent l’installateur 1.6.0 ou une version ultérieure.",
     "Language": "Langue",
     "Vanilla files restored. Backups retained.": "Fichiers d’origine restaurés. Sauvegardes conservées.",
     "KKS installed and verified.": "KKS installé et vérifié.",
@@ -241,6 +247,12 @@ FR = {
 }
 
 RU = {
+    "KKS Weapon & Armor Treatment (Recommended)": "Оружие и броня KKS (рекомендуется)",
+    "Vanilla Equipment Naming": "Обычные названия оружия и брони",
+    "KKS Perk Cards On (Recommended)": "Карты способностей KKS (рекомендуется)",
+    "KKS Perk Cards Off (Vanilla)": "Обычные карты способностей",
+    "Vanilla Perk Cards": "Обычные карты способностей",
+    "Russian optional features require Installer 1.6.0 or newer": "Выбор компонентов русского пакета требует установщик версии 1.6.0 или новее.",
     "Language": "Язык",
     "Vanilla files restored. Backups retained.": "Исходные файлы восстановлены. Резервные копии сохранены.",
     "KKS installed and verified.": "KKS установлен и проверен.",

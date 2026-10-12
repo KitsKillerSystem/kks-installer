@@ -1,0 +1,62 @@
+{
+  "status": "OWNER_AUTHORIZED_NEXUS_PUBLICATION",
+  "date_local": "2026-10-11 America/Chicago",
+  "english": {
+    "version": "1.1.2",
+    "revision": 5,
+    "sequence": 22
+  },
+  "russian": {
+    "version": "1.1.2",
+    "revision": 8,
+    "sequence": 11,
+    "first_public_russian_release": true
+  },
+  "packages": [
+    {
+      "name": "KKS_1.1.2_English_Steam_25636769.zip",
+      "language": "English",
+      "type": "Release",
+      "sha256": "43ffa74c5c1ca44caf1dc6849d459ef9cdd35ac7de902e81f15b1d4958b38ab1",
+      "size": 92341956,
+      "byte_identical": true
+    },
+    {
+      "name": "KKS_1.1.2_English_Manual_Steam_25636769.zip",
+      "language": "English",
+      "type": "Manual",
+      "sha256": "875d2a10502fc1da7f4359a627936e726dfd5a91d85f7915e831508d398c4609",
+      "size": 105194619,
+      "byte_identical": true
+    },
+    {
+      "name": "KKS_1.1.2_Russian_Steam_25636769.zip",
+      "language": "Russian",
+      "type": "Release",
+      "sha256": "138da8275101d7b4879dc5a797007562551fa14f250c976ec33157a9e7902fb8",
+      "size": 51070759,
+      "byte_identical": true
+    },
+    {
+      "name": "KKS_1.1.2_Russian_Manual_Steam_25636769.zip",
+      "language": "Russian",
+      "type": "Manual",
+      "sha256": "52c2eb97123c09b2c405752ccd0b6090d3b73df308f81af8e693fea4991d8759",
+      "size": 67473844,
+      "byte_identical": true
+    }
+  ],
+  "installer_version": "1.6.0",
+  "steam_build": "25636769",
+  "owner_approved_russian_deck": {
+    "unique_perks": 240,
+    "panels": 451,
+    "distinct_designs": 445,
+    "codepoints": 3136,
+    "approved_assets_preserved": true
+  },
+  "human_qa": "Existing accepted features/deck retained; director authorized this assembled release. No new in-game rendering observation claimed; dense Russian tooltip spot-check remains unrecorded.",
+  "manual_tool_ui_tested": false,
+  "french_german": "Propagation ledger retained only; no build/publication",
+  "nexus_publication": "Prepared; external upload status recorded separately."
+}

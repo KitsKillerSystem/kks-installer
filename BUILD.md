@@ -1,4 +1,25 @@
-# Build installer application 1.5.0
+# Build installer application 1.6.0
+
+Released application: **1.6.0**, built from `8cad8b2195c069518ab0fc4334b77a816c25347d` (`installer-v1.6.0`). The production title is `KKS Installer · 1.6.0`. The published EXE is the unchanged scanned candidate; later publication commits update documentation only. [Build, tests and acceptance](review/installer-1.6.0/README.md) and [security disposition](review/installer-1.6.0/SECURITY_REVIEW.md) preserve the eight unresolved detections and owner release authorization.
+
+Russian modular choices, baseline migration and guarded Play are included. English/Russian content 1.1.2 is separately distributed on Nexus. Content packages do not require VirusTotal scans. Use the exact source tag and recorded runtime to reproduce this build. Historical receipts below remain tied to their named versions.
+
+Packaging review, 10 October 2026: `review_build.py --layout onedir` (or
+`build.ps1 -Layout onedir`) builds the same runtime as an inspectable folder.
+The output is `KKSInstaller/KKSInstaller.exe` with its `_internal` dependencies.
+Distribute/extract the entire folder and keep those dependencies together; the
+EXE alone is insufficient. The default remains `onefile`, preserving prior build
+commands. Both modes retain `--noupx`, the locked toolchain, full regression suite,
+clean-source verification and receipts. The receipt now inventories every bundled
+file. Neither layout requests administrator privileges or disables antivirus.
+
+The folder option avoids onefile's extraction/loading of runtime DLLs from a
+temporary `_MEI` directory. It is a review candidate for the reported 1.5.0
+VirusTotal detections, not a confirmed detection fix or malware-free guarantee.
+Assess the complete distributable, not only its small launcher. An existing public
+scan must be tied to its exact ZIP/EXE hash; changing a build's hash is not proof
+of safety. No code obfuscation or security-check removal is part of this option.
+Windows Authenticode signing and vendor determinations remain separate work.
 
 Installer 1.5.0 adds independently selectable equipment naming and perk descriptions;
 see OPTIONAL_FEATURES.md. The accepted clean-source build passes 182 tests.
@@ -37,7 +58,7 @@ python -m venv .venv
 ```
 
 Both output directories must be new. The script rejects uncommitted/untracked
-source, checks Python/dependency versions, runs all **182** tests, then invokes
+source, checks Python/dependency versions, runs all **210** tests, then invokes
 PyInstaller with `--clean --noupx --onefile --windowed`. A failed step stops the
 build. Accept the output only when `build-receipt.json` exists and logs pass;
 a partially created EXE alone is not success. Do not edit source during a build.

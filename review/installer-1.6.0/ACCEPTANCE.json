@@ -1,0 +1,24 @@
+{
+  "status": "OWNER_AUTHORIZED_RELEASE",
+  "date_local": "2026-10-11 America/Chicago",
+  "installer_version": "1.6.0",
+  "build_commit": "8cad8b2195c069518ab0fc4334b77a816c25347d",
+  "source_tag": "installer-v1.6.0",
+  "publication_tag": "v1.6.0",
+  "exe_sha256": "46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589",
+  "zip_sha256": "2e21c1d7ee1b9647264ab0c92a604f0f947738e33feacc9cbe3ff84ca9e3f7fb",
+  "security_disposition": "OWNER_ACCEPTED_REMAINING_DETECTIONS_AND_COVERAGE_LIMITATIONS",
+  "audit_A001": "LIKELY BENIGN / PARTIALLY EXPLAINED; preserved unchanged",
+  "vm_reproduction": "Cancelled; not executed",
+  "forensic_findings_changed": false,
+  "vendor_confirmation": false,
+  "maintenance": "Non-blocking legitimate vendor/false-positive remediation; actual security defects still require action.",
+  "packaging": "Documentation-only release wrapper; EXE byte-identical to scanned candidate.",
+  "tests": {
+    "build_regressions": 210,
+    "final_exe": 15,
+    "previous_branding_broader_suite": 48,
+    "fresh_read_only_publication_checks": 3
+  },
+  "public_content_location": "https://www.nexusmods.com/fallout76/mods/4301"
+}

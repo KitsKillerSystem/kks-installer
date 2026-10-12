@@ -1,0 +1,9 @@
+{
+  "status": "verified",
+  "content": "KKS 1.1.2",
+  "manifest": "18c74eff9ecab4c1b2423d3ece89a3a577fbb97368bde3451e792e51c7f0fb2d",
+  "supported_build": "Steam EN 25636769 - final release candidate R001",
+  "payload_files": 6,
+  "equipment_naming_available": true,
+  "perk_cards_available": true
+}

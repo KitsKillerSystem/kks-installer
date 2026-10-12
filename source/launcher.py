@@ -37,6 +37,8 @@ def main():
         "package_path", nargs="?", help="A ZIP dropped onto the application or supplied at launch"
     )
     parser.add_argument("--report", help="Write the result to this explicitly selected JSON path")
+    parser.add_argument("--accept-modifications", metavar="CHECK_TOKEN",
+                        help="Confirm overlapping modifications using the exact confirmation_token returned by --check")
     args = parser.parse_args()
     try:
         package = args.package or args.package_path
@@ -90,7 +92,8 @@ def main():
                 result = manager.recover()
             else:
                 selected = manager.select(package) if package else None
-                result = manager.run(action, selected, naming=args.naming, perks=args.perk_cards)
+                result = manager.run(action, selected, naming=args.naming, perks=args.perk_cards,
+                                     accept_modifications=args.accept_modifications)
             result["activity"] = logs
         code = 0
     except Exception as e:

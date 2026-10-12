@@ -1,0 +1,91 @@
+{
+  "status": "PASS",
+  "installer_sha256": "46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589",
+  "source_commit": "8cad8b2195c069518ab0fc4334b77a816c25347d",
+  "build_tests": 210,
+  "compiled_checks": 15,
+  "checks": [
+    {
+      "name": "version",
+      "status": null,
+      "seconds": 1.52
+    },
+    {
+      "name": "en-signature",
+      "status": "verified",
+      "seconds": 4.33
+    },
+    {
+      "name": "en-full-kks-on",
+      "status": "installed",
+      "seconds": 29.16
+    },
+    {
+      "name": "en-vanilla-equipment-on",
+      "status": "installed",
+      "seconds": 46.75
+    },
+    {
+      "name": "en-full-kks-off",
+      "status": "installed",
+      "seconds": 45.22
+    },
+    {
+      "name": "en-vanilla-equipment-off",
+      "status": "installed",
+      "seconds": 55.61
+    },
+    {
+      "name": "en-repair",
+      "status": "installed",
+      "seconds": 25.73
+    },
+    {
+      "name": "en-restore",
+      "status": "restored",
+      "seconds": 24.48
+    },
+    {
+      "name": "ru-signature",
+      "status": "verified",
+      "seconds": 3.42
+    },
+    {
+      "name": "ru-full-kks-on",
+      "status": "installed",
+      "seconds": 26.55
+    },
+    {
+      "name": "ru-vanilla-equipment-on",
+      "status": "installed",
+      "seconds": 44.17
+    },
+    {
+      "name": "ru-full-kks-off",
+      "status": "installed",
+      "seconds": 43.33
+    },
+    {
+      "name": "ru-vanilla-equipment-off",
+      "status": "installed",
+      "seconds": 44.28
+    },
+    {
+      "name": "ru-repair",
+      "status": "installed",
+      "seconds": 26.83
+    },
+    {
+      "name": "ru-restore",
+      "status": "restored",
+      "seconds": 22.25
+    }
+  ],
+  "branding_only_ast_verified": true,
+  "unchanged_logic_regression": 48,
+  "unchanged_logic_evidence": "<USERPROFILE>\\Documents\\KKS_Master\\Features\\Release_Parity_R001\\evidence\\exe-validation.json",
+  "all_four_profiles_both_languages": true,
+  "repair_each_language": true,
+  "cacheless_restore_exact": true,
+  "live_game_writes": false
+}

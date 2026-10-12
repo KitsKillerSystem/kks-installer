@@ -51,7 +51,7 @@ class GermanTests(unittest.TestCase):
         m.run("install", er)
         before = self.fx.snapshot()
         for op in ("inspect", "install"):
-            with self.assertRaisesRegex(SafetyError, "Restore vanilla before switching"):
+            with self.assertRaisesRegex(SafetyError, "Restore Baseline before switching"):
                 m.inspect(dr) if op == "inspect" else m.run("install", dr)
             self.assertEqual(self.fx.snapshot(), before)
         m.run("restore")

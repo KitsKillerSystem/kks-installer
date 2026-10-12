@@ -1,0 +1,118 @@
+{
+  "copies": [
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/Installer/build/build-receipt.json",
+      "public_path": "review/installer-1.6.0/build/build-receipt.json",
+      "original_sha256": "0b57540f4070a7d359f77c5b747498258bef335cf72f675fe46dba58b2e5d1f5",
+      "published_sha256": "86775c9ffd533de511a87b2c7e2ea35cac72bb79d8b776c54aef9e8f4622ec17",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/Installer/build/tests.log",
+      "public_path": "review/installer-1.6.0/build/tests.log",
+      "original_sha256": "36a5dd7f38a76be5de9e85da83181fbce284ca8f684d9fc2632a581cf91867db",
+      "published_sha256": "b858508ceefdf9abce4779cf6dece0149cf074bed64fac915dc73f5b7ad4a0a1",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/Installer/build/build.log",
+      "public_path": "review/installer-1.6.0/build/build.log",
+      "original_sha256": "5c59b54d9f7090c07f6c3949b4b378d139e3100d16295d1472fb490a4dc72429",
+      "published_sha256": "0299647bef3521652ece5536ed0155104a28f66bba029457a895eee893c3d11b",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/Installer/evidence/VALIDATION.json",
+      "public_path": "review/installer-1.6.0/evidence/VALIDATION.json",
+      "original_sha256": "34f57ede9572f631dadaad4b807795b7f06473182538a6e04d1a838f45cb0858",
+      "published_sha256": "493462405162bcf68643113a578ad647894212b33281c54ee46349e8318915b1",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/Installer/evidence/gui-validation.json",
+      "public_path": "review/installer-1.6.0/evidence/gui-validation.json",
+      "original_sha256": "ef8dea4a293066ca62ea3929bd9253357895e82a0fce19fb9b9ec2a15cfb8b20",
+      "published_sha256": "ef8dea4a293066ca62ea3929bd9253357895e82a0fce19fb9b9ec2a15cfb8b20",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/Installer/evidence/bundle-comparison.json",
+      "public_path": "review/installer-1.6.0/evidence/bundle-comparison.json",
+      "original_sha256": "d58b061055b4524cdda739beb8aa414112f45486db6c99c176db20223273be02",
+      "published_sha256": "3e1482c471118b000cf968f7facbb24a0632e79a76daf8f0bfad2dba99c617b8",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/Installer/evidence/source-diff.txt",
+      "public_path": "review/installer-1.6.0/evidence/source-diff.txt",
+      "original_sha256": "8b2caa9ea12408215b3ae00a943adf69cb914f4f76637f5f7721abf95ad6acd5",
+      "published_sha256": "0a303e0d75d8f450c3aecc1bc52bb010b3285df8100128cfe680db6fb2ec73f7",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/Installer/evidence/runtime-signatures.json",
+      "public_path": "review/installer-1.6.0/evidence/runtime-signatures.json",
+      "original_sha256": "3e844b30d43afd57c4f26f3f6f9622036bd228145f6bcc1fafa10ed9d07c261f",
+      "published_sha256": "d5f998c37441a95c8915d233f4779f734c7943bcbe0b83c761a15d6d1406f94a",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/evidence/exe-validation.json",
+      "public_path": "review/installer-1.6.0/evidence/previous-branding-48-checks.json",
+      "original_sha256": "c497cdea3b40e15c3a5e2b0b5c94e45f47a23dc6d9d695e310db6ac18e4b8894",
+      "published_sha256": "7a68b69b7d7a3e99ef74583775cf7029c37d854c4d5a4a1018d3725da89bc54e",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Releases/1.1.2_EN_RU_R001/Publication_2026-10-11/evidence/version.json",
+      "public_path": "review/installer-1.6.0/evidence/publication-version.json",
+      "original_sha256": "f66afcc6549c352eb90fa808a69a622f1fa6cf10df1f9c260991f740ec4a7271",
+      "published_sha256": "e7d461d90535ed2d1b64f6b59a6cbd4b973b66068929862d9dca1c5553e29552",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Releases/1.1.2_EN_RU_R001/Publication_2026-10-11/evidence/en-signature.json",
+      "public_path": "review/installer-1.6.0/evidence/publication-en-signature.json",
+      "original_sha256": "fcc1f572de2dd56769210ee3654e1017c89237fe71c488e6289ad8f223a6ebff",
+      "published_sha256": "fd495da2391a741cc28ca999faba3f07f1aaa2d82e229ff4888e450290ee81f2",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Releases/1.1.2_EN_RU_R001/Publication_2026-10-11/evidence/ru-signature.json",
+      "public_path": "review/installer-1.6.0/evidence/publication-ru-signature.json",
+      "original_sha256": "dc94601032073f8c155d7963f03afc829fd870b251e0bc063bd130783fb3f542",
+      "published_sha256": "94cb19e1d2edd265db17f24c04196de6ee1753fe513c873f7684e06e25cc8ff9",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/evidence/final-static-validation.json",
+      "public_path": "review/content-1.1.2/final-static-validation.json",
+      "original_sha256": "bd2522cc2060a58e5b8c35d7f94a1ad00170210b04e3e9f673103865f7881bb8",
+      "published_sha256": "b9bd1614fd16734f904ecc1645931cb1950c71e8339bef566dbfdf307a585146",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/evidence/manual-validation.json",
+      "public_path": "review/content-1.1.2/manual-validation.json",
+      "original_sha256": "af9686f97ba41a709daef4f79cec3eb278062004e82b8c0d0109d0f5d27c7c8b",
+      "published_sha256": "e8cc1ae610be12f1bb7fcda0f471bc00f9e79a59cf55bda08a482419a0482052",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/evidence/profile-derivation-validation.json",
+      "public_path": "review/content-1.1.2/profile-derivation-validation.json",
+      "original_sha256": "4bf1bb17df7df0fdae232f395b77bd71aeaa2da7b223b4b6e6b5c8354ddd51bd",
+      "published_sha256": "54392187f130daf7c3dc82d66aaf266c0c0fcf64ef8429f4d0bb3d9a8ef09dbd",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    },
+    {
+      "source_relative_to_master": "Features/Release_Parity_R001/evidence/cross-locale-parity.json",
+      "public_path": "review/content-1.1.2/cross-locale-parity.json",
+      "original_sha256": "672f322311157015bcc98171cdf595fd6db582bf6868438393700e44edf05cc3",
+      "published_sha256": "8781e64b6b59a29776d4afcac1c63dc1c1864ae3f300f6bb37877a8dacf0f98a",
+      "transformation": "UTF-8/LF; local user profile path replaced with <USERPROFILE>"
+    }
+  ],
+  "private_audits_modified": false,
+  "candidate_artifacts_modified": false
+}

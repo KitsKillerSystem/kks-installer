@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "packages": {
+    "en": {
+      "status": "PASS",
+      "path": "<USERPROFILE>\\Documents\\KKS_Master\\Features\\Release_Parity_R001\\deliverables\\KKS_1.1.2_English_Manual_R001_Steam_25636769.zip",
+      "sha256": "875d2a10502fc1da7f4359a627936e726dfd5a91d85f7915e831508d398c4609",
+      "size": 105194619,
+      "canonical_resources": 6,
+      "xml_exact": true,
+      "optional_profile_tables": 2,
+      "all_four_configs_match_installer": true,
+      "member_count": 12,
+      "no_executable_or_game_archive": true,
+      "manual_tool_ui_tested": false,
+      "signed_package_sha256": "43ffa74c5c1ca44caf1dc6849d459ef9cdd35ac7de902e81f15b1d4958b38ab1"
+    },
+    "ru": {
+      "status": "PASS",
+      "path": "<USERPROFILE>\\Documents\\KKS_Master\\Features\\Release_Parity_R001\\deliverables\\KKS_1.1.2_Russian_Manual_R001_Steam_25636769.zip",
+      "sha256": "52c2eb97123c09b2c405752ccd0b6090d3b73df308f81af8e693fea4991d8759",
+      "size": 67473844,
+      "canonical_resources": 6,
+      "xml_exact": true,
+      "optional_profile_tables": 2,
+      "all_four_configs_match_installer": true,
+      "member_count": 12,
+      "no_executable_or_game_archive": true,
+      "manual_tool_ui_tested": false,
+      "signed_package_sha256": "138da8275101d7b4879dc5a797007562551fa14f250c976ec33157a9e7902fb8"
+    }
+  }
+}

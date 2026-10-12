@@ -512,7 +512,7 @@ class Installer:
             sync_directory(self.state)
             self._checkpoint("journal_retired")
             self.log(
-                "Vanilla files restored. Backups retained."
+                "Baseline restored. Backups retained."
                 if operation == "restore"
                 else "KKS installed and verified."
             )

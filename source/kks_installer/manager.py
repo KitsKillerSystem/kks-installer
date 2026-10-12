@@ -1,6 +1,6 @@
 """Offline package selection and recoverable, independently versioned updates.
 
-The outer journal coordinates restore -> verified vanilla -> install. Each phase
+The outer journal coordinates restore -> verified installation baseline -> install. Each phase
 uses the profile-bound transaction engine. Downloads are never needed for
 restoration; signed descriptors and installation-specific backups are retained.
 """
@@ -16,7 +16,7 @@ import uuid
 from ._application import APP_VERSION
 from .engine import demand, digest, durable_json, sync_directory, verified_copy
 from .ba2 import BA2, hash_file
-from .platforms import safe_path, operation_lock, game_guard, game_running, SafetyError
+from .platforms import safe_path, operation_lock, game_guard, game_running, SafetyError, can_launch, launch_game
 from .packages import (
     SignedRelease,
     import_package,
@@ -34,6 +34,8 @@ from ._application import PROFILE, CONTENT_LANGUAGES
 from .managed_engine import ManagedEngine, LegacyDescriptor, LEGACY_STATE
 from .equipment import FULL, NAMING_PROFILES
 from .perks import ON, PERK_PROFILES
+from .migration import inspect_original, consent_token
+from .engine import is_digest
 
 STATE = ".kks-manager"
 
@@ -67,6 +69,7 @@ def token(value):
 
 
 def fingerprint(release):
+    release = getattr(release, "certified", release)
     if content_language(release) != "en":
         # Language-specific member/target catalog; historical EN fingerprints stay exact.
         return digest(
@@ -406,7 +409,7 @@ class Manager:
         p = self.saved("baselines/" + ref["baseline"] + ".json")
         data = strict_json(bounded_file(p, MAX_MANIFEST))
         fields(data, "schema root id fingerprint originals")
-        integer(data["schema"], 2, 2)
+        integer(data["schema"], 2, 3)
         demand(
             data["root"] == str(self.root) and data["id"] == ref["baseline"],
             "Baseline belongs to another installation",
@@ -416,8 +419,12 @@ class Manager:
             data["fingerprint"] == fingerprint(release),
             "Baseline fingerprint disagrees with the signed release",
         )
-        self._originals(data["originals"], release)
+        self._originals(data["originals"], release, captured=data["schema"] == 3)
         engine = self._engine(ref)
+        if data["schema"] == 3:
+            demand(engine.baseline_context is not None and data["originals"] ==
+                   {p: r["before"] for p, r in engine.baseline_context["files"].items()},
+                   "Captured baseline has no matching verified installation context")
         receipt = engine._receipt()
         if receipt:
             demand(
@@ -426,12 +433,15 @@ class Manager:
             )
         return data
 
-    def _originals(self, records, release):
+    def _originals(self, records, release, *, captured=False):
         demand(
             type(records) is dict and set(records) == set(release.by_path),
             "Invalid original file set",
         )
         for p, h in records.items():
+            if captured:
+                demand(is_digest(h) or h is None and p in content_strings(release), "Invalid captured original")
+                continue
             permitted = [release.by_path[p]["vanilla_sha256"]] + (
                 [None] if p in content_strings(release) else []
             )
@@ -482,11 +492,21 @@ class Manager:
         new = ManagedEngine(self.root, package, self.log, state_name=STATE + "/preflight")
         new._identity(skip_exe=skip_exe)
         for path in archive_members(package.manifest["profile"]):
-            demand(
-                new.current(path) == package.by_path[path]["vanilla_sha256"],
-                "The game update is incomplete or another mod changed an archive. Verify Fallout 76 in Steam before updating KKS: "
-                + path,
-            )
+            target = package.by_path[path]
+            current = new.current(path)
+            demand(current is not None, "Required archive is missing: " + path)
+            if current != target["vanilla_sha256"] and path in old.release.by_path:
+                previous = old.release.by_path[path]
+                demand(current != previous["after_sha256"] and current != old.certified.by_path[path]["vanilla_sha256"],
+                       "The game update left an old archive in place: " + path)
+                archive = BA2(new.target(path))
+                old_assets = {a["name"]: a["sha256"] for a in previous["assets"]}
+                for asset in target["assets"]:
+                    if asset["name"] in old_assets:
+                        h = digest(archive.extract(asset["name"]))
+                        demand(h != old_assets[asset["name"]] or h == asset["vanilla_sha256"],
+                               "Old KKS resources remain in an updated archive. Verify the game before establishing a new baseline: " + path)
+            inspect_original(new.target(path), target)
         cleanup = []
         for path in sorted(content_strings(package)):
             current = new.current(path)
@@ -511,8 +531,8 @@ class Manager:
         engine._identity(skip_exe=skip_exe)
         for path in archive_members(package.manifest["profile"]):
             demand(
-                engine.current(path) == package.by_path[path]["vanilla_sha256"],
-                "New vanilla archive changed during reconciliation",
+                engine.current(path) == plan["baseline"]["originals"][path],
+                "New baseline archive changed during reconciliation",
             )
         for entry in plan["cleanup"]:
             demand(
@@ -533,7 +553,7 @@ class Manager:
             engine._identity(skip_exe=True)
             for path in archive_members(package.manifest["profile"]):
                 demand(
-                    engine.current(path) == package.by_path[path]["vanilla_sha256"],
+                    engine.current(path) == plan["baseline"]["originals"][path],
                     "New game archive changed during cleanup",
                 )
             path = self.path(entry["path"])
@@ -550,11 +570,11 @@ class Manager:
         if active:
             demand(
                 content_language(self._release(active)) == content_language(package),
-                "Restore vanilla before switching the KKS content language",
+                "Restore Baseline before switching the KKS content language",
             )
             demand(
                 set(self._release(active).by_path) <= set(package.by_path),
-                "Restore vanilla before selecting a package that removes managed game targets",
+                "Restore Baseline before selecting a package that removes managed game targets",
             )
         m = package.manifest
         identity = content_identity(package)
@@ -604,7 +624,8 @@ class Manager:
         if active and selected and fingerprint(self._release(active)) != fingerprint(selected):
             selected.verify_payloads()
             self._sequence(selected, state, active)
-            old, _, cleanup = self._reconcile_inputs(selected, active)
+            old, new_engine, cleanup = self._reconcile_inputs(selected, active)
+            migration = new_engine.migration_info(ignore_loose=True)
             return dict(
                 result,
                 status="update_available",
@@ -615,6 +636,9 @@ class Manager:
                 restore_available=False,
                 repair_available=False,
                 qa_status=selected.manifest["qa"]["status"],
+                existing_modifications=migration["overlaps"],
+                baseline_modified=migration["modified"],
+                confirmation_token=consent_token(self.root, selected, migration["originals"]),
                 message="The new game baseline is verified. Install will retire "
                 + str(sum(e["before"] != e["after"] for e in cleanup))
                 + " old KKS string overrides, preserve the old backups, and install this complete package. No old game archives will be restored.",
@@ -640,12 +664,12 @@ class Manager:
             if active["kind"] == "legacy":
                 result.update(
                     status="legacy_installed",
-                    message="KKS 1.0 is installed. Select a content package to migrate, or restore vanilla without the old EXE.",
+                    message="KKS 1.0 is installed. Select a content package to migrate, or restore the baseline without the old EXE.",
                 )
             elif not cache_ready:
                 result[
                     "message"
-                ] += " The repair cache is incomplete; select the same content ZIP to repair. Vanilla restoration is still available."
+                ] += " The repair cache is incomplete; select the same content ZIP to repair. Baseline restoration is still available."
         if selected:
             selected.verify_payloads()
             if active:
@@ -676,6 +700,10 @@ class Manager:
                 )
                 selected_engine._identity()
                 selected_engine._validate_current(None)
+                migration = selected_engine.migration_info()
+                result.update(existing_modifications=migration["overlaps"],
+                              baseline_modified=migration["modified"],
+                              confirmation_token=consent_token(self.root, selected, migration["originals"]))
                 self._sequence(selected, state)
                 result.update(
                     status="ready",
@@ -698,44 +726,80 @@ class Manager:
                 restore_available=False,
                 repair_available=False,
             )
+        result["play_available"] = (result["status"] == "installed" and not result["game_running"]
+                                    and can_launch(self.root))
         return result
 
-    def _preflight_output(self, package, old, tx):
+    def play(self):
+        with self._locks():
+            demand(not game_running(), "Fallout 76 is already running")
+            result = self.inspect()
+            demand(result.get("play_available"), "Check and finish installation or recovery before launching Fallout 76")
+            launch_game(self.root)
+        return {"status": "launched", "message": "Fallout 76 launch requested through Steam."}
+
+    def _preflight_output(self, package, old, tx, cleanup=None):
         package.verify_payloads()
-        originals = {}
+        originals, outputs = {}, {}
+        overlaps = []
+        migrated = bool(old and old.baseline_context is not None)
+        old_receipt = old._receipt() if old else None
+        cleaned = {e["path"]: e["after"] for e in cleanup or []}
         for t in package.targets:
+            original = (old_receipt["files"][t["path"]]["before"]
+                        if old and t["path"] in old.release.by_path else self._current(t["path"]))
+            if t["path"] in cleaned:
+                original = cleaned[t["path"]]
+            originals[t["path"]] = original
+            src = (old._backup_path(original) if old and t["path"] in old.release.by_path and original
+                   else self.path(t["path"]))
+            if original is not None:
+                overlaps.extend(inspect_original(src, t))
+                migrated |= original != t["vanilla_sha256"]
             if t["kind"] == "loose":
                 continue
-            src = (
-                old._backup_path(t["vanilla_sha256"])
-                if old and t["path"] in old.release.by_path
-                else self.path(t["path"])
-            )
-            demand(
-                hash_file(src) == t["vanilla_sha256"],
-                "The selected package needs a different vanilla archive",
-            )
-            stage = self.saved("preflight/" + tx + "/" + str(len(originals)) + ".ba2")
+            stage = self.saved("preflight/" + tx + "/" + str(len(outputs)) + ".ba2")
             stage.parent.mkdir(parents=True, exist_ok=True)
             replacements = {
                 a["name"]: package.payload(a["payload"], a["sha256"]).read_bytes()
                 for a in t["assets"]
             }
             archive = BA2(src)
-            for asset in t["assets"]:
-                original = archive.extract(asset["name"])
-                demand(
-                    digest(original) == asset["vanilla_sha256"]
-                    and len(original) == asset["vanilla_size"],
-                    "The certified original archive member does not match this package",
-                )
             archive.replace_to(stage, replacements)
-            demand(
-                hash_file(stage) == t["after_sha256"] and stage.stat().st_size == t["after_size"],
-                "The package output does not match this installer writer. Existing KKS was not removed",
-            )
-            originals[t["path"]] = str(stage)
+            if original == t["vanilla_sha256"]:
+                demand(hash_file(stage) == t["after_sha256"] and stage.stat().st_size == t["after_size"],
+                       "The package output does not match this installer writer. Existing KKS was not removed")
+            outputs[t["path"]] = stage
         self.event("outputs_verified", tx)
+        return {"originals": originals, "outputs": outputs, "overlaps": overlaps, "migrated": migrated}
+
+    def _current(self, path):
+        return hash_file(self.path(path)) if self.path(path).is_file() else None
+
+    def _capture_context(self, ref, prepared, old):
+        """Back up all originals and prove all outputs BEFORE restoring an old install."""
+        engine = self._engine(ref)
+        files = {}
+        for target in engine.certified.targets:
+            path = target["path"]
+            original = prepared["originals"][path]
+            if original is not None:
+                src = (old._backup_path(original) if old and path in old.release.by_path else self.path(path))
+                engine._backup(src, original)
+            after = target["after_sha256"]
+            if target["kind"] == "archive":
+                stage = prepared["outputs"][path]
+                after = hash_file(stage)
+                engine._backup(stage, after)
+            files[path] = {"before": original, "after": after}
+        context = {"schema": 1, "manifest": engine.certified.manifest_digest,
+                   "root": str(self.root), "files": files}
+        path = engine.state_path("baseline-context.json")
+        if path.exists():
+            demand(strict_json(bounded_file(path, MAX_MANIFEST)) == context, "Immutable baseline context changed")
+        else:
+            durable_json(path, context)
+        self._engine(ref)  # Read back and verify the complete proof, including every backup.
 
     def _write_plan(self, plan, phase):
         plan["phase"] = phase
@@ -836,13 +900,18 @@ class Manager:
                 )
         b = p["baseline"]
         fields(b, "schema root id fingerprint originals")
-        integer(b["schema"], 2, 2)
+        integer(b["schema"], 2, 3)
         token(b["id"])
         demand(
             b["root"] == str(self.root) and b["fingerprint"] == fingerprint(descriptor),
             "Invalid recovery baseline",
         )
-        self._originals(b["originals"], descriptor)
+        self._originals(b["originals"], descriptor, captured=b["schema"] == 3)
+        if b["schema"] == 3:
+            owner = self._engine(p["new"] or p["old"])
+            demand(owner.baseline_context is not None and b["originals"] ==
+                   {path: r["before"] for path, r in owner.baseline_context["files"].items()},
+                   "Recovery baseline differs from verified backups")
         if p["operation"] == "reconcile":
             demand(
                 all(b["originals"][e["path"]] == e["after"] for e in p["cleanup"]),
@@ -913,7 +982,7 @@ class Manager:
         sync_directory(self.state)
         self.event("after_plan_retirement", plan)
 
-    def run(self, operation, selected=None, *, naming=None, perks=None):
+    def run(self, operation, selected=None, *, naming=None, perks=None, accept_modifications=None):
         demand(operation in ("install", "repair", "restore"), "Unknown operation")
         if selected is not None:
             naming = getattr(selected, "naming", FULL) if naming is None else naming
@@ -975,11 +1044,16 @@ class Manager:
                 cleanup = None
                 if reconcile:
                     _, _, cleanup = self._reconcile_inputs(selected, active, skip_exe=True)
+                    migration = identity_engine.migration_info(ignore_loose=True)
                 elif old:
                     old._identity(skip_exe=True)
                     old._validate_current(old._receipt())
                 else:
                     identity_engine._validate_current(None)
+                    migration = identity_engine.migration_info()
+                if (not old or reconcile) and migration["overlaps"]:
+                    demand(accept_modifications == consent_token(self.root, selected, migration["originals"]),
+                           "Existing modifications overlap KKS resources. Check the installation and confirm the exact baseline before continuing.")
                 free = shutil.disk_usage(self.root).free
                 total = sum(
                     (self.path(t["path"]).stat().st_size if self.path(t["path"]).exists() else 0)
@@ -992,18 +1066,17 @@ class Manager:
                 tx = uuid.uuid4().hex
                 if operation != "restore":
                     selected.prepare_features(self.root)
-                    self._preflight_output(selected, None if reconcile else old, tx)
+                    prepared = self._preflight_output(selected, None if reconcile else old, tx, cleanup)
+                    if not old or reconcile:
+                        demand({p: identity_engine.current(p) for p in selected.by_path} == migration["originals"],
+                               "Files changed after migration confirmation")
                 if state["installation_id"] is None:
                     state["installation_id"] = uuid.uuid4().hex
                     durable_json(self.saved("installation.json"), state)
                 if reconcile:
-                    originals = {
-                        p: selected.by_path[p]["vanilla_sha256"]
-                        for p in archive_members(selected.manifest["profile"])
-                    }
-                    originals.update({e["path"]: e["after"] for e in cleanup})
+                    originals = prepared["originals"]
                     baseline = {
-                        "schema": 2,
+                        "schema": 3 if prepared["migrated"] else 2,
                         "root": str(self.root),
                         "id": uuid.uuid4().hex,
                         "fingerprint": fingerprint(selected),
@@ -1035,11 +1108,11 @@ class Manager:
                                 "New managed archive is not certified vanilla: " + path,
                             )
                             expanded["originals"][path] = expected
-                        self._originals(expanded["originals"], selected)
+                        self._originals(expanded["originals"], selected, captured=expanded["schema"] == 3)
                         baseline = expanded
                 else:
                     baseline = {
-                        "schema": 2,
+                        "schema": 3 if prepared["migrated"] else 2,
                         "root": str(self.root),
                         "id": uuid.uuid4().hex,
                         "fingerprint": fingerprint(selected),
@@ -1071,6 +1144,8 @@ class Manager:
                     new = dict(new, naming=selected.naming)
                 if new is not None and selected.manifest["schema"] == 3:
                     new = dict(new, perks=selected.perks)
+                if new is not None and prepared["migrated"]:
+                    self._capture_context(new, prepared, None if reconcile else old)
                 plan = {
                     "schema": 2,
                     "root": str(self.root),
@@ -1102,7 +1177,7 @@ class Manager:
                         self._publish(plan, self._after_state(plan, False), "restored")
                         return {
                             "status": "restored",
-                            "message": "Verified vanilla files restored. All restoration history is retained.",
+                            "message": "Baseline restored and verified. All restoration history is retained.",
                         }
                     self._write_plan(plan, "install_pending")
                     engine = self._engine(new)
@@ -1133,7 +1208,7 @@ class Manager:
         for path, expected in plan["baseline"]["originals"].items():
             demand(
                 engine.current(path) == expected,
-                "Vanilla checkpoint validation failed: " + path,
+                "Baseline checkpoint validation failed: " + path,
             )
         engine._validate_current(None)
 
@@ -1212,7 +1287,7 @@ class Manager:
         self._publish(plan, self._after_state(plan, False), "recovered_vanilla")
         return {
             "status": "recovered",
-            "message": "Verified vanilla is the recovery checkpoint. Select the content package to install again.",
+            "message": "The verified installation baseline is the recovery checkpoint. Select the content package to install again.",
         }
 
     def recover(self):

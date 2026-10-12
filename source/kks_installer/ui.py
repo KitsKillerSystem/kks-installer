@@ -3,7 +3,7 @@
 from pathlib import Path
 import queue, threading, tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-from ._application import APP_VERSION, BUILD_LABEL
+from ._application import APP_VERSION
 from .i18n import translate, load_language, save_language, LANGUAGE_NAMES, CONTENT_HINTS
 from .manager import Manager
 from .platforms import discover
@@ -30,7 +30,7 @@ class App:
         self.status_title_key = "Ready when you are."
         self.primary_key = "Install content"
         self.root = tk.Tk()
-        self.root.title("KKS Installer · " + APP_VERSION + " · " + BUILD_LABEL)
+        self.root.title("KKS Installer · " + APP_VERSION)
         width = min(1080, self.root.winfo_screenwidth() - 60)
         height = min(790, self.root.winfo_screenheight() - 80)
         self.root.geometry(f"{width}x{height}")
@@ -128,7 +128,7 @@ class App:
         self.language_box.bind("<<ComboboxSelected>>", self.change_language)
 
         outer = tk.Frame(self.root, bg=BG)
-        outer.pack(side="left", fill="both", expand=True, padx=28, pady=10)
+        outer.pack(side="left", fill="both", expand=True, padx=28, pady=6)
         tk.Label(
             outer,
             text="A BETTER-ORDERED WASTELAND.",
@@ -154,7 +154,7 @@ class App:
         ).pack(fill="x")
         tk.Frame(outer, bg=INK, height=2).pack(fill="x", pady=(8, 6))
 
-        self.label(outer, "01  /  GAME DIRECTORY", BG).pack(fill="x", pady=(0, 7))
+        self.label(outer, "01  /  GAME DIRECTORY", BG).pack(fill="x", pady=(0, 3))
         row = tk.Frame(outer, bg=BG)
         row.pack(fill="x")
         self.path = tk.StringVar()
@@ -175,7 +175,7 @@ class App:
         self.check = self.button(row, "Check", lambda: self.start("check"))
         self.check.pack(side="left", padx=(6, 0))
 
-        self.label(outer, "02  /  CONTENT PACKAGE", BG).pack(fill="x", pady=(12, 7))
+        self.label(outer, "02  /  CONTENT PACKAGE", BG).pack(fill="x", pady=(8, 3))
         package_row = tk.Frame(outer, bg=PANEL, highlightbackground=LINE, highlightthickness=1)
         package_row.pack(fill="x")
         self.package_text = tk.StringVar(
@@ -208,7 +208,7 @@ class App:
                                       values=tuple(PERK_LABELS.values()), state="disabled")
         self.perks_box.pack(fill="x")
         self.perks_box.bind("<<ComboboxSelected>>", lambda event: self.start("check"))
-        self.label(outer, "03  /  INSTALLATION STATUS", BG).pack(fill="x", pady=(8, 7))
+        self.label(outer, "03  /  INSTALLATION STATUS", BG).pack(fill="x", pady=(5, 3))
         status = tk.Frame(outer, bg=PANEL)
         status.pack(fill="x")
         self.status_title = tk.Label(
@@ -224,7 +224,7 @@ class App:
         message_row.pack(fill="x", padx=13, pady=(0, 8))
         self.status_message = tk.Text(
             message_row,
-            height=3,
+            height=2,
             width=1,
             wrap="word",
             fg=MUTED,
@@ -243,18 +243,25 @@ class App:
         self.progress = ttk.Progressbar(
             outer, style="KKS.Horizontal.TProgressbar", mode="indeterminate"
         )
-        self.progress.pack(fill="x", pady=(0, 10))
+        self.progress.pack(fill="x", pady=(0, 6))
         actions = tk.Frame(outer, bg=BG)
         actions.pack(fill="x")
         self.primary = self.button(actions, "Install content", self.primary_action, True)
         self.primary.pack(side="left")
         self.repair = self.button(actions, "Repair", lambda: self.start("repair"))
         self.repair.pack(side="left", padx=8)
-        self.restore = self.button(actions, "Restore vanilla", lambda: self.start("restore"))
+        self.restore = self.button(actions, "Restore Baseline", lambda: self.start("restore"))
         self.restore.pack(side="left")
-        for button in (self.primary, self.repair, self.restore):
+        launch_row = tk.Frame(outer, bg=BG)
+        launch_row.pack(fill="x", pady=(6, 0))
+        self.play = self.button(launch_row, "Play Fallout 76", lambda: self.start("play"))
+        self.play.pack(side="right")
+        for button in (self.primary, self.repair, self.restore, self.play):
             button.configure(state="disabled")
-        self.label(outer, "ACTIVITY", BG).pack(fill="x", pady=(6, 6))
+        baseline_help = self.label(launch_row, "Returns KKS-managed files to the state they were in before KKS was installed.", BG)
+        baseline_help.configure(wraplength=420, font=("Segoe UI", 9), justify="left")
+        baseline_help.pack(side="left", fill="x", expand=True)
+        self.label(outer, "ACTIVITY", BG).pack(fill="x", pady=(3, 3))
         self.log = tk.Text(
             outer,
             height=4,
@@ -269,7 +276,7 @@ class App:
         )
         tk.Label(
             outer,
-            text="Offline by design.  Your vanilla backups stay with your game.",
+            text="Your installation baseline and backups stay with your game.",
             fg=MUTED,
             bg=BG,
             font=("Segoe UI", 9),
@@ -325,6 +332,10 @@ class App:
         self.render_language()
 
     def render_language(self):
+        for box, labels in ((self.naming_box, LABELS), (self.perks_box, PERK_LABELS)):
+            selected = box.current()
+            box.configure(values=tuple(self.t(label) for label in labels.values()))
+            box.current(max(0, selected))
         for widget, text in self.static_text:
             widget.configure(text=self.t(text))
         self.status_title.configure(text=self.t(self.status_title_key))
@@ -390,13 +401,13 @@ class App:
             self.last_status = None
             self.selected = None
             self.naming_available = False
-            self.naming_value.set(LABELS[FULL])
+            self.naming_value.set(self.t(LABELS[FULL]))
             self.naming_box.configure(state="disabled")
             self.perks_available = False
-            self.perks_value.set(PERK_LABELS[ON])
+            self.perks_value.set(self.t(PERK_LABELS[ON]))
             self.perks_box.configure(state="disabled")
             self.set_package("Drop a ZIP here or choose a package. Keep the ZIP unopened.")
-            for b in (self.primary, self.repair, self.restore):
+            for b in (self.primary, self.repair, self.restore, self.play):
                 b.configure(state="disabled")
 
     def choose_game(self):
@@ -440,6 +451,32 @@ class App:
     def primary_action(self):
         self.start("recover" if self.last_status == "recovery_required" else "install")
 
+    def confirm_modifications(self, resources):
+        dialog = tk.Toplevel(self.root)
+        dialog.title(self.t("Existing interface modifications detected"))
+        dialog.transient(self.root)
+        dialog.grab_set()
+        accepted = [False]
+        text = self.t("KKS found existing modifications in resources it needs to update. These may belong to another interface, sorting, or icon mod.\n\nKKS will preserve your current state as the installation baseline before replacing the resources it requires. Restore Baseline can later return KKS-managed resources to this state.\n\nContinue with KKS installation?")
+        tk.Label(dialog, text=text, wraplength=510, justify="left", padx=20, pady=16).pack()
+        details = tk.Text(dialog, height=5, width=65, wrap="word")
+        details.insert("1.0", "\n".join(resources))
+        details.configure(state="disabled")
+        details.pack(padx=20)
+        buttons = tk.Frame(dialog)
+        buttons.pack(pady=16)
+        def finish(value):
+            accepted[0] = value
+            dialog.destroy()
+        tk.Button(buttons, text=self.t("Continue"), command=lambda: finish(True)).pack(side="left", padx=10)
+        cancel = tk.Button(buttons, text=self.t("Cancel"), command=lambda: finish(False))
+        cancel.pack(side="left", padx=10)
+        cancel.focus_set()
+        dialog.protocol("WM_DELETE_WINDOW", lambda: finish(False))
+        dialog.bind("<Escape>", lambda event: finish(False))
+        self.root.wait_window(dialog)
+        return accepted[0]
+
     def close(self):
         if self.busy:
             messagebox.showinfo(
@@ -463,8 +500,8 @@ class App:
             self.choose_game()
             return
         self.busy = True
-        naming = next(key for key, label in LABELS.items() if label == self.naming_value.get())
-        perks = next(key for key, label in PERK_LABELS.items() if label == self.perks_value.get())
+        naming = next(key for key, label in LABELS.items() if self.t(label) == self.naming_value.get())
+        perks = next(key for key, label in PERK_LABELS.items() if self.t(label) == self.perks_value.get())
         self.naming_box.configure(state="disabled")
         self.perks_box.configure(state="disabled")
         self.language_box.configure(state="disabled")
@@ -477,6 +514,7 @@ class App:
             self.primary,
             self.repair,
             self.restore,
+            self.play,
         ):
             w.configure(state="disabled")
         self.progress.start(12)
@@ -497,8 +535,9 @@ class App:
                 "check": "Checking saved installation and compatibility…",
                 "install": "Installing the selected content package…",
                 "repair": "Repairing installed content…",
-                "restore": "Restoring verified vanilla…",
+                "restore": "Restoring the installation baseline…",
                 "recover": "Recovering the interrupted operation…",
+                "play": "Launching Fallout 76 through Steam…",
             }[action]
         )
 
@@ -507,7 +546,7 @@ class App:
                 manager = Manager(game, lambda text: self.events.put(("log", text)))
                 release = (
                     manager.package(selected)
-                    if selected and action not in ("select", "restore", "recover", "repair")
+                    if selected and action not in ("select", "restore", "recover", "repair", "play")
                     else None
                 )
                 if action == "select":
@@ -537,9 +576,27 @@ class App:
                         perks=self.initial_perks if "perk_cards" in release.manifest else ON)
                 elif action == "check":
                     result = manager.inspect(release, naming=naming, perks=perks)
+                elif action == "play":
+                    result = manager.play()
+                    self.events.put(("log", result["message"]))
+                    result = manager.inspect()
+                    result["play_available"] = False
                 else:
+                    consent = None
+                    if action == "install":
+                        inspection = manager.inspect(release, naming=naming, perks=perks)
+                        if inspection.get("existing_modifications"):
+                            ready, answer = threading.Event(), {}
+                            self.events.put(("confirm", (inspection["existing_modifications"], ready, answer)))
+                            ready.wait()
+                            if not answer.get("accepted"):
+                                self.events.put(("log", "Installation cancelled. Game files were not changed."))
+                                self.events.put(("success", inspection))
+                                return
+                            consent = inspection["confirmation_token"]
                     result = (
-                        manager.recover() if action == "recover" else manager.run(action, release, naming=naming, perks=perks)
+                        manager.recover() if action == "recover" else manager.run(action, release, naming=naming, perks=perks,
+                                                                                 accept_modifications=consent)
                     )
                     self.events.put(("log", result.get("message", result["status"])))
                     result = manager.inspect()
@@ -553,15 +610,22 @@ class App:
         try:
             while True:
                 kind, data = self.events.get_nowait()
+                if kind == "confirm":
+                    resources, ready, answer = data
+                    try:
+                        answer["accepted"] = self.confirm_modifications(resources)
+                    finally:
+                        ready.set()
+                    continue
                 if kind == "log":
                     self.append(data)
                     continue
                 if kind == "selected":
                     self.selected, name, file_count, language = data[:4]
                     self.naming_available = bool(len(data) > 4 and data[4])
-                    self.naming_value.set(LABELS[self.initial_naming] if self.naming_available else LABELS[FULL])
+                    self.naming_value.set(self.t(LABELS[self.initial_naming] if self.naming_available else LABELS[FULL]))
                     self.perks_available = bool(len(data) > 5 and data[5])
-                    self.perks_value.set(PERK_LABELS[self.initial_perks] if self.perks_available else PERK_LABELS[ON])
+                    self.perks_value.set(self.t(PERK_LABELS[self.initial_perks] if self.perks_available else PERK_LABELS[ON]))
                     self.set_package(
                         name
                         + f" · signature and all {file_count} files verified"
@@ -578,6 +642,8 @@ class App:
                 for w in (self.entry, self.browse, self.check, self.package_button):
                     w.configure(state="normal")
                 if kind == "error":
+                    for button in (self.primary, self.repair, self.restore, self.play):
+                        button.configure(state="disabled")
                     self.set_title("Needs attention before continuing", RED)
                     self.status_text(data)
                     self.append(data)
@@ -624,6 +690,7 @@ class App:
                     self.restore.configure(
                         state="normal" if data.get("restore_available") else "disabled"
                     )
+                    self.play.configure(state="normal" if data.get("play_available") else "disabled")
         except queue.Empty:
             pass
         self.root.after(100, self.pump)

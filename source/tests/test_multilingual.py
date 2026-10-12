@@ -44,7 +44,7 @@ class MultilingualTests(unittest.TestCase):
                         continue
                     for action in ("inspect", "install"):
                         with self.assertRaisesRegex(
-                            SafetyError, "Restore vanilla before switching"
+                            SafetyError, "Restore Baseline before switching"
                         ):
                             (m.inspect(other_r) if action == "inspect" else m.run(action, other_r))
                         self.assertEqual(self.fx.snapshot(), before)
@@ -207,10 +207,10 @@ class MultilingualUiTests(unittest.TestCase):
                     a.change_language()
                 a.root.update()
                 self.assertEqual(a.selected, "digest")
-                self.assertEqual(a.restore["text"], translate("Restore vanilla", lang))
+                self.assertEqual(a.restore["text"], translate("Restore Baseline", lang))
                 self.assertEqual(str(a.restore["state"]), "normal")
                 bottom = a.root.winfo_rooty() + a.root.winfo_height()
-                for w in (a.primary, a.repair, a.restore, a.log):
+                for w in (a.primary, a.repair, a.restore, a.play, a.log):
                     self.assertTrue(w.winfo_ismapped())
                     self.assertLessEqual(w.winfo_rooty() + w.winfo_height(), bottom)
                 self.assertGreaterEqual(a.log.winfo_height(), 30)

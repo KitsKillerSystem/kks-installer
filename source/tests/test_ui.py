@@ -26,11 +26,43 @@ class UiTests(unittest.TestCase):
         self.assertEqual(self.app.status_message.get("1.0", "end-1c"), message)
         self.assertLess(self.app.status_message.yview()[1], 1)
         bottom = self.app.root.winfo_rooty() + self.app.root.winfo_height()
-        for widget in (self.app.primary, self.app.repair, self.app.restore, self.app.log):
+        for widget in (self.app.primary, self.app.repair, self.app.restore, self.app.play, self.app.log):
             self.assertTrue(widget.winfo_ismapped())
             self.assertLessEqual(widget.winfo_rooty() + widget.winfo_height(), bottom)
         self.assertGreaterEqual(self.app.log.winfo_height(), 30)
         self.assertEqual(str(self.app.primary["state"]), "disabled")
+
+    def test_play_only_enables_after_verified_status_and_resets_on_error_or_path_change(self):
+        self.assertEqual(str(self.app.play["state"]), "disabled")
+        self.app.events.put(("success", {"status": "installed", "play_available": True}))
+        self.app.pump()
+        self.assertEqual(str(self.app.play["state"]), "normal")
+        self.app.events.put(("error", "Unverified change"))
+        self.app.pump()
+        self.assertEqual(str(self.app.play["state"]), "disabled")
+        self.app.events.put(("success", {"status": "installed", "play_available": True}))
+        self.app.pump()
+        self.app.path.set("C:\\Another game")
+        self.assertEqual(str(self.app.play["state"]), "disabled")
+
+    def test_confirmation_is_on_ui_thread_and_cancel_is_default(self):
+        import threading
+        signal, answer = threading.Event(), {}
+        self.app.busy = True
+        self.app.events.put(("confirm", (["interface/fontconfig_en.txt"], signal, answer)))
+        with patch.object(self.app, "confirm_modifications", return_value=False) as dialog:
+            self.app.pump()
+            dialog.assert_called_once()
+        self.assertTrue(signal.is_set())
+        self.assertFalse(answer["accepted"])
+        self.app.busy = False
+
+    def test_new_controls_and_help_are_translated_in_all_supported_languages(self):
+        from kks_installer.i18n import translate
+        from kks_installer.i18n_baseline import HELP, WARNING
+        for lang in ("de", "fr", "ru"):
+            for key in ("Restore Baseline", "Play Fallout 76", "Continue", "Cancel", HELP, WARNING):
+                self.assertNotEqual(translate(key, lang), key)
 
     def test_six_payload_selection_and_update_count(self):
         self.app.events.put(("selected", ("digest", "Candidate", 6, "en")))
@@ -81,7 +113,7 @@ class UiTests(unittest.TestCase):
         self.app.root.update()
         self.assertEqual(self.app.selected, "digest")
         self.assertIn("Inhaltssprache: Deutsch", self.app.package_text.get())
-        self.assertEqual(self.app.restore["text"], "Original wiederherstellen")
+        self.assertEqual(self.app.restore["text"], "Ausgangszustand wiederherstellen")
         self.assertEqual(self.app.status_title["text"], "KKS ist installiert.")
         self.assertEqual(str(self.app.restore["state"]), "normal")
         bottom = self.app.root.winfo_rooty() + self.app.root.winfo_height()
@@ -91,8 +123,30 @@ class UiTests(unittest.TestCase):
         with patch("kks_installer.ui.save_language"):
             self.app.language_value.set("English")
             self.app.change_language()
-        self.assertEqual(self.app.restore["text"], "Restore vanilla")
+        self.assertEqual(self.app.restore["text"], "Restore Baseline")
         self.assertEqual(self.app.selected, "digest")
+
+    def test_russian_modular_package_enables_both_choices_and_old_package_disables_them(self):
+        self.app.events.put(("selected", ("ru-modular", "KKS Русский", 6, "ru", True, True)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(str(self.app.naming_box["state"]), "readonly")
+        self.assertEqual(str(self.app.perks_box["state"]), "readonly")
+        self.app.naming_box.current(1)
+        self.app.perks_box.current(1)
+        self.app.language = "ru"
+        self.app.render_language()
+        self.assertEqual(self.app.naming_value.get(), "Обычные названия оружия и брони")
+        self.assertEqual(self.app.perks_value.get(), "Обычные карты способностей")
+        self.app.language = "en"
+        self.app.render_language()
+        self.assertEqual(self.app.naming_box.current(), 1)
+        self.assertEqual(self.app.perks_box.current(), 1)
+        self.app.events.put(("selected", ("ru-b008", "KKS Русский B008", 6, "ru", False, False)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(str(self.app.naming_box["state"]), "disabled")
+        self.assertEqual(str(self.app.perks_box["state"]), "disabled")
 
     def test_perk_choice_requires_supported_package_and_is_independent(self):
         from kks_installer.perks import ON, OFF, LABELS

@@ -1,5 +1,9 @@
 # Restoring KKS 1.0.0 from a future installer
 
+9 October 2026: development 1.6.0 calls the operation **Restore Baseline** and adds
+verified pre-KKS modified-resource baselines. The legacy contract below remains
+unchanged; see INDEPENDENT_INSTALLER.md for schema-3 baselines and output proofs.
+
 Implementation update, 1 October 2026: this branch now implements the independent installer candidate described in [INDEPENDENT_INSTALLER.md](INDEPENDENT_INSTALLER.md). The original 1.0.0 contract below is retained as provenance. Its same-baseline restoration sequence is implemented; newly certified Bethesda baselines use separate ownership-checked reconciliation and never receive old archive backups.
 
 ## Decision
