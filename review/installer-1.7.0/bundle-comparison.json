@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "verified_utc": "2026-10-12T14:26:40.532161+00:00",
+  "old_sha256": "46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589",
+  "new_sha256": "85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749",
+  "outer_members": 1009,
+  "outer_changed": [
+    "PYZ.pyz"
+  ],
+  "outer_identical": 1008,
+  "module_count": 173,
+  "modules_changed": [
+    "kks_installer._application",
+    "kks_installer.packages"
+  ],
+  "modules_identical": 171,
+  "all_native_and_data_members_exact": true,
+  "launcher_and_runtime_hooks_exact": true,
+  "source_build_receipt_hashes_verified": true,
+  "source_commit": "28e8f7edb277d767ddebb062682f66b7955b9341",
+  "review": "Only runtime application version/capability policy and manifest validation changed; native runtime, archive writer, launcher, UI and drag/drop code remain exact. Provenance evidence is not a vendor false-positive determination."
+}
