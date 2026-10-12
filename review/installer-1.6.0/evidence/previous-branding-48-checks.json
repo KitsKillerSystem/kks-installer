@@ -1,0 +1,306 @@
+{
+  "status": "PASS",
+  "count": 48,
+  "checks": [
+    {
+      "name": "en-verify",
+      "status": "verified",
+      "seconds": 4.61
+    },
+    {
+      "name": "en-prior-approved-install",
+      "status": "installed",
+      "seconds": 29.0
+    },
+    {
+      "name": "en-update-check",
+      "status": "update_available",
+      "seconds": 8.58
+    },
+    {
+      "name": "en-full-kks-on",
+      "status": "installed",
+      "seconds": 42.05
+    },
+    {
+      "name": "en-full-kks-on-missing-check",
+      "status": "repairable",
+      "seconds": 8.73
+    },
+    {
+      "name": "en-full-kks-on-repair",
+      "status": "installed",
+      "seconds": 23.62
+    },
+    {
+      "name": "en-vanilla-equipment-on",
+      "status": "installed",
+      "seconds": 40.72
+    },
+    {
+      "name": "en-vanilla-equipment-on-missing-check",
+      "status": "repairable",
+      "seconds": 8.2
+    },
+    {
+      "name": "en-vanilla-equipment-on-repair",
+      "status": "installed",
+      "seconds": 23.69
+    },
+    {
+      "name": "en-full-kks-off",
+      "status": "installed",
+      "seconds": 40.42
+    },
+    {
+      "name": "en-full-kks-off-missing-check",
+      "status": "repairable",
+      "seconds": 7.92
+    },
+    {
+      "name": "en-full-kks-off-repair",
+      "status": "installed",
+      "seconds": 23.39
+    },
+    {
+      "name": "en-vanilla-equipment-off",
+      "status": "installed",
+      "seconds": 41.28
+    },
+    {
+      "name": "en-vanilla-equipment-off-missing-check",
+      "status": "repairable",
+      "seconds": 8.44
+    },
+    {
+      "name": "en-vanilla-equipment-off-repair",
+      "status": "installed",
+      "seconds": 23.14
+    },
+    {
+      "name": "en-return-full",
+      "status": "installed",
+      "seconds": 41.19
+    },
+    {
+      "name": "en-cacheless-restore",
+      "status": "restored",
+      "seconds": 21.2
+    },
+    {
+      "name": "ru-verify",
+      "status": "verified",
+      "seconds": 2.89
+    },
+    {
+      "name": "ru-prior-approved-install",
+      "status": "installed",
+      "seconds": 23.77
+    },
+    {
+      "name": "ru-update-check",
+      "status": "update_available",
+      "seconds": 7.14
+    },
+    {
+      "name": "ru-full-kks-on",
+      "status": "installed",
+      "seconds": 41.16
+    },
+    {
+      "name": "ru-full-kks-on-missing-check",
+      "status": "repairable",
+      "seconds": 6.44
+    },
+    {
+      "name": "ru-full-kks-on-repair",
+      "status": "installed",
+      "seconds": 22.42
+    },
+    {
+      "name": "ru-vanilla-equipment-on",
+      "status": "installed",
+      "seconds": 39.31
+    },
+    {
+      "name": "ru-vanilla-equipment-on-missing-check",
+      "status": "repairable",
+      "seconds": 6.72
+    },
+    {
+      "name": "ru-vanilla-equipment-on-repair",
+      "status": "installed",
+      "seconds": 23.45
+    },
+    {
+      "name": "ru-full-kks-off",
+      "status": "installed",
+      "seconds": 38.39
+    },
+    {
+      "name": "ru-full-kks-off-missing-check",
+      "status": "repairable",
+      "seconds": 6.48
+    },
+    {
+      "name": "ru-full-kks-off-repair",
+      "status": "installed",
+      "seconds": 22.88
+    },
+    {
+      "name": "ru-vanilla-equipment-off",
+      "status": "installed",
+      "seconds": 36.94
+    },
+    {
+      "name": "ru-vanilla-equipment-off-missing-check",
+      "status": "repairable",
+      "seconds": 5.78
+    },
+    {
+      "name": "ru-vanilla-equipment-off-repair",
+      "status": "installed",
+      "seconds": 21.92
+    },
+    {
+      "name": "ru-return-full",
+      "status": "installed",
+      "seconds": 39.83
+    },
+    {
+      "name": "ru-cacheless-restore",
+      "status": "restored",
+      "seconds": 21.02
+    },
+    {
+      "name": "modified-overlap-check",
+      "status": "ready",
+      "seconds": 5.39
+    },
+    {
+      "name": "modified-no-consent",
+      "status": "blocked",
+      "seconds": 6.62
+    },
+    {
+      "name": "modified-stale-consent",
+      "status": "blocked",
+      "seconds": 6.81
+    },
+    {
+      "name": "modified-fresh-check",
+      "status": "ready",
+      "seconds": 5.64
+    },
+    {
+      "name": "modified-prior-check",
+      "status": "ready",
+      "seconds": 5.75
+    },
+    {
+      "name": "modified-prior-install",
+      "status": "installed",
+      "seconds": 32.89
+    },
+    {
+      "name": "modified-update",
+      "status": "installed",
+      "seconds": 52.83
+    },
+    {
+      "name": "modified-vanilla-equipment-on",
+      "status": "installed",
+      "seconds": 53.16
+    },
+    {
+      "name": "modified-full-kks-off",
+      "status": "installed",
+      "seconds": 53.61
+    },
+    {
+      "name": "modified-vanilla-equipment-off",
+      "status": "installed",
+      "seconds": 53.77
+    },
+    {
+      "name": "modified-full-kks-on",
+      "status": "installed",
+      "seconds": 50.28
+    },
+    {
+      "name": "modified-native-reset-repair",
+      "status": "installed",
+      "seconds": 37.56
+    },
+    {
+      "name": "modified-external-edit-blocks-restore",
+      "status": "blocked",
+      "seconds": 6.89
+    },
+    {
+      "name": "modified-cacheless-restore",
+      "status": "restored",
+      "seconds": 24.75
+    }
+  ],
+  "native_summaries": [
+    {
+      "language": "en",
+      "native": true,
+      "upgrade": true,
+      "all_four_profiles": true,
+      "repair_each_profile": true,
+      "baseline_retained": true,
+      "cacheless_restore_exact": true,
+      "nonselected_languages_exact": true
+    },
+    {
+      "language": "ru",
+      "native": true,
+      "upgrade": true,
+      "all_four_profiles": true,
+      "repair_each_profile": true,
+      "baseline_retained": true,
+      "cacheless_restore_exact": true,
+      "nonselected_languages_exact": true
+    }
+  ],
+  "modified_baseline_all_profiles": true,
+  "modified_baseline_continuity": true,
+  "absent_and_stale_consent_rejected": true,
+  "fresh_consent_passed": true,
+  "unknown_edits_protected": true,
+  "unowned_archive_members_exact": true,
+  "cacheless_restore_exact": true,
+  "language_isolation": true,
+  "installer_sha256": "4d26855949a565f68ea679e78f72912de5589616eb319cb2e04d5e959c6b2008",
+  "packages": {
+    "en": {
+      "path": "<USERPROFILE>\\Documents\\KKS_Master\\Features\\Release_Parity_R001\\deliverables\\KKS_1.1.2_English_Release_R001_Steam_25636769.zip",
+      "sha256": "43ffa74c5c1ca44caf1dc6849d459ef9cdd35ac7de902e81f15b1d4958b38ab1",
+      "size": 92341956,
+      "version": "1.1.2",
+      "revision": 5,
+      "sequence": 22,
+      "manifest_sha256": "18c74eff9ecab4c1b2423d3ece89a3a577fbb97368bde3451e792e51c7f0fb2d",
+      "manifest_file": "<USERPROFILE>\\Documents\\KKS_Master\\Features\\Release_Parity_R001\\English\\evidence\\package-manifest.json"
+    },
+    "ru": {
+      "path": "<USERPROFILE>\\Documents\\KKS_Master\\Features\\Release_Parity_R001\\deliverables\\KKS_1.1.2_Russian_Release_R001_Steam_25636769.zip",
+      "sha256": "138da8275101d7b4879dc5a797007562551fa14f250c976ec33157a9e7902fb8",
+      "size": 51070759,
+      "version": "1.1.2",
+      "revision": 8,
+      "sequence": 11,
+      "manifest_sha256": "8dea97b6e95cbb450ca753beb7e06c5375546f0202f02b389d678e8fe3083aca",
+      "manifest_file": "<USERPROFILE>\\Documents\\KKS_Master\\Features\\Release_Parity_R001\\Russian\\evidence\\package-manifest.json"
+    }
+  },
+  "live_game_writes": false,
+  "reference_preserved": true,
+  "fixtures": [
+    "<USERPROFILE>\\Documents\\KKS_TestGames\\Release_Parity_R001_Native\\game",
+    "<USERPROFILE>\\Documents\\KKS_TestGames\\Release_Parity_R001_Modified\\game"
+  ],
+  "metadata_correction": "Exact serialized manifest digests replace reserialized-JSON digests. Tested ZIP bytes/hash and all test results are unchanged; original report retained."
+}

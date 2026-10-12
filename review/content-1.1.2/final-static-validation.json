@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "languages": {
+    "en": {
+      "status": "PASS",
+      "payload_resources": 6,
+      "archive_exact_inventory": true,
+      "signature_member_present": true,
+      "xml_rows": 253912,
+      "pua_characters_used": 3612,
+      "faces_checked": 27,
+      "all_used_pua_present_in_all_faces": true,
+      "codex_usage_consistent": true,
+      "xml_payload_values_exact": true,
+      "omitted_raw_records_exact": true,
+      "version": "1.1.2",
+      "revision": 5,
+      "sequence": 22
+    },
+    "ru": {
+      "status": "PASS",
+      "payload_resources": 6,
+      "archive_exact_inventory": true,
+      "signature_member_present": true,
+      "xml_rows": 253911,
+      "pua_characters_used": 4000,
+      "faces_checked": 14,
+      "all_used_pua_present_in_all_faces": true,
+      "codex_usage_consistent": true,
+      "xml_payload_values_exact": true,
+      "omitted_raw_records_exact": true,
+      "version": "1.1.2",
+      "revision": 8,
+      "sequence": 11
+    }
+  },
+  "standalone_diet_consumers_exhaustively_migrated": true,
+  "glossary_native_matches": 68,
+  "glossary_population": 68,
+  "new_english_leakage": false
+}

@@ -1,17 +1,8 @@
 # Build installer application 1.6.0
 
-Current development source: **1.6.0 release candidate**, unreleased.
-The production window title is `KKS Installer · 1.6.0`; the language-specific
-preview label has been removed. Install/profile/Repair/Restore logic is unchanged
-from the validated Russian modular source. The exact final executable requires
-validation and VirusTotal review before public promotion. Content packages are
-validated separately and do not require VirusTotal scans.
-This adds Russian optional-feature support to the baseline-migration/Play source;
-see OPTIONAL_FEATURES.md. The complete approved Russian font payload is unchanged.
-Build through the same clean-source process below. See INDEPENDENT_INSTALLER.md
-for migration compatibility and state requirements. Current content is separately
-versioned 1.1.2; this installer change does not rebuild content. The 1.5.0 evidence
-below remains frozen and describes that released executable.
+Released application: **1.6.0**, built from `8cad8b2195c069518ab0fc4334b77a816c25347d` (`installer-v1.6.0`). The production title is `KKS Installer · 1.6.0`. The published EXE is the unchanged scanned candidate; later publication commits update documentation only. [Build, tests and acceptance](review/installer-1.6.0/README.md) and [security disposition](review/installer-1.6.0/SECURITY_REVIEW.md) preserve the eight unresolved detections and owner release authorization.
+
+Russian modular choices, baseline migration and guarded Play are included. English/Russian content 1.1.2 is separately distributed on Nexus. Content packages do not require VirusTotal scans. Use the exact source tag and recorded runtime to reproduce this build. Historical receipts below remain tied to their named versions.
 
 Packaging review, 10 October 2026: `review_build.py --layout onedir` (or
 `build.ps1 -Layout onedir`) builds the same runtime as an inspectable folder.
@@ -67,7 +58,7 @@ python -m venv .venv
 ```
 
 Both output directories must be new. The script rejects uncommitted/untracked
-source, checks Python/dependency versions, runs all **182** tests, then invokes
+source, checks Python/dependency versions, runs all **210** tests, then invokes
 PyInstaller with `--clean --noupx --onefile --windowed`. A failed step stops the
 build. Accept the output only when `build-receipt.json` exists and logs pass;
 a partially created EXE alone is not success. Do not edit source during a build.

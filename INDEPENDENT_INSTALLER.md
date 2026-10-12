@@ -1,8 +1,8 @@
 # Independent installer and complete content packages
 
-## Russian modular parity (1.6.0, unreleased, 10 October 2026)
+## Russian modular parity (released 1.6.0)
 
-The Russian Modular Preview retains the migration and Play behavior below and adds
+Installer 1.6.0 retains the migration and Play behavior below and adds
 Russian equipment/perk options. The closed Russian profile now accepts schema 2/3
 only with minimum 1.6.0 and `optional-features-ru-v1`. Locale-specific native tables
 and signed alternate hashes control every option. Full-KKS content remains the
@@ -11,7 +11,7 @@ approved B008 payload. Older nonmodular RU packages remain supported. Earlier
 See OPTIONAL_FEATURES.md. No additional game targets, trust keys, bypass flags,
 archive certificates or gameplay changes are introduced.
 
-## 1.6.0 baseline migration preview (unreleased, 9 October 2026)
+## 1.6.0 baseline migration and Play
 
 The current source implements the owner's baseline-migration and Play request.
 Signed content still defines complete resource ownership and payload hashes.
@@ -65,7 +65,7 @@ and while the game runs. The backend rechecks state and the selected Steam libra
 then opens the fixed app URI. Packages cannot supply a command; installation never
 starts the game automatically.
 
-The following 1.5.0 release notes remain historical; the preview is not published.
+The following 1.5.0 notes remain historical. Current 1.6.0 release evidence is in review/installer-1.6.0; current English/Russian content evidence is in review/content-1.1.2.
 
 Status: **Installer 1.5.0 / English Content 1.1.1**, 6 October 2026. The maintainer has accepted the modular architecture in game. See review/installer-1.5.0, review/content-1.1.1 and OPTIONAL_FEATURES.md for build, acceptance and optional-feature contracts.
 

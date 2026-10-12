@@ -1,0 +1,9 @@
+{
+  "status": "verified",
+  "content": "KKS 1.1.2 Русский",
+  "manifest": "8dea97b6e95cbb450ca753beb7e06c5375546f0202f02b389d678e8fe3083aca",
+  "supported_build": "Steam RU 25636769 - final release candidate R001",
+  "payload_files": 6,
+  "equipment_naming_available": true,
+  "perk_cards_available": true
+}

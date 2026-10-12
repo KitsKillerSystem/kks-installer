@@ -1,48 +1,29 @@
-# KKS 1.1.1 + Installer 1.5.0 — Modular equipment and perk cards
+# KKS Installer 1.6.0
 
-Choose KKS equipment naming and KKS perk cards independently, using one complete
-content package. Keep the full experience, use native equipment with KKS perks,
-keep KKS equipment with native perks, or turn both treatments off while retaining
-the rest of KKS. Both KKS options are enabled by default.
-
-- **Vanilla Equipment Naming** restores native weapon/armor names and naming rules.
-- **KKS Perk Cards Off (Vanilla)** restores Bethesda's native perk descriptions.
-  It does not disable perks or change their gameplay effects.
-- Selectors stay disabled until a verified package supports each option.
-- Switch either feature with the same ZIP. Repair preserves the installed choices;
-  Restore vanilla and interrupted-operation recovery remain supported.
-- Includes finalized English underarmor names without redundant classification text.
-
-This gives KKS a practical native fallback while feature artwork or wording is
-revised. New Bethesda builds still need a package certified for their current files.
+Installer 1.6.0 adds independent Russian equipment/perk options, preserves a verified pre-KKS baseline when using supported modified Interface archives, and includes a guarded **Play Fallout 76** button. English and Russian KKS 1.1.2 content is distributed separately through [Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301). Installer and content versions remain independent.
 
 ## Install or update
 
-**Fallout 76 Steam English build 25636769. Installer 1.5.0 is required.**
+1. Download `KKS_Installer_1.6.0.zip` below, extract it, and run `KKSInstaller.exe`.
+2. Download the English or Russian **1.1.2 content package** from Nexus and keep that ZIP unopened. Manual/source archives are not installer inputs.
+3. Close Fallout 76, select the game folder, choose/drop the content ZIP, choose equipment/perk options, and Install.
 
-1. Download [KKS_Installer_1.5.0.zip](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.1.1/KKS_Installer_1.5.0.zip) and extract it.
-2. Download [KKS_1.1.1_Steam_EN_25636769.zip](https://github.com/KitsKillerSystem/kks-installer/releases/download/v1.1.1/KKS_1.1.1_Steam_EN_25636769.zip) and keep it intact.
-3. Close Fallout 76, run `KKSInstaller.exe`, and select your game folder.
-4. Choose or drop in the content ZIP, select your options, and click Install.
+Both languages support KKS/native equipment naming and KKS/native perk descriptions independently. Turning both options off retains other KKS features. Repair preserves your selections. **Restore Baseline** restores the verified pre-KKS state, including supported prior modifications. Keep the game's KKS backups. Restore before switching content languages; installer UI language alone does not change content language. Earlier 1.6.0 previews must be replaced with this final build for current Russian modular packages.
 
-Existing supported installations can update directly without restoring first.
-Keep the game's KKS backups. Use Installer 1.5.0 for subsequent Repair/Restore,
-including after restoring and reinstalling; older installers cannot read the new
-saved history. Re-enable features with this same package instead of downgrading.
-The content package is English; changing the installer UI language does not translate it.
+Supported release content: **Fallout 76 Steam build 25636769**. Modified archives still require structural compatibility; overlapping resource replacements require explicit confirmation that expires if inputs change. Unsupported game identities and unknown later edits remain blocked. Use 1.6.0 or newer to manage a migrated baseline. Play starts the game only when clicked after readiness checks; installation never launches it automatically.
 
-## Validation
+## Antivirus disclosure
 
-The exact executable and signed content passed maintainer in-game acceptance:
-Restore Vanilla, Full KKS, both equipment/perk hybrids, profile-aware Repair, and
-return to Full KKS. No regressions observed. **182 automated tests and 28 compiled-EXE
-checks passed**, including all four combinations and forced-interruption recovery.
+The recorded October 11, 2026 scan of the exact EXE reports **8/71 detections**, plus four unsupported engines. The owner authorized release with these unresolved warnings. The certificate finding remains **LIKELY BENIGN / PARTIALLY EXPLAINED**; neither that assessment nor successful functional testing proves the eight detections false positives. Legitimate false-positive/vendor remediation continues separately as non-blocking maintenance. The public ZIP updates release documentation only; its executable has not been rebuilt or altered.
 
-[Installer build evidence](https://github.com/KitsKillerSystem/kks-installer/tree/v1.1.1/review/installer-1.5.0) and
-[content acceptance](https://github.com/KitsKillerSystem/kks-installer/tree/v1.1.1/review/content-1.1.1) identify the exact tested bytes.
-Historical preview/candidate labels remain in the accepted artifacts; the release
-acceptance supersedes them. Content is publisher-signed; the EXE is not Authenticode-signed.
+EXE SHA-256: `46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589`
 
-`SHA256SUMS.txt` covers both download ZIPs. GitHub's automatic Source code archives
-are for developers; players need the two named ZIPs. Installer and content versions
-are independent. Prior releases remain available unchanged.
+[Exact VirusTotal report](https://www.virustotal.com/gui/file/46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589/detection) · [Detailed findings, vendor labels and limitations](https://github.com/KitsKillerSystem/kks-installer/blob/v1.6.0/review/installer-1.6.0/SECURITY_REVIEW.md)
+
+## Validation and source
+
+**210 automated regressions** passed on the exact build source. The final EXE passed **15 compiled checks**, including all eight English/Russian option combinations, signatures, Repair and exact cache-free Restore. **48 broader checks** passed on the preceding branding build; the final code change was verified as branding-only. Final package/hash checks and three read-only EXE checks passed again for publication. [Build/test evidence](https://github.com/KitsKillerSystem/kks-installer/blob/v1.6.0/review/installer-1.6.0/README.md).
+
+The executable is built from source tag [`installer-v1.6.0`](https://github.com/KitsKillerSystem/kks-installer/tree/installer-v1.6.0); the publication tag `v1.6.0` adds documentation/evidence. It is not Authenticode-signed. `SHA256SUMS.txt` covers the ZIP and extracted EXE. GitHub's automatic source archives are for developers, not installable content. Prior releases remain unchanged.
+
+English/Russian 1.1.2 includes accepted Food V2 sorting, component/junk glyphs, paired regular/Ultracite ammo sorting, revised consumable descriptions and queued glyph/menu fixes. Russian includes the approved full localized perk deck and 39 primary legendary wordmarks. [Content validation and known limits](https://github.com/KitsKillerSystem/kks-installer/blob/v1.6.0/review/content-1.1.2/README.md).

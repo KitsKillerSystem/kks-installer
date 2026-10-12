@@ -1,3 +1,9 @@
+# Installer security scope
+
+Current release: **Installer 1.6.0**. Read [the exact-file release review](review/installer-1.6.0/SECURITY_REVIEW.md) for eight unresolved detections, certificate audit uncertainty and the owner-authorized release disposition. [Build evidence](review/installer-1.6.0/README.md). Baseline migration and Russian modular functionality are documented in INDEPENDENT_INSTALLER.md and OPTIONAL_FEATURES.md.
+
+The following 1.5.0 security-scope record is retained as historical context.
+
 # Independent installer 1.5.0 — security scope
 
 Application and content have separate versions. Installer 1.5.0 accompanies

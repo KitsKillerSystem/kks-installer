@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "profiles": {
+    "en_equipment_naming": {
+      "status": "PASS",
+      "native_ids": 11475,
+      "changed": 4603,
+      "only_native_category_values_restored": true,
+      "unrelated_rows_exact": true,
+      "sha256": "77bfb8985e9cda9e1bfedaff02466663a389b70332b89e36aa24506b337b31bf"
+    },
+    "en_perk_cards": {
+      "status": "PASS",
+      "native_ids": 1488,
+      "changed": 451,
+      "only_native_category_values_restored": true,
+      "unrelated_rows_exact": true,
+      "sha256": "d23ce13386348cb3e7105eaec5cfd071b7d82b0fb662884319e96a04503f4533"
+    },
+    "ru_equipment_naming": {
+      "status": "PASS",
+      "native_ids": 11475,
+      "changed": 4642,
+      "only_native_category_values_restored": true,
+      "unrelated_rows_exact": true,
+      "sha256": "84f7f7923395854abbf36db4ef70184bc1f3d50793473492fe366a7889188185"
+    },
+    "ru_perk_cards": {
+      "status": "PASS",
+      "native_ids": 1488,
+      "changed": 451,
+      "only_native_category_values_restored": true,
+      "unrelated_rows_exact": true,
+      "sha256": "fd96b82eb7d9f79d1bf81e19218739d41cb02f3b34a9eeeee136f36a8aaf3ccd"
+    }
+  }
+}

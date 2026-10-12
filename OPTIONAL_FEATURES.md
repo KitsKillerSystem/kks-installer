@@ -1,11 +1,11 @@
-# Optional features — Installer 1.5.0
+# Optional features — Installer 1.6.0
 
-## Russian parity in 1.6.0 (unreleased)
+## Russian parity in released 1.6.0
 
 The current 1.6.0 source adds the same independent equipment/perk choices to
 certified Russian content. Russian schema-2/3 packages require 1.6.0 and the
 explicit `optional-features-ru-v1` capability. Earlier 1.6.0 previews reject that
-capability; use the Russian Modular Preview or its successor. Existing English
+capability; use the final Installer 1.6.0 release. Existing English
 schemas, signatures and derived hashes retain their previous behavior. German
 and French optional profiles are still rejected until separately implemented.
 

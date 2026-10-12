@@ -1,0 +1,29 @@
+{
+  "audit": "A001",
+  "original_disposition_sha256": "afc0eb4be91a614122b661b89e1628fb0021ffa2b0a36ffa7f4d696808868d03",
+  "original_report_sha256": "895b1de51a7a324228bbd00a91924f22182ba6a1d4ffbf65a64c36f23d406f5e",
+  "subject_sha256": "46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589",
+  "security_significance": "LIKELY BENIGN / PARTIALLY EXPLAINED",
+  "original_release_recommendation": "HOLD FOR FURTHER INVESTIGATION",
+  "current_project_release_decision": "Owner authorized release on 2026-10-11; this changes project release status, not the findings.",
+  "certificate_investigation": "Closed by owner; VM plan cancelled; no new experiment.",
+  "recorded_writer": "C:\\Windows\\sysmon.exe",
+  "operation": "SetValue",
+  "store": "HKLM AuthRoot",
+  "certificate_sha1": "F40042E2E5F7E8EF8189FED15519AECE42C3BFA2",
+  "exact_causal_trigger": "UNRESOLVED",
+  "effective_trust_delta": "UNKNOWN",
+  "application_code_bindings": 20,
+  "native_data_build_bindings": 998,
+  "limited_local_checks": {
+    "actions": [
+      "version",
+      "detect",
+      "verify-package"
+    ],
+    "snapshot_differences": 0,
+    "limitations": "Read-only probes, persistent snapshots only; root already present; no process-attributed trace."
+  },
+  "cape_evtx": "Authenticated retrieval returned ForbiddenError; unavailable under current account permissions.",
+  "vendor_false_positive_confirmation": false
+}

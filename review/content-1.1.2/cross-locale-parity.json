@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "english_changed_records_from_published_1_1_1": 6253,
+  "counts_by_record": {
+    "MISC:FULL": 4809,
+    "ALCH:FULL": 686,
+    "FLOR:FULL": 76,
+    "AMMO:FULL": 18,
+    "GMST:DATA": 3,
+    "BOOK:FULL": 261,
+    "CMPO:FULL": 36,
+    "OMOD:FULL": 216,
+    "AMMO:ONAM": 1,
+    "ACTI:FULL": 53,
+    "COBJ:HNAM": 16,
+    "FURN:FULL": 10,
+    "ALCH:DESC": 68
+  },
+  "all_changed_record_glyph_sequences_match": true,
+  "checked_shared_artwork_addresses": 214,
+  "component_hierarchy_already_present_and_verified": true,
+  "russian_changes_here": 1241,
+  "russian_text_not_replaced_with_english": true,
+  "protected_russian_deck_and_wordmarks_exact": true,
+  "exceptions": []
+}

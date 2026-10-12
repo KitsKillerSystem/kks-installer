@@ -1,0 +1,292 @@
+{
+  "status": "PASS",
+  "old_sha256": "4d26855949a565f68ea679e78f72912de5589616eb319cb2e04d5e959c6b2008",
+  "new_sha256": "46598f77674656442befca5e128da183682e720425c6ec40ff386a4bbfe4a589",
+  "outer_members": 1009,
+  "outer_changed": [
+    "_bz2.pyd",
+    "_ctypes.pyd",
+    "_decimal.pyd",
+    "_hashlib.pyd",
+    "_lzma.pyd",
+    "_queue.pyd",
+    "_socket.pyd",
+    "_tkinter.pyd",
+    "_uuid.pyd",
+    "_wmi.pyd",
+    "libcrypto-3-x64.dll",
+    "libffi-8.dll",
+    "python3.dll",
+    "python312.dll",
+    "select.pyd",
+    "unicodedata.pyd",
+    "PYZ.pyz"
+  ],
+  "outer_identical": 992,
+  "module_count": 173,
+  "modules_changed": [
+    "kks_installer._application",
+    "kks_installer.ui"
+  ],
+  "modules_identical": 171,
+  "inventory_unchanged": true,
+  "binary_certificate_only_changes": [
+    {
+      "name": "_bz2.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "26bdf6be9d5103bc3d288c71b4b1d69888d20e7b24ef5fc01604185354f266f9",
+        "certificate_offset": 73216,
+        "certificate_size": 14800,
+        "normalized_sha256": "a99475b2e0203da2c7552d5c984796f446976c86fbd98e661684643f29349732"
+      },
+      "new": {
+        "sha256": "3b89a4ddf7e673794e174ab318c0736d7024800a6a620ab801192c7c9d605b24",
+        "certificate_offset": 73216,
+        "certificate_size": 15664,
+        "normalized_sha256": "a99475b2e0203da2c7552d5c984796f446976c86fbd98e661684643f29349732"
+      }
+    },
+    {
+      "name": "_ctypes.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "ffa594342bd280d72845d160d9b6a4b5129242e134e2d65c32f98188f772da99",
+        "certificate_offset": 116224,
+        "certificate_size": 14800,
+        "normalized_sha256": "a44c4a9cdf3d8f75f26f5f7591fe4179c2ee03c3ca3899e5afeb0770421cce90"
+      },
+      "new": {
+        "sha256": "6fc24360c1d1796d09d375f8911236756056789fcdf49a6a0459386d2fc18b65",
+        "certificate_offset": 116224,
+        "certificate_size": 15664,
+        "normalized_sha256": "a44c4a9cdf3d8f75f26f5f7591fe4179c2ee03c3ca3899e5afeb0770421cce90"
+      }
+    },
+    {
+      "name": "_decimal.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "b2f69ce91756cac13b5ca29933440bb8501feabfda39a2d70872e0bc7a9b9ef4",
+        "certificate_offset": 248320,
+        "certificate_size": 14800,
+        "normalized_sha256": "6b54d3da6a03478d0de40eee579b5e4da7740637f86425778ab486871808797f"
+      },
+      "new": {
+        "sha256": "56ee3770361840dd61a9dda0ed6345960c0a9c2b4d602bf6d917dcea3532455b",
+        "certificate_offset": 248320,
+        "certificate_size": 15664,
+        "normalized_sha256": "6b54d3da6a03478d0de40eee579b5e4da7740637f86425778ab486871808797f"
+      }
+    },
+    {
+      "name": "_hashlib.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "75f84c83b8590db1ea38e1eeaf9372ae517456300876a4702e7b13429193daa3",
+        "certificate_offset": 54784,
+        "certificate_size": 14800,
+        "normalized_sha256": "e8ed80ac9a5023657f485d2113aace9cd327e9a26116519664096d46850244b7"
+      },
+      "new": {
+        "sha256": "b652082e5ba57b95abb20233aac8a385921c982385a7719f25c63e0d4dfa45a2",
+        "certificate_offset": 54784,
+        "certificate_size": 15664,
+        "normalized_sha256": "e8ed80ac9a5023657f485d2113aace9cd327e9a26116519664096d46850244b7"
+      }
+    },
+    {
+      "name": "_lzma.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "adfe23c157c2936dc972f1e87b37c18a2e596f60b9f87fbde7e3b9f51b79bfd6",
+        "certificate_offset": 152576,
+        "certificate_size": 14800,
+        "normalized_sha256": "0fc50bad7a00d7b6f9e8833b7f1b6119d2577bfc89086bd403188cff46ca788b"
+      },
+      "new": {
+        "sha256": "dc71c8cbb7a4dc637e7107b97c9b1c4410649d6aca4b3411f92f92c91851e4d7",
+        "certificate_offset": 152576,
+        "certificate_size": 15664,
+        "normalized_sha256": "0fc50bad7a00d7b6f9e8833b7f1b6119d2577bfc89086bd403188cff46ca788b"
+      }
+    },
+    {
+      "name": "_queue.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "ef2f820bd04e0891db044661a34574b5348b90569136952d9d904e63cd1dc60b",
+        "certificate_offset": 20480,
+        "certificate_size": 14800,
+        "normalized_sha256": "79ce9cd7600262b0b9447f8022afa7d03687d8f37aa9756360f845e18f03c4b6"
+      },
+      "new": {
+        "sha256": "e439169bb70c69bfbf99b197264c0a8067b420b5201cf3be8dfeb076484c4a7f",
+        "certificate_offset": 20480,
+        "certificate_size": 15664,
+        "normalized_sha256": "79ce9cd7600262b0b9447f8022afa7d03687d8f37aa9756360f845e18f03c4b6"
+      }
+    },
+    {
+      "name": "_socket.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "25d30500c159546dcf7accb5d729beceecc55c68d8b15d3bab2b1d02eb4e998c",
+        "certificate_offset": 71680,
+        "certificate_size": 14800,
+        "normalized_sha256": "704b9d6c61aaf87a18d84a9854cb7d851437d6a652011bf607106faecc042400"
+      },
+      "new": {
+        "sha256": "1bea1e253f7da0ea6f907dfb2687595e1ff9265e3b12d80deee540904a986365",
+        "certificate_offset": 71680,
+        "certificate_size": 15664,
+        "normalized_sha256": "704b9d6c61aaf87a18d84a9854cb7d851437d6a652011bf607106faecc042400"
+      }
+    },
+    {
+      "name": "_tkinter.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "6ebebdcfb02ba7658f4ad9a8ba1f64db48e258d3b32a3300ffdfe9b117bdfa1e",
+        "certificate_offset": 55296,
+        "certificate_size": 14800,
+        "normalized_sha256": "c31fa1287fce6aa7c33e4804af659fd05d684a27b36c2b9fb02b890bf05856ba"
+      },
+      "new": {
+        "sha256": "6b75dbb76c3c5baea9b504e577393a3ad9c26f0c9ab1f58d402a0ba8f4b99017",
+        "certificate_offset": 55296,
+        "certificate_size": 15664,
+        "normalized_sha256": "c31fa1287fce6aa7c33e4804af659fd05d684a27b36c2b9fb02b890bf05856ba"
+      }
+    },
+    {
+      "name": "_uuid.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "3f60fb6e95552f1bc4e23453f4fce8ffabd5114b718d75c3535c5e21ab03b82a",
+        "certificate_offset": 13824,
+        "certificate_size": 14800,
+        "normalized_sha256": "71644c774c1f3004c66e04c3b2859def238740a17225f9058308f1b66dfda2af"
+      },
+      "new": {
+        "sha256": "c815056e3dcb2673eb8bd3df7e3629eb2b4348dd534fd6bc9ef31aeaeadf9612",
+        "certificate_offset": 13824,
+        "certificate_size": 15664,
+        "normalized_sha256": "71644c774c1f3004c66e04c3b2859def238740a17225f9058308f1b66dfda2af"
+      }
+    },
+    {
+      "name": "_wmi.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "9659c82510e899b128c427bbe00dfb01b2bce2c2c9fc52bcd9ca26e8252da5da",
+        "certificate_offset": 25600,
+        "certificate_size": 14800,
+        "normalized_sha256": "730bca946e7700bfe34513ed4c82105322de98c02119c6147269c8f9cc86c405"
+      },
+      "new": {
+        "sha256": "1c93373e231932440ba5f0e610ee1e769c34c8888b27fd710f6cc9eca069e4f0",
+        "certificate_offset": 25600,
+        "certificate_size": 15664,
+        "normalized_sha256": "730bca946e7700bfe34513ed4c82105322de98c02119c6147269c8f9cc86c405"
+      }
+    },
+    {
+      "name": "libcrypto-3-x64.dll",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "8a65f692c5003ac4bfa884369d753d9f50a5408ae5ef5afc66517d1c80b02175",
+        "certificate_offset": 7987712,
+        "certificate_size": 14800,
+        "normalized_sha256": "8b54c7df707f1fbd046b2520250dc84a43d3cb90261210a3f2f4eaca239bd0f7"
+      },
+      "new": {
+        "sha256": "05fb5602cf55986610da4a9b871ab6ca02a3b8a8aa514d521aebc4b077c718c0",
+        "certificate_offset": 7987712,
+        "certificate_size": 15664,
+        "normalized_sha256": "8b54c7df707f1fbd046b2520250dc84a43d3cb90261210a3f2f4eaca239bd0f7"
+      }
+    },
+    {
+      "name": "libffi-8.dll",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "90f4afecab4c0cbb1596d8117b75f47860c5830fda06dc930cbd7d6a317a1ae3",
+        "certificate_offset": 28160,
+        "certificate_size": 14800,
+        "normalized_sha256": "78ec2d41bbc7bc9bcaf3b58a9cacc9efa1f53b2780fc33f4cb2e6e09d790c99c"
+      },
+      "new": {
+        "sha256": "2820c67b7f1b68b62bb6c58223d6eac6833df918c96057bcb89a70a0e7e23e5e",
+        "certificate_offset": 28160,
+        "certificate_size": 15656,
+        "normalized_sha256": "78ec2d41bbc7bc9bcaf3b58a9cacc9efa1f53b2780fc33f4cb2e6e09d790c99c"
+      }
+    },
+    {
+      "name": "python3.dll",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "afa6cc673944dcb13c91474d51e3c707c7ecc6ab0cc6005bc91e92eb02f488f1",
+        "certificate_offset": 56320,
+        "certificate_size": 14800,
+        "normalized_sha256": "6f5f098f855146422d5c35ea81c8c74a0a722b1dab074dce32c978344b2d05e2"
+      },
+      "new": {
+        "sha256": "3449638df31b06a3323be21c05e51135cf377eaedbb64b34d378f4e85ac24528",
+        "certificate_offset": 56320,
+        "certificate_size": 15664,
+        "normalized_sha256": "6f5f098f855146422d5c35ea81c8c74a0a722b1dab074dce32c978344b2d05e2"
+      }
+    },
+    {
+      "name": "python312.dll",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "c19758a4dfccc35b5f4da513945dfab85e70bed8cdbf4bc25587662fa7f457d2",
+        "certificate_offset": 6969856,
+        "certificate_size": 14800,
+        "normalized_sha256": "786648b36f66e3476e9591a54aa3a0ca43ed09c3fb4ad0affbfd2768a4c6dbcd"
+      },
+      "new": {
+        "sha256": "f80f1d32cc0f23ee6425962785ba8e2753ec169041c913655e71578acbe66297",
+        "certificate_offset": 6969856,
+        "certificate_size": 15664,
+        "normalized_sha256": "786648b36f66e3476e9591a54aa3a0ca43ed09c3fb4ad0affbfd2768a4c6dbcd"
+      }
+    },
+    {
+      "name": "select.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "93feb301214cf43c51a22f8bde604b34b825be8b63f94f2a84be37e789e8cc40",
+        "certificate_offset": 18944,
+        "certificate_size": 14800,
+        "normalized_sha256": "791551923b8c17bbee9360150462c0e6fca7786e9e9aa97f297da8d77e90464d"
+      },
+      "new": {
+        "sha256": "6f2a5bc4cd123e27cf788198b3b2811f0ca92e76079a79247f325e54a3b49ee3",
+        "certificate_offset": 18944,
+        "certificate_size": 15664,
+        "normalized_sha256": "791551923b8c17bbee9360150462c0e6fca7786e9e9aa97f297da8d77e90464d"
+      }
+    },
+    {
+      "name": "unicodedata.pyd",
+      "only_certificate_table_and_checksum_differ": true,
+      "old": {
+        "sha256": "2ae50402855a599054d3b546f22c4dd6bbdfd86446aa8c775b68eeb36d3aab36",
+        "certificate_offset": 1127936,
+        "certificate_size": 14800,
+        "normalized_sha256": "78fa2612562e2b8ffa18e6a06dd6015a7e223665b9b970ec62b6a83f757dc96a"
+      },
+      "new": {
+        "sha256": "c52ee574964f8cba23a1e9b47000cac94102cbe56d01e252feec124909ab8fe3",
+        "certificate_offset": 1127936,
+        "certificate_size": 15664,
+        "normalized_sha256": "78fa2612562e2b8ffa18e6a06dd6015a7e223665b9b970ec62b6a83f757dc96a"
+      }
+    }
+  ],
+  "note": "16 bundled native files have updated certificate tables/checksums from the supplied runtime; executable code/data are exact after excluding those signing fields. This is provenance evidence, not a vendor determination."
+}
