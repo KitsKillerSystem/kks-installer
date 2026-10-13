@@ -2,13 +2,13 @@
 
 KKS adds custom glyphs, clearer item information, useful sorting and redesigned perk-card descriptions to Fallout 76.
 
-## Installer 1.7.0
+## Installer 1.8.0
 
-Installer 1.7.0 adds French/German support for the same independent equipment-name and perk-card options available in English and Russian. [Download Installer 1.7.0](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.7.0). Earlier releases remain unchanged.
+Adds Brazilian Portuguese content support and Português (Brasil) UI. English, Russian, German and French remain supported. [Download Installer 1.8.0](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.8.0). Previous releases remain unchanged.
 
-Content downloads are separate on [Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301). French/German packages with these options require 1.7.0. Their native-language wording has received less player feedback and may receive corrections. The owner plans an in-game visual inspection before uploading those content editions.
+**Content downloads belong on [Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301).** GitHub distributes the installer and its public source/review evidence. The installer does not download content. Portuguese content 1.2.0 requires Installer 1.8.0 or later; the first Portuguese edition has not received native-speaker review or in-game testing.
 
-**Certified content: Fallout 76 Steam build 25636769.** Close the game, run the installer, select its folder, choose/drop the unopened signed content ZIP, choose options and Install. Package selection verifies only; it does not install. Manual/source archives are not installer inputs. Restore Baseline before switching content languages. Installer UI language does not translate content.
+Close Fallout 76, extract the installer ZIP and run `KKSInstaller.exe`. Select the game folder, choose/drop the unopened signed content ZIP, choose options and Install. Selection verifies the package; it does not install. Manual/source archives are not installer inputs. Set the game's Steam language to match the content. Restore Baseline before switching content languages; the installer UI language does not translate content.
 
 | Equipment naming | Perk descriptions | Result |
 |---|---|---|
@@ -17,14 +17,10 @@ Content downloads are separate on [Nexus Mods](https://www.nexusmods.com/fallout
 | KKS | Native | KKS equipment with native perk descriptions |
 | Native | Native | Both native treatments; other KKS features remain |
 
-Both selectors require a supporting verified package. Choices affect presentation, not perk gameplay. Reinstall the same ZIP to switch options. Repair preserves choices. Restore Baseline restores the verified pre-KKS state, including supported prior modifications. Keep `.kks-manager` and older KKS backups. Overlapping changes require confirmation; incompatible archives, changed game identities and unknown later edits remain blocked. Play explicitly opens Steam after readiness checks.
+Options require a supporting verified package. Reinstall to change them; Repair preserves them. Restore Baseline returns the verified pre-KKS state, including supported prior modifications. Keep `.kks-manager` and KKS backups. Overlapping changes require confirmation; incompatible archives and unknown later edits remain blocked. Current content baseline: Steam build 25636769. Python and xTranslator are not required by installer users.
 
-## Release evidence and antivirus disclosure
+## Release evidence
 
-The exact new EXE has a recorded **7/71 VirusTotal result** dated October 12, 2026, plus four unsupported engines. The remaining warnings have not been confirmed as false positives. The earlier certificate finding remains **LIKELY BENIGN / PARTIALLY EXPLAINED**; that closed inquiry is not reopened. The owner authorized release with the remaining detections and disclosed coverage limits; that decision does not resolve the warnings.
+The exact 1.8.0 EXE records **8/71 detections** on October 13, 2026, plus four unsupported engines. Remaining warnings are unresolved and accepted for this release; no false-positive determination or security certification. [Detailed review](review/installer-1.8.0/SECURITY_REVIEW.md) · [Exact scan](https://www.virustotal.com/gui/file/b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98/detection) · [Release notes](RELEASE_NOTES.md).
 
-[Detailed 1.7.0 review](review/installer-1.7.0/SECURITY_REVIEW.md) · [Exact scan](https://www.virustotal.com/gui/file/85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749/detection) · [Release notes](RELEASE_NOTES.md)
-
-EXE SHA-256: `85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749`. 212 regressions and 24 exact-EXE release checks passed. Of 1,009 embedded outer members, 1,008 match released 1.6.0 exactly; only the Python module archive differs. Of 173 modules, only version/capability policy and package validation changed. [Build and validation evidence](review/installer-1.7.0/README.md).
-
-KKS is an offline resource patcher; it does not inject code into the game or automatically download updates. Content is publisher-signed; the EXE is not Authenticode-signed. Python and xTranslator are not required by installer users. Build source commit: `28e8f7edb277d767ddebb062682f66b7955b9341`. GitHub distributes the installer; new content belongs on Nexus. Game archives, backups, signing keys and private authoring history do not belong in this repository.
+217 regressions and 16 exact-EXE checks pass. [Build and comparison evidence](review/installer-1.8.0/README.md). Build source `fca6a862ae138ac8953fa30fb1f69adf77718a33`; EXE SHA-256 `b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98`. The EXE is not Authenticode-signed; content has separate publisher signatures. No game archives, backups, signing keys or private authoring material belong in this repository.

@@ -1,0 +1,71 @@
+295 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.8
+296 INFO: Python: 3.12.14
+330 INFO: Platform: Windows-11-10.0.26300-SP0
+330 INFO: Python environment: <INSTALLER_VENV>
+331 INFO: wrote <BUILD_HOME>\Documents\KKS_Master\Features\Localization\PTBR_Release_R001\Installer\build-work\KKSInstaller.spec
+334 INFO: Removing temporary files and cleaning cache in <BUILD_HOME>\AppData\Local\pyinstaller
+340 INFO: Module search paths (PYTHONPATH):
+['<BUILD_HOME>\\Documents\\KKS_Master\\Features\\Localization\\PTBR_Release_R001\\Installer\\repo\\source',
+ '<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.zip',
+ '<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs',
+ '<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib',
+ '<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python',
+ '<INSTALLER_VENV>',
+ '<INSTALLER_VENV>\\Lib\\site-packages',
+ '<BUILD_HOME>\\Documents\\KKS_Master\\Features\\Localization\\PTBR_Release_R001\\Installer\\repo\\source']
+773 INFO: checking Analysis
+773 INFO: Building Analysis because Analysis-00.toc is non existent
+773 INFO: Looking for Python shared library...
+773 INFO: Using Python shared library: <BUILD_HOME>\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python312.dll
+773 INFO: Running Analysis Analysis-00.toc
+773 INFO: Target bytecode optimization level: 0
+773 INFO: Initializing module dependency graph...
+779 INFO: Initializing module graph hook caches...
+859 INFO: Analyzing modules for base_library.zip ...
+2448 INFO: Processing standard module hook 'hook-encodings.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks'
+3002 INFO: Processing standard module hook 'hook-math.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks'
+4827 INFO: Processing standard module hook 'hook-pickle.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks'
+6698 INFO: Processing standard module hook 'hook-heapq.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks'
+8662 INFO: Caching module dependency graph...
+8703 INFO: Analyzing <BUILD_HOME>\Documents\KKS_Master\Features\Localization\PTBR_Release_R001\Installer\repo\source\launcher.py
+8898 INFO: Processing standard module hook 'hook-platform.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks'
+8968 INFO: Processing standard module hook 'hook-_ctypes.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks'
+9043 INFO: Processing standard module hook 'hook-cryptography.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+10516 INFO: hook-cryptography: cryptography does not seem to be using dynamically linked OpenSSL.
+10758 INFO: Processing pre-find-module-path hook 'hook-tkinter.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks\\pre_find_module_path'
+10763 INFO: TclTkInfo: initializing cached Tcl/Tk info...
+11254 INFO: Processing standard module hook 'hook-_tkinter.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks'
+11441 INFO: Processing module hooks (post-graph stage)...
+11757 INFO: Processing standard module hook 'hook-_tkinter.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks'
+11769 INFO: Performing binary vs. data reclassification (933 entries)
+20236 INFO: Looking for ctypes DLLs
+20239 INFO: Analyzing run-time hooks ...
+20239 INFO: Including run-time hook 'pyi_rth_inspect.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+20260 INFO: Including run-time hook 'pyi_rth__tkinter.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+20277 INFO: Including run-time hook 'pyi_rth_cryptography_openssl.py' from '<INSTALLER_VENV>\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\rthooks'
+20317 INFO: Creating base_library.zip...
+20338 INFO: Looking for dynamic libraries
+20559 INFO: Extra DLL search directories (AddDllDirectory): []
+20559 INFO: Extra DLL search directories (PATH): []
+21190 INFO: Warnings written to <BUILD_HOME>\Documents\KKS_Master\Features\Localization\PTBR_Release_R001\Installer\build-work\pyinstaller\KKSInstaller\warn-KKSInstaller.txt
+21208 INFO: Graph cross-reference written to <BUILD_HOME>\Documents\KKS_Master\Features\Localization\PTBR_Release_R001\Installer\build-work\pyinstaller\KKSInstaller\xref-KKSInstaller.html
+21292 INFO: checking PYZ
+21292 INFO: Building PYZ because PYZ-00.toc is non existent
+21292 INFO: Building PYZ (ZlibArchive) <BUILD_HOME>\Documents\KKS_Master\Features\Localization\PTBR_Release_R001\Installer\build-work\pyinstaller\KKSInstaller\PYZ-00.pyz
+21447 INFO: Building PYZ (ZlibArchive) <BUILD_HOME>\Documents\KKS_Master\Features\Localization\PTBR_Release_R001\Installer\build-work\pyinstaller\KKSInstaller\PYZ-00.pyz completed successfully.
+21470 INFO: checking PKG
+21470 INFO: Building PKG because PKG-00.toc is non existent
+21470 INFO: Building PKG (CArchive) KKSInstaller.pkg
+25770 INFO: Building PKG (CArchive) KKSInstaller.pkg completed successfully.
+25797 INFO: Bootloader <INSTALLER_VENV>\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\runw.exe
+25798 INFO: checking EXE
+25798 INFO: Building EXE because EXE-00.toc is non existent
+25798 INFO: Building EXE from EXE-00.toc
+25841 INFO: Copying bootloader EXE to <BUILD_HOME>\Documents\KKS_Master\Features\Localization\PTBR_Release_R001\Installer\build\KKSInstaller.exe
+25999 INFO: Copying icon to EXE
+26067 INFO: Copying 0 resources to EXE
+26067 INFO: Embedding manifest in EXE
+26123 INFO: Appending PKG archive to EXE
+26205 INFO: Fixing EXE headers
+27338 INFO: Building EXE from EXE-00.toc completed successfully.
+27368 INFO: Build complete! The results are available in: <BUILD_HOME>\Documents\KKS_Master\Features\Localization\PTBR_Release_R001\Installer\build

@@ -160,7 +160,7 @@ class Manager:
         }
 
     def _validate_state(self, data):
-        integer(data.get("schema") if isinstance(data, dict) else None, 2, 6)
+        integer(data.get("schema") if isinstance(data, dict) else None, 2, 7)
         fields(
             data,
             "schema root installation_id active highest_sequence release_ids baseline_ids retired"
@@ -169,7 +169,8 @@ class Manager:
         if data["schema"] >= 3:
             fields(
                 data["language_sequences"],
-                "en de" if data["schema"] == 3 else " ".join(CONTENT_LANGUAGES),
+                "en de" if data["schema"] == 3 else
+                "en de ru fr" if data["schema"] <= 6 else " ".join(CONTENT_LANGUAGES),
             )
             for value in data["language_sequences"].values():
                 integer(value, 0, 2**53 - 1)
@@ -195,6 +196,8 @@ class Manager:
             demand(
                 re.fullmatch(
                     (
+                        r"(?:(?:de|ru|fr|ptbr)/)?[0-9.]+/[0-9]+"
+                        if data["schema"] == 7 else
                         r"(?:(?:de|ru|fr)/)?[0-9.]+/[0-9]+"
                         if data["schema"] >= 4
                         else (
@@ -949,17 +952,22 @@ class Manager:
             language = content_language(package)
             if m["schema"] >= 2 and state["schema"] < 5:
                 state["language_sequences"] = {
-                    code: sequence_highest(state, code) for code in CONTENT_LANGUAGES
+                    code: sequence_highest(state, code) for code in ("en", "de", "ru", "fr")
                 }
                 state["schema"] = 5
             if m["schema"] == 3:
-                state["schema"] = 6
+                state["schema"] = max(state["schema"], 6)
             if language != "en" and state["schema"] == 2:
                 state["schema"] = 3
                 state["language_sequences"] = {"en": state["highest_sequence"], "de": 0}
             if language in ("ru", "fr") and state["schema"] < 4:
                 state["schema"] = 4
                 state["language_sequences"].update(ru=0, fr=0)
+            if language == "ptbr" and state["schema"] < 7:
+                state["language_sequences"] = {
+                    code: sequence_highest(state, code) for code in CONTENT_LANGUAGES
+                }
+                state["schema"] = 7
             if state["schema"] >= 3:
                 state["language_sequences"][language] = max(
                     state["language_sequences"][language], m["release_sequence"]

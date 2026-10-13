@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "verified_utc": "2026-10-13T19:38:47.005081+00:00",
+  "old_sha256": "85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749",
+  "new_sha256": "b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98",
+  "outer_members": 1009,
+  "outer_identical": 992,
+  "outer_changed": [
+    "_bz2.pyd",
+    "_ctypes.pyd",
+    "_decimal.pyd",
+    "_hashlib.pyd",
+    "_lzma.pyd",
+    "_queue.pyd",
+    "_socket.pyd",
+    "_tkinter.pyd",
+    "_uuid.pyd",
+    "_wmi.pyd",
+    "libcrypto-3-x64.dll",
+    "libffi-8.dll",
+    "python3.dll",
+    "python312.dll",
+    "select.pyd",
+    "unicodedata.pyd",
+    "PYZ.pyz"
+  ],
+  "modules_changed": [
+    "kks_installer._application",
+    "kks_installer.i18n",
+    "kks_installer.manager",
+    "kks_installer.packages"
+  ],
+  "modules_added": [
+    "kks_installer.i18n_ptbr"
+  ],
+  "modules_removed": [],
+  "native_loaded_code_data_exact": true,
+  "signature_only_native_changes": 16,
+  "launcher_hooks_exact": true,
+  "source_commit": "fca6a862ae138ac8953fa30fb1f69adf77718a33",
+  "source_hashes_exact": true
+}

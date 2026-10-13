@@ -1,13 +1,13 @@
-# KKS Installer 1.7.0
+# KKS Installer 1.8.0
 
-Adds independent equipment-naming and perk-card options for supporting French and German packages. English/Russian support, drag-and-drop, Repair and baseline restoration are retained. No new installer resource targets are introduced.
+Adds Brazilian Portuguese content support and a **Português (Brasil)** interface, including independent equipment-name and perk-card options. English, Russian, French and German support remains available.
 
-Download `KKS_Installer_1.7.0.zip`, extract it, and run `KKSInstaller.exe`. Keep the separate signed content ZIP unopened. Close Fallout 76, select its folder, choose/drop the matching package, choose options and install. Restore Baseline before switching content languages; keep KKS backup history. Manual/source ZIPs are not installer inputs. Certified content baseline: Steam build 25636769.
+Download `KKS_Installer_1.8.0.zip`, extract it and run `KKSInstaller.exe`. Download content separately from [Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301); keep that signed ZIP unopened and choose or drop it into the installer. Close Fallout 76 before making changes. Restore Baseline before switching content languages. The installer remains offline.
 
-French/German content will be distributed separately through [Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301). It has received less native-speaker feedback, so grammar and terminology may receive follow-up corrections. Installer UI language alone does not change game content language.
+Portuguese content 1.2.0 requires Installer 1.8.0 or later. Its first edition includes localized legendary wordmarks and all 240 standard perk cards, but has **not yet received native-speaker review or in-game testing**; wording corrections may follow player feedback. Installer UI language does not change game content language.
 
-**Validation:** 212 regression tests and 24 exact-EXE checks passed, including B003 upgrades, all four profiles in both languages, Repair and exact cacheless Restore. The new content has not yet received the owner's planned in-game inspection.
+**Validation:** 217 regressions and 16 exact-executable checks passed, including all four profiles, upgrade, Repair, rollback rejection and cacheless Restore.
 
-**Antivirus disclosure:** October 12, 2026, **7/71 detections**, four additional unsupported engines. The owner authorized release with the seven unresolved warnings and disclosed coverage limits; no false-positive determination is claimed. All native runtime/data members are exact to 1.6.0; only two bundled application modules changed as intended. [Exact scan](https://www.virustotal.com/gui/file/85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749/detection) · [Detailed review](https://github.com/KitsKillerSystem/kks-installer/blob/v1.7.0/review/installer-1.7.0/SECURITY_REVIEW.md).
+**Antivirus disclosure:** October 13, 2026: **8/71 detections**, plus four unsupported engines. The remaining warnings and documented coverage limits are accepted for this release; no confirmed false-positive claim. [Scan](https://www.virustotal.com/gui/file/b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98/detection) · [Detailed review](https://github.com/KitsKillerSystem/kks-installer/blob/v1.8.0/review/installer-1.8.0/SECURITY_REVIEW.md).
 
-EXE SHA-256: `85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749`. The EXE is not Authenticode-signed. Content uses separate publisher signatures. Source build commit: `28e8f7edb277d767ddebb062682f66b7955b9341`. This release preserves the scanned EXE bytes; earlier releases remain unchanged. Source tag: `installer-v1.7.0`; the publication tag `v1.7.0` adds release documentation and evidence.
+EXE SHA-256: `b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98`. Build source: `fca6a862ae138ac8953fa30fb1f69adf77718a33`. The EXE is not Authenticode-signed; content uses separate publisher signatures. Previous releases are unchanged.

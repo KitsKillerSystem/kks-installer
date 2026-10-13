@@ -1,8 +1,8 @@
-# Build installer application 1.7.0
+# Build installer application 1.8.0
 
-Released application: **1.7.0**, built from `28e8f7edb277d767ddebb062682f66b7955b9341` (`installer-v1.7.0`). The production title is `KKS Installer · 1.7.0`. The published EXE preserves the exact scanned candidate. Later publication commits change documentation/evidence only. [Build and tests](review/installer-1.7.0/README.md), [security review](review/installer-1.7.0/SECURITY_REVIEW.md) and [owner release decision](review/installer-1.7.0/OWNER_RELEASE_DECISION.json) record the seven unresolved detections and coverage limits.
+Released application **1.8.0**, built from `fca6a862ae138ac8953fa30fb1f69adf77718a33` (`installer-v1.8.0`). Publication changes documentation/evidence only; the scanned executable is not rebuilt. [Build/tests](review/installer-1.8.0/README.md), [security review](review/installer-1.8.0/SECURITY_REVIEW.md).
 
-French/German packages can now use independent equipment/perk options, matching English/Russian support. Baseline restoration, Unicode handling, drag-and-drop and guarded Play remain unchanged. Content is distributed separately on Nexus; this release does not claim the pending French/German owner visual inspection. Content packages do not require VirusTotal scans. Use the source tag and recorded runtime to reproduce this build. Historical receipts below remain tied to their named versions.
+Adds Portuguese packages and UI, four optional profiles and independent language history. 217 regressions and 16 exact-EXE checks pass. Content is separate on Nexus; no native-speaker or in-game acceptance is claimed for this first Portuguese edition. The exact scan records eight unresolved warnings and four unsupported engines; the owner accepted the documented findings and limits for this release. See [disposition](review/installer-1.8.0/RELEASE_DISPOSITION.json). Historical receipts below retain their original version context.
 
 Packaging review, 10 October 2026: `review_build.py --layout onedir` (or
 `build.ps1 -Layout onedir`) builds the same runtime as an inspectable folder.

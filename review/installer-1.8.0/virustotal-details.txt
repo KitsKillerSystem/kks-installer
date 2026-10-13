@@ -1,0 +1,215 @@
+- generic: We use cookies and related technologies to remember user preferences, for security, to analyse our traffic, and to enable website functionality. Learn more about cookies in our .
+- banner:
+  - button "Menu":
+  - link:
+    - /url: /
+  - button "Search":
+  - button "Apps":
+  - button "Close search":
+  - textbox
+  - textbox "URL, IP address, domain, or file hash"
+  - button "Submit search":
+- complementary
+- main:
+  - text: 8/71 security vendors flagged this file as malicious
+  - button "Reanalyze":
+    - text: Reanalyze
+  - generic "Similar":
+    - button "Similar":
+      - text: Similar
+  - generic "More":
+    - button "More"
+  - generic: b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98
+  - generic: KKSInstaller.exe
+  - generic: Size
+  - generic: 15.04 MB
+  - generic: Last Analysis Date
+  - generic "Tue Oct 13 2026 15:08:14 GMT-0500 (Central Daylight Time)":
+    - generic: a moment ago
+  - link "peexe":
+    - /url: https://www.virustotal.com/gui/search?query=entity%3Afile%20tag%3Apeexe
+  - link "overlay":
+    - /url: https://www.virustotal.com/gui/search?query=entity%3Afile%20tag%3Aoverlay
+  - link "64bits":
+    - /url: https://www.virustotal.com/gui/search?query=entity%3Afile%20tag%3A64bits
+  - tablist:
+    - button "Detection"
+    - button "Details"
+    - button "Behavior"
+    - button "Community"
+  - link "Join our Community":
+    - /url: https://www.virustotal.com/gui/join-us
+  - text: and enjoy additional community insights and crowdsourced detections, plus an API key to
+  - link "automate checks.":
+    - /url: https://docs.virustotal.com/reference/overview
+  - generic: Basic properties
+  - button "More information":
+  - generic: MD5
+  - generic: c10b0675c4c8978f4904197fe9af73d9
+  - generic: SHA-1
+  - generic: 67744ffcaa29a13faf120c6f560d537c4235de6d
+  - generic: SHA-256
+  - generic: b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98
+  - generic: Vhash
+  - generic: 017076655d155d0575504013z3006emz2gz
+  - generic: Authentihash
+  - generic: 36afaa0f1fef87d62ededd289b49e2c8dfdbe98144d123c67adefb8e8794c988
+  - generic: Imphash
+  - generic: e3e80a143805ea18936c8f612e25d363
+  - generic: Rich PE header hash
+  - generic: a5ab84cd6b0f32306530937074b2749c
+  - generic: SSDEEP
+  - generic: 393216:AojW8dC0FAbLkYdZQjtrQE3+d9uwe/RaHddf:A2W8dLA39dZQjtrhOd9up/Rm
+  - generic: TLSH
+  - generic: T176F6334473590468E46F233AAAE18E967BD238250738D5C70FF819513EAB6D5FF34BA0
+  - generic: File type
+  - generic: Win32 EXE
+  - generic: executable
+  - generic: windows
+  - generic: win32
+  - generic: pe
+  - generic: peexe
+  - generic: Magic
+  - generic: PE32+ executable (GUI) x86-64, for MS Windows
+  - generic: TrID
+  - link "InstallShield setup (70.9%)":
+    - /url: ""
+  - link "Win64 Executable (generic) (10.7%)":
+    - /url: ""
+  - link "Win16 NE executable (generic) (8.3%)":
+    - /url: ""
+  - link "OS/2 Executable (generic) (3.3%)":
+    - /url: ""
+  - link "Generic Win/DOS Executable (3.3%)":
+    - /url: ""
+  - generic: DetectItEasy
+  - link "PE64":
+    - /url: ""
+  - 'link "Compiler: Microsoft Visual C/C++ (19.36.36246) [C]"':
+    - /url: ""
+  - 'link "Linker: Microsoft Linker (14.36.36246)"':
+    - /url: ""
+  - 'link "Tool: Visual Studio (2022 version 17.6)"':
+    - /url: ""
+  - generic: Magika
+  - generic: PEBIN
+  - generic: File size
+  - generic: 15.04 MB (15774265 bytes)
+  - generic: History
+  - button "More information":
+  - generic: Creation Time
+  - generic: 2026-10-13 19:27:31 UTC
+  - generic: First Submission
+  - generic: 2026-10-13 20:08:14 UTC
+  - generic: Last Submission
+  - generic: 2026-10-13 20:08:14 UTC
+  - generic: Last Analysis
+  - generic: 2026-10-13 20:08:14 UTC
+  - generic: Names
+  - button "More information":
+  - list:
+    - generic: KKSInstaller.exe
+  - generic: Portable Executable Info
+  - button "More information":
+  - heading "Compiler Products" [level=4]
+  - list:
+    - generic: "[---] Unmarked objects count=163"
+    - generic: "id: 0x105, version: 33145 count=189"
+    - generic: "id: 0x104, version: 33145 count=12"
+    - generic: "id: 0x103, version: 33145 count=11"
+    - generic: "id: 0xfd, version: 35721 count=3"
+    - generic: "id: 0x103, version: 35721 count=9"
+    - generic: "id: 0x104, version: 35721 count=17"
+    - generic: "id: 0x105, version: 35721 count=39"
+    - generic: "id: 0x101, version: 33145 count=11"
+    - generic: "id: 0x104, version: 36246 count=30"
+  - button "Show 1 more":
+    - generic: Show 1 more
+  - heading "Header" [level=4]
+  - generic: Target Machine
+  - generic: x64
+  - generic: Compilation Timestamp
+  - generic: 2026-10-13 19:27:31 UTC
+  - generic: Entry Point
+  - generic: "59248"
+  - generic: Contained Sections
+  - generic: "7"
+  - heading "Sections" [level=4]
+  - generic: Name
+  - generic: MD5
+  - button "Expand":
+  - generic: .text
+  - generic: 5c1d0671232b92bd70fcd311921f85d8
+  - button "Expand":
+  - generic: .rdata
+  - generic: e26a0b82e6135ca7b5f9d4e3b3ee0a29
+  - button "Expand":
+  - generic: .data
+  - generic: 954eb046773252153f4899a4edd122ea
+  - button "Expand":
+  - generic: .pdata
+  - generic: 5bcb3226ba293f62cbcb0c82dfa00c46
+  - button "Expand":
+  - generic: .fptable
+  - generic: bf619eac0cdf3f68d496ea9344137e8b
+  - button "Expand":
+  - generic: .rsrc
+  - generic: 7fcb315ccda51350462cd0f780748c50
+  - button "Expand":
+  - generic: .reloc
+  - generic: b09b4e3bc6927c160ce8504826e824e7
+  - heading "Imports" [level=4]
+  - button "USER32.dll":
+  - generic: USER32.dll
+  - button "COMCTL32.dll":
+  - generic: COMCTL32.dll
+  - button "KERNEL32.dll":
+  - generic: KERNEL32.dll
+  - button "ADVAPI32.dll":
+  - generic: ADVAPI32.dll
+  - button "GDI32.dll":
+  - generic: GDI32.dll
+  - heading "Contained Resources by Type" [level=4]
+  - generic: RT_ICON
+  - generic: "7"
+  - generic: RT_MANIFEST
+  - generic: "1"
+  - generic: RT_GROUP_ICON
+  - generic: "1"
+  - heading "Contained Resources by Language" [level=4]
+  - generic: NEUTRAL
+  - generic: "9"
+  - heading "Contained Resources" [level=4]
+  - generic: SHA-256
+  - button "Expand":
+  - generic: 7cccfafd00332ac9c9f6ac0112cc0653991eb169943919e55d05f3fa15929821
+  - button "Expand":
+  - generic: d73c1848a067a0fd094423213dc1e855b5b29b0b441f0bcb315feb90d662972e
+  - button "Expand":
+  - generic: 5a008270f7254f5ca861e9936f4b5b7a23c04d63165895234fd1782bc03ec0e5
+  - button "Expand":
+  - generic: 3919b11194f130d310dfe08bdce2891c5b64f2703107f53a5a1cbc016fdb609f
+  - button "Expand":
+  - generic: 7ef5a24efde1748c0eb12c5817b14cfe1397ae968489a7824a269d02c8223cee
+  - button "Expand":
+  - generic: c5536b396be6dcfc96f4e4f77cc7007b2a56730ee57598a6979cc1c1c71c920a
+  - button "Expand":
+  - generic: ac2e25dc4a4f7bd96a0bcf3ea63cd1bcf26a6f6a05835e32f96ef99cb4323f30
+  - button "Expand":
+  - generic: f5b94a42f1c77c9eef858a0dfd656419fea900b00318c2c0bf49c2fce345d838
+  - button "Expand":
+  - generic: abf8f2022f12f350789d961aceaf9ccfd53e7ec58d8c9934cfce77779b4eac11
+  - heading "Overlay" [level=4]
+  - generic: chi2
+  - generic: "55027.44"
+  - generic: filetype
+  - generic: unknown
+  - generic: entropy
+  - generic: "7.997475624084473"
+  - generic: offset
+  - generic: "369664"
+  - generic: size
+  - generic: "15404601"
+  - generic: md5
+  - generic: 25878d3c90264b088a422f4ab2633d0d
+- contentinfo

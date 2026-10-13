@@ -1,0 +1,33 @@
+{
+  "old_sha256": "85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749",
+  "new_sha256": "b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98",
+  "changes": [
+    {
+      "vendor": "Arctic Wolf",
+      "old": {
+        "vendor": "Arctic Wolf",
+        "category": "undetected",
+        "label": "Undetected"
+      },
+      "new": {
+        "vendor": "Arctic Wolf",
+        "category": "malicious",
+        "label": "Unsafe"
+      }
+    },
+    {
+      "vendor": "Bkav Pro",
+      "old": {
+        "vendor": "Bkav Pro",
+        "category": "malicious",
+        "label": "W32.Malware.7B1CF3CE"
+      },
+      "new": {
+        "vendor": "Bkav Pro",
+        "category": "malicious",
+        "label": "W32.Malware.E7662435"
+      }
+    }
+  ],
+  "note": "Different exact files and dated analyses; not a vendor reconsideration of 1.7.0."
+}

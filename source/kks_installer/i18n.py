@@ -2,10 +2,12 @@
 
 from pathlib import Path
 import ctypes, json, os, re, uuid
+from .i18n_ptbr import PTBR, PTBR_PREFIXES
 from .i18n_fr_ru import FR, RU, FR_PREFIXES, RU_PREFIXES
 
-LANGUAGE_NAMES = {"en": "English", "de": "Deutsch", "ru": "Русский", "fr": "Français"}
+LANGUAGE_NAMES = {"en": "English", "de": "Deutsch", "ru": "Русский", "fr": "Français", "ptbr": "Português (Brasil)"}
 CONTENT_HINTS = {
+    "ptbr": "Content language: Brazilian Portuguese. Set Fallout 76 to Português (Brasil) in Steam.",
     "en": "Content language: English.",
     "de": "Content language: German. Set Fallout 76 to Deutsch in Steam.",
     "ru": "Content language: Russian. Set Fallout 76 to Русский in Steam.",
@@ -141,22 +143,31 @@ DE.update(
 )
 
 
+DE[CONTENT_HINTS["ptbr"]] = "Inhaltssprache: Brasilianisches Portugiesisch. Stelle Fallout 76 in Steam auf Português (Brasil)."
+FR[CONTENT_HINTS["ptbr"]] = "Langue du contenu : portugais brésilien. Choisissez Português (Brasil) pour Fallout 76 dans Steam."
+RU[CONTENT_HINTS["ptbr"]] = "Язык контента: бразильский португальский. Выберите Português (Brasil) для Fallout 76 в Steam."
+
+
 def translate(text, language):
     from . import i18n_baseline
-    catalog = {"de": DE, "fr": FR, "ru": RU}.get(language)
+    catalog = {"de": DE, "fr": FR, "ru": RU, "ptbr": PTBR}.get(language)
     if catalog is None:
         return text
-    catalog = dict(catalog, **getattr(i18n_baseline, language.upper()))
+    catalog = dict(catalog, **getattr(i18n_baseline, language.upper(), {}))
     if text in catalog:
         return catalog[text]
     # Complete user-facing sentence fragments; paths and package names stay exact.
     for source, target in sorted(catalog.items(), key=lambda p: len(p[0]), reverse=True):
         if len(source) > 18:
             text = text.replace(source, target)
-    for source, target in {"de": PREFIXES, "fr": FR_PREFIXES, "ru": RU_PREFIXES}[language].items():
+    for source, target in {"de": PREFIXES, "fr": FR_PREFIXES, "ru": RU_PREFIXES, "ptbr": PTBR_PREFIXES}[language].items():
         text = text.replace(source, target)
-    if language in ("fr", "ru"):
+    if language in ("fr", "ru", "ptbr"):
         patterns = {
+            "ptbr": (r" · assinatura e todos os \1 arquivos verificados",
+                     r"\1 de \2 arquivos de conteúdo diferem.",
+                     r"Pacote de conteúdo \1 verificado.",
+                     " Selecionado: ", " Instalado: ", " instalado e verificado."),
             "fr": (
                 r" · signature et \1 fichiers vérifiés",
                 r"\1 fichiers de contenu sur \2 diffèrent.",
@@ -214,7 +225,7 @@ def load_language():
     try:
         if os.name == "nt":
             primary = ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF
-            return {7: "de", 12: "fr", 25: "ru"}.get(primary, "en")
+            return {7: "de", 12: "fr", 25: "ru", 22: "ptbr"}.get(primary, "en")
     except (AttributeError, OSError):
         pass
     return "en"
