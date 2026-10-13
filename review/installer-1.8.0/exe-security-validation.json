@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "count": 2,
+  "checks": [
+    {
+      "name": "manifest-tampering",
+      "status": "blocked",
+      "message": "The KKS package signature is invalid"
+    },
+    {
+      "name": "manual-zip-is-not-content",
+      "status": "blocked",
+      "message": "Unsupported, multipart, ZIP64, or malformed ZIP directory"
+    }
+  ],
+  "installer_sha256": "b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98",
+  "source_package_unchanged": true
+}

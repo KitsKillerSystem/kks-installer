@@ -1,0 +1,118 @@
+{
+  "status": "PASS",
+  "files": [
+    {
+      "name": "_bz2.pyd",
+      "old_sha256": "3b89a4ddf7e673794e174ab318c0736d7024800a6a620ab801192c7c9d605b24",
+      "new_sha256": "861f0743d5ccb82886894ae76217b314b0d5394743c4f021cd8578c997a4b2fc",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_bz2.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "_ctypes.pyd",
+      "old_sha256": "6fc24360c1d1796d09d375f8911236756056789fcdf49a6a0459386d2fc18b65",
+      "new_sha256": "926df1f47c2a782ba154d6824a84aee7197a32eb6b781c2fc33120851e0fb53b",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_ctypes.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "_decimal.pyd",
+      "old_sha256": "56ee3770361840dd61a9dda0ed6345960c0a9c2b4d602bf6d917dcea3532455b",
+      "new_sha256": "ff83d946d36a108f72475a274ef97d00210ce7616ca6498212557e800b082a35",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_decimal.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "_hashlib.pyd",
+      "old_sha256": "b652082e5ba57b95abb20233aac8a385921c982385a7719f25c63e0d4dfa45a2",
+      "new_sha256": "6b7e1eb9676af48db2e4a2812ab0825379e20e76b6f901631589a9cdb8f96ff6",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_hashlib.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "_lzma.pyd",
+      "old_sha256": "dc71c8cbb7a4dc637e7107b97c9b1c4410649d6aca4b3411f92f92c91851e4d7",
+      "new_sha256": "00d365936c7860dd887bcec422168c3404fcae221dea40e4e6a677adcaebd6b5",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_lzma.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "_queue.pyd",
+      "old_sha256": "e439169bb70c69bfbf99b197264c0a8067b420b5201cf3be8dfeb076484c4a7f",
+      "new_sha256": "300aba733854beb48a9426c955627c0d0e945e5b76175e5f2b68c5fe5aa81201",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_queue.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "_socket.pyd",
+      "old_sha256": "1bea1e253f7da0ea6f907dfb2687595e1ff9265e3b12d80deee540904a986365",
+      "new_sha256": "6be442ce5355de1c9d7f2c1bd3d911f37eda93b43c30acf8b1eeccfc58a5df37",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_socket.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "_tkinter.pyd",
+      "old_sha256": "6b75dbb76c3c5baea9b504e577393a3ad9c26f0c9ab1f58d402a0ba8f4b99017",
+      "new_sha256": "2f0104f77a1a51c51518a49eadc7097169b1bdfd8a268a1c8d70066bb8464d04",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_tkinter.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "_uuid.pyd",
+      "old_sha256": "c815056e3dcb2673eb8bd3df7e3629eb2b4348dd534fd6bc9ef31aeaeadf9612",
+      "new_sha256": "cd456dce0f6d88f0e05ca4f273fb39e91ef1fbe1e035c7ec4d27c37cbe7b4b03",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_uuid.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "_wmi.pyd",
+      "old_sha256": "1c93373e231932440ba5f0e610ee1e769c34c8888b27fd710f6cc9eca069e4f0",
+      "new_sha256": "effc630565fa74e4ece15d574c47e0ef3af58af7ed4700c041155f9dc0eafbeb",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\_wmi.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "libcrypto-3-x64.dll",
+      "old_sha256": "05fb5602cf55986610da4a9b871ab6ca02a3b8a8aa514d521aebc4b077c718c0",
+      "new_sha256": "0d54af54cd69b602b22d8478c3e4e8d82ad2a53f4d2f4a64f156b42d02a1339e",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libcrypto-3-x64.dll",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "libffi-8.dll",
+      "old_sha256": "2820c67b7f1b68b62bb6c58223d6eac6833df918c96057bcb89a70a0e7e23e5e",
+      "new_sha256": "f39e5a9ff36f4c3dd74b72bce4726e07b8b77ceec92d4a8d5b788e7f0bc061af",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\libffi-8.dll",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "python3.dll",
+      "old_sha256": "3449638df31b06a3323be21c05e51135cf377eaedbb64b34d378f4e85ac24528",
+      "new_sha256": "0366ee3d630c26ffc27bfab162648ae8c5cadc74b4b46f3e179ca70f4436cab9",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python3.dll",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "python312.dll",
+      "old_sha256": "f80f1d32cc0f23ee6425962785ba8e2753ec169041c913655e71578acbe66297",
+      "new_sha256": "8bb70bceffd5877733a957b31c392ca027bd2f84230e00de1654f994422fa2af",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python312.dll",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "select.pyd",
+      "old_sha256": "6f2a5bc4cd123e27cf788198b3b2811f0ca92e76079a79247f325e54a3b49ee3",
+      "new_sha256": "63db102d9edcdbd1fbdab77ba62d40c7653ec7d684f8e98ebb50d0542f2e0245",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\select.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    },
+    {
+      "name": "unicodedata.pyd",
+      "old_sha256": "c52ee574964f8cba23a1e9b47000cac94102cbe56d01e252feec124909ab8fe3",
+      "new_sha256": "6fd49b72920f549c8582b31796320cef6870ba7d464098e58c1f4235dd608849",
+      "source": "<BUILD_HOME>\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\DLLs\\unicodedata.pyd",
+      "only_authenticode_blob_directory_and_checksum_differ": true
+    }
+  ],
+  "loaded_code_data_resources_exact": true
+}

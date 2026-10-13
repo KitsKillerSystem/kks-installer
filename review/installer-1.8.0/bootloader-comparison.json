@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "native_executable_code_exact": true,
+  "resources_exact": true,
+  "other_section_bytes_exact_except_debug_timestamp": true,
+  "debug_timestamps": [
+    1791787158,
+    1791919651
+  ],
+  "expected_source_date_epoch": [
+    1791787158,
+    1791919651
+  ],
+  "normalized_section_hashes": {
+    ".text": "67bdc7f5eeccf01180cd5b3621be7d0265efa6a44742496a7a6c6f9076ef4b1f",
+    ".rdata": "93079caa2525c4688806a939d14da0f8b906d6bbe7e2e0508241cca3d6446697",
+    ".data": "f999ee89612700ed57df416c1025d22e69bf061e54903f34ecf2398e8d8b0627",
+    ".pdata": "f33be2799dafcdfb77a394fd72134a9a838822f9fa500e5381029f152423c278",
+    ".fptable": "076a27c79e5ace2a3d47f9dd2e83e4ff6ea8872b3c2218f66c92b89b55f36560",
+    ".rsrc": "2d08ae80219b17a8b017b2c3896b25e1d25d8dc53618e4168832e3e10b64bfe9",
+    ".reloc": "f10e5c9b3cca6292a947f527a24f91802bd207c348624b01187ef083a85a07ed"
+  },
+  "old_exe_sha256": "85112d5d56ac7c83e31d6f0488a8af080baae85320dbdb3bdac57b44afdc9749",
+  "new_exe_sha256": "b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98"
+}

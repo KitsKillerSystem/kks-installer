@@ -1,0 +1,360 @@
+- generic: We use cookies and related technologies to remember user preferences, for security, to analyse our traffic, and to enable website functionality. Learn more about cookies in our .
+- banner:
+  - button "Menu":
+  - link:
+    - /url: /
+  - button "Search":
+  - button "Apps":
+  - button "Close search":
+  - textbox
+  - textbox "URL, IP address, domain, or file hash"
+  - button "Submit search":
+- complementary
+- main:
+  - text: 8/71 security vendors flagged this file as malicious
+  - button "Reanalyze":
+    - text: Reanalyze
+  - generic "Similar":
+    - button "Similar":
+      - text: Similar
+  - generic "More":
+    - button "More"
+  - generic: b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98
+  - generic: KKSInstaller.exe
+  - generic: Size
+  - generic: 15.04 MB
+  - generic: Last Analysis Date
+  - generic "Tue Oct 13 2026 15:08:14 GMT-0500 (Central Daylight Time)":
+    - generic: 6 minutes ago
+  - link "peexe":
+    - /url: https://www.virustotal.com/gui/search?query=entity%3Afile%20tag%3Apeexe
+  - link "overlay":
+    - /url: https://www.virustotal.com/gui/search?query=entity%3Afile%20tag%3Aoverlay
+  - link "64bits":
+    - /url: https://www.virustotal.com/gui/search?query=entity%3Afile%20tag%3A64bits
+  - tablist:
+    - button "Detection"
+    - button "Details"
+    - button "Behavior"
+    - button "Community"
+  - link "Join our Community":
+    - /url: https://www.virustotal.com/gui/join-us
+  - text: and enjoy additional community insights and crowdsourced detections, plus an API key to
+  - link "automate checks.":
+    - /url: https://docs.virustotal.com/reference/overview
+  - checkbox "Display grouped sandbox reports" [checked]
+  - text: Display grouped sandbox reports
+  - checkbox "CAPA" [checked]
+  - button "CAPA":
+    - generic: CAPA
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - checkbox "CAPE Sandbox" [checked]
+  - button "CAPE Sandbox":
+    - generic: CAPE Sandbox
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "3":
+    - generic: "3"
+  - button "99":
+    - generic: "99"
+  - button "0":
+    - generic: "0"
+  - checkbox "VirusTotal Jujubox" [checked]
+  - button "VirusTotal Jujubox":
+    - generic: VirusTotal Jujubox
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - checkbox "VirusTotal Observer" [checked]
+  - button "VirusTotal Observer":
+    - generic: VirusTotal Observer
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "0":
+    - generic: "0"
+  - button "Zenbox":
+    - generic: Zenbox
+  - generic: There are some sandboxes still analysing the file.
+  - heading "Activity Summary" [level=3]
+  - generic "Download Artifacts":
+    - button "Download Artifacts"
+  - generic "Full Reports":
+    - button "Full Reports"
+  - generic "Help":
+    - button "Help"
+  - button "Detections":
+    - generic: Detections
+  - generic: NOT FOUND
+  - button "Mitre Signatures":
+    - generic: Mitre Signatures
+  - generic: NOT FOUND
+  - button "IDS Rules":
+    - generic: IDS Rules
+  - generic: NOT FOUND
+  - button "Sigma Rules":
+    - generic: Sigma Rules
+  - generic "medium": 2 medium
+  - generic "low": 1 low
+  - button "Dropped Files":
+    - generic: Dropped Files
+  - generic "PE_DLL": 1 PE_DLL
+  - generic "TEXT": 1 TEXT
+  - button "Network comms":
+    - generic: Network comms
+  - generic: NOT FOUND
+  - generic: Behavior Tags
+  - button "More information":
+  - button "Toggle Behavior Tags" [expanded]:
+  - generic: obfuscated
+  - generic: Capabilities
+  - button "Toggle Capabilities" [expanded]:
+  - button "Expand":
+  - generic: load-code
+  - button "Expand":
+  - generic: linking
+  - button "Expand":
+  - generic: host-interaction
+  - button "Expand":
+  - generic: anti-analysis
+  - button "Expand":
+  - generic: data-manipulation
+  - generic: Crowdsourced Sigma Rules
+  - button "More information":
+  - button "Toggle Crowdsourced Sigma Rules" [expanded]:
+  - tablist:
+    - tab "CRITICAL 0" [selected]
+    - tab "HIGH 0" [selected]
+    - tab "MEDIUM 2" [selected]
+    - tab "LOW 1" [selected]
+  - generic "CAPE Sandbox":
+  - text: Matches rule
+  - generic: Sysmon File Executable Creation Detected
+  - generic: by frack113
+  - generic "CAPE Sandbox":
+  - text: Matches rule
+  - generic: New Root or CA or AuthRoot Certificate to Store
+  - generic: by frack113
+  - generic "CAPE Sandbox":
+  - text: Matches rule
+  - generic: Python Image Load By Non-Python Process
+  - generic: by Patrick St. John, OTR (Open Threat Research)
+  - heading [level=2]
+  - text: "-"
+  - button:
+  - generic: Sigma rule cannot be loaded.
+  - textbox
+  - generic: Behavior Similarity Hashes
+  - button "More information":
+  - button "Toggle Behavior Similarity Hashes" [expanded]:
+  - generic: CAPA
+  - link "0a902fac4ccdf5c3d9bb1e024bc6ee76":
+    - /url: https://www.virustotal.com/gui/search?query=behash%3A0a902fac4ccdf5c3d9bb1e024bc6ee76
+  - generic: CAPE Sandbox
+  - link "354e62fafbc5e1c896cfd59356226ddd":
+    - /url: https://www.virustotal.com/gui/search?query=behash%3A354e62fafbc5e1c896cfd59356226ddd
+  - generic: VirusTotal Jujubox
+  - link "fbbfde73f3600e034b12911370d6a0be":
+    - /url: https://www.virustotal.com/gui/search?query=behash%3Afbbfde73f3600e034b12911370d6a0be
+  - generic: VirusTotal Observer
+  - link "56abda1520fe544d27d4113868b6ee39":
+    - /url: https://www.virustotal.com/gui/search?query=behash%3A56abda1520fe544d27d4113868b6ee39
+  - generic: File system actions
+  - button "More information":
+  - button "Toggle File system actions" [expanded]:
+  - heading "Files opened" [level=4]
+  - list:
+    - generic "CAPE Sandbox":
+    - generic: A:\XboxGames\Fallout 76\Content\Fallout76.exe
+    - generic "CAPE Sandbox":
+    - generic: A:\XboxGames\Fallout 76\Fallout76.exe
+    - generic "CAPE Sandbox":
+    - generic: A:\XboxGames\Fallout76\Content\Fallout76.exe
+    - generic "CAPE Sandbox":
+    - generic: A:\XboxGames\Fallout76\Fallout76.exe
+    - generic "CAPE Sandbox":
+    - generic: B:\XboxGames\Fallout 76\Content\Fallout76.exe
+    - generic "CAPE Sandbox":
+    - generic: B:\XboxGames\Fallout 76\Fallout76.exe
+    - generic "CAPE Sandbox":
+    - generic: B:\XboxGames\Fallout76\Content\Fallout76.exe
+    - generic "CAPE Sandbox":
+    - generic: B:\XboxGames\Fallout76\Fallout76.exe
+    - generic "CAPE Sandbox":
+    - generic: C:\Program Files (x86)\Steam\steamapps\appmanifest_1151340.acf
+    - generic "CAPE Sandbox":
+    - generic: C:\Program Files (x86)\Steam\steamapps\common\Fallout76\Fallout76.exe
+  - button "Show 192 more":
+    - generic: Show 192 more
+  - heading "Files written" [level=4]
+  - button "C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000012002\\VCRUNTIME140.dll":
+  - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000012002\VCRUNTIME140.dll
+  - button "C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000012002\\VCRUNTIME140_1.dll":
+  - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000012002\VCRUNTIME140_1.dll
+  - button "C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000012002\\_bz2.pyd":
+  - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000012002\_bz2.pyd
+  - button "C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000012002\\_cffi_backend.cp312-win_amd64.pyd":
+  - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000012002\_cffi_backend.cp312-win_amd64.pyd
+  - button "C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000012002\\_ctypes.pyd":
+  - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000012002\_ctypes.pyd
+  - button "C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000012002\\_decimal.pyd":
+  - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000012002\_decimal.pyd
+  - button "C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000012002\\_hashlib.pyd":
+  - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000012002\_hashlib.pyd
+  - button "C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000012002\\_lzma.pyd":
+  - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000012002\_lzma.pyd
+  - button "C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000012002\\_queue.pyd":
+  - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000012002\_queue.pyd
+  - button "C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000012002\\_socket.pyd":
+  - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000012002\_socket.pyd
+  - button "Show 142 more":
+    - generic: Show 142 more
+  - heading "Files dropped" [level=4]
+  - button "VCRUNTIME140.dll":
+  - generic: VCRUNTIME140.dll
+  - button "VCRUNTIME140_1.dll":
+  - generic: VCRUNTIME140_1.dll
+  - button "_bz2.pyd":
+  - generic: _bz2.pyd
+  - button "_cffi_backend.cp312-win_amd64.pyd":
+  - generic: _cffi_backend.cp312-win_amd64.pyd
+  - button "_ctypes.pyd":
+  - generic: _ctypes.pyd
+  - button "_decimal.pyd":
+  - generic: _decimal.pyd
+  - button "_hashlib.pyd":
+  - generic: _hashlib.pyd
+  - button "_lzma.pyd":
+  - generic: _lzma.pyd
+  - button "_queue.pyd":
+  - generic: _queue.pyd
+  - button "_socket.pyd":
+  - generic: _socket.pyd
+  - button "Show 89 more":
+    - generic: Show 89 more
+  - generic: Registry actions
+  - button "More information":
+  - button "Toggle Registry actions" [expanded]:
+  - heading "Registry keys opened" [level=4]
+  - list:
+    - generic "CAPE Sandbox":
+    - generic: HKEY_CURRENT_USER\Control Panel\Desktop
+    - generic "CAPE Sandbox":
+    - generic: HKEY_CURRENT_USER\Control Panel\Desktop\LanguageConfiguration
+    - generic "CAPE Sandbox":
+    - generic: HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached
+    - generic "CAPE Sandbox":
+    - generic: HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached\MachineLanguageConfiguration
+    - generic "CAPE Sandbox":
+    - generic: HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached\MachinePreferredUILanguages
+    - generic "CAPE Sandbox":
+    - generic: HKEY_CURRENT_USER\Control Panel\Desktop\PreferredUILanguages
+    - generic "CAPE Sandbox":
+    - generic: HKEY_CURRENT_USER\SOFTWARE\Bethesda Softworks\Fallout76
+    - generic "CAPE Sandbox":
+    - generic: HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize
+    - generic "CAPE Sandbox":
+    - generic: HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize\AppsUseLightTheme
+    - generic "CAPE Sandbox":
+    - generic: HKEY_CURRENT_USER\SOFTWARE\WOW6432Node\Bethesda Softworks\Fallout76
+  - button "Show 14 more":
+    - generic: Show 14 more
+  - heading "Registry keys set" [level=4]
+  - heading "Gemini Summary Toggle Gemini Summary" [level=6]:
+    - generic: Gemini Summary
+    - button "Toggle Gemini Summary":
+  - button "HKEY_USERS\\S-1-5-21-4270068108-2931534202-3907561125-1001\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.exe\\OpenWithProgids\\exefile":
+  - generic "VirusTotal Observer":
+  - generic: HKEY_USERS\S-1-5-21-4270068108-2931534202-3907561125-1001\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.exe\OpenWithProgids\exefile
+  - generic: Process and service actions
+  - button "More information":
+  - button "Toggle Process and service actions" [expanded]:
+  - heading "Processes created" [level=4]
+  - list:
+    - generic "CAPE Sandbox":
+    - generic: "\"C:\\Users\\<USER>\\Desktop\\KKSInstaller.exe\""
+  - heading "Shell commands" [level=4]
+  - list:
+    - generic "CAPE Sandbox":
+    - generic: "\"C:\\Users\\<USER>\\Desktop\\KKSInstaller.exe\""
+  - heading "Processes terminated" [level=4]
+  - list:
+    - generic "VirusTotal Observer":
+    - generic: 1104 - "KKSInstaller.exe"
+  - heading "Processes tree" [level=4]
+  - generic "CAPE Sandbox":
+  - text: 4608 -
+  - generic: "\"C:\\Users\\<USER>\\Desktop\\KKSInstaller.exe\""
+  - generic "CAPE Sandbox":
+  - text: 3060 -
+  - generic: "\"C:\\Users\\<USER>\\Desktop\\KKSInstaller.exe\""
+  - generic: Modules loaded
+  - button "More information":
+  - button "Toggle Modules loaded" [expanded]:
+  - heading "Runtime modules" [level=4]
+  - list:
+    - generic "VirusTotal Jujubox":
+    - generic: C:\Users\<USER>\AppData\Local\Temp\_MEI000006202\ucrtbase.dll
+    - generic "VirusTotal Jujubox":
+    - generic: C:\Windows\system32\tzres.dll
+    - generic "VirusTotal Jujubox":
+    - generic: VCRUNTIME140.dll
+    - generic "VirusTotal Jujubox":
+    - generic: VCRUNTIME140_1.dll
+    - generic "VirusTotal Jujubox":
+    - generic: api-ms-win-core-fibers-l1-1-1
+    - generic "VirusTotal Jujubox":
+    - generic: api-ms-win-core-fibers-l1-1-2
+    - generic "VirusTotal Jujubox":
+    - generic: api-ms-win-core-localization-l1-2-1
+    - generic "VirusTotal Jujubox":
+    - generic: api-ms-win-core-synch-l1-2-0
+    - generic "VirusTotal Jujubox":
+    - generic: kernel32
+    - generic "VirusTotal Jujubox":
+    - generic: kernelbase
+  - generic: Highlighted actions
+  - button "More information":
+  - button "Toggle Highlighted actions" [expanded]:
+  - heading "Calls highlighted" [level=4]
+  - list:
+    - generic "VirusTotal Jujubox":
+    - generic: GetTickCount
+  - heading "Highlighted text" [level=4]
+  - list:
+    - generic "VirusTotal Jujubox":
+    - generic: "\"KKSInstaller.exe - System Error\""
+    - generic "VirusTotal Jujubox":
+    - generic: "\"The program can't start because api-ms-win-core-path-l1-1-0.dll is missing from your computer. Try reinstalling the program to fix this problem. \""
+- contentinfo

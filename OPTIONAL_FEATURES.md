@@ -1,4 +1,15 @@
-# Optional features — Installer 1.7.0
+# Optional features — Installer 1.8.0
+
+## Brazilian Portuguese parity in 1.8.0
+
+Supporting Portuguese schema-2/3 packages require Installer 1.8.0 and
+`optional-features-ptbr-v1`. The two choices derive native equipment and perk
+descriptions from the matching certified Portuguese tables; no English fallback.
+State schema 7 adds Portuguese sequence history while retaining all earlier
+language histories. Existing schemas 2–6 retain their historical validation.
+All four combinations, upgrades, Repair and cacheless Restore are tested.
+See `source/tests/test_ptbr_modularity.py` and `review/installer-1.8.0`.
+
 
 ## French/German parity in 1.7.0
 

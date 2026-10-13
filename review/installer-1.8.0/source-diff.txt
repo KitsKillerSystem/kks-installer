@@ -1,0 +1,529 @@
+diff --git a/source/build_content.py b/source/build_content.py
+index 13032d6..c5b1b3d 100644
+--- a/source/build_content.py
++++ b/source/build_content.py
+@@ -318,6 +318,9 @@ def build(
+         if equipment_naming and language in ("fr", "de"):
+             from kks_installer._application import FR_DE_OPTIONAL_CAPABILITY
+             m["required_capabilities"].append(FR_DE_OPTIONAL_CAPABILITY)
++        if equipment_naming and language == "ptbr":
++            from kks_installer._application import PORTUGUESE_OPTIONAL_CAPABILITY
++            m["required_capabilities"].append(PORTUGUESE_OPTIONAL_CAPABILITY)
+         validate_manifest(m)
+         if expected_legacy:
+             old = json.loads(Path(expected_legacy).read_bytes())
+diff --git a/source/kks_installer/_application.py b/source/kks_installer/_application.py
+index 2467238..dd52062 100644
+--- a/source/kks_installer/_application.py
++++ b/source/kks_installer/_application.py
+@@ -1,6 +1,6 @@
+ """Application policy. Content packages cannot expand these capabilities."""
+ 
+-APP_VERSION = "1.7.0"
++APP_VERSION = "1.8.0"
+ BUILD_LABEL = "Release"
+ INSTALLER_API = 1
+ PROFILE = "fo76-steam-en-fonts-strings-v1"
+@@ -17,8 +17,10 @@ RUSSIAN_PROFILE = "fo76-steam-ru-fonts-strings-localization-v1"
+ RUSSIAN_OPTIONAL_CAPABILITY = "optional-features-ru-v1"
+ FR_DE_OPTIONAL_CAPABILITY = "optional-features-fr-de-v1"
+ FRENCH_PROFILE = "fo76-steam-fr-fonts-strings-localization-v1"
+-LOCALIZED_PROFILES = {"de": GERMAN_PROFILE, "ru": RUSSIAN_PROFILE, "fr": FRENCH_PROFILE}
+-CONTENT_LANGUAGES = ("en", "de", "ru", "fr")
++PORTUGUESE_PROFILE = "fo76-steam-ptbr-fonts-strings-localization-v1"
++PORTUGUESE_OPTIONAL_CAPABILITY = "optional-features-ptbr-v1"
++LOCALIZED_PROFILES = {"de": GERMAN_PROFILE, "ru": RUSSIAN_PROFILE, "fr": FRENCH_PROFILE, "ptbr": PORTUGUESE_PROFILE}
++CONTENT_LANGUAGES = ("en", "de", "ru", "fr", "ptbr")
+ # Public verification keys only. Private signing keys never ship with the app.
+ TRUSTED_KEYS = {
+     "kks-release-2026-10": "1ff7681dfa502f1478154b412b7f37a284cca141436022f6c76bd653f0685103"
+diff --git a/source/kks_installer/i18n.py b/source/kks_installer/i18n.py
+index 5a6c085..9576702 100644
+--- a/source/kks_installer/i18n.py
++++ b/source/kks_installer/i18n.py
+@@ -2,10 +2,12 @@
+ 
+ from pathlib import Path
+ import ctypes, json, os, re, uuid
++from .i18n_ptbr import PTBR, PTBR_PREFIXES
+ from .i18n_fr_ru import FR, RU, FR_PREFIXES, RU_PREFIXES
+ 
+-LANGUAGE_NAMES = {"en": "English", "de": "Deutsch", "ru": "Русский", "fr": "Français"}
++LANGUAGE_NAMES = {"en": "English", "de": "Deutsch", "ru": "Русский", "fr": "Français", "ptbr": "Português (Brasil)"}
+ CONTENT_HINTS = {
++    "ptbr": "Content language: Brazilian Portuguese. Set Fallout 76 to Português (Brasil) in Steam.",
+     "en": "Content language: English.",
+     "de": "Content language: German. Set Fallout 76 to Deutsch in Steam.",
+     "ru": "Content language: Russian. Set Fallout 76 to Русский in Steam.",
+@@ -141,22 +143,31 @@ DE.update(
+ )
+ 
+ 
++DE[CONTENT_HINTS["ptbr"]] = "Inhaltssprache: Brasilianisches Portugiesisch. Stelle Fallout 76 in Steam auf Português (Brasil)."
++FR[CONTENT_HINTS["ptbr"]] = "Langue du contenu : portugais brésilien. Choisissez Português (Brasil) pour Fallout 76 dans Steam."
++RU[CONTENT_HINTS["ptbr"]] = "Язык контента: бразильский португальский. Выберите Português (Brasil) для Fallout 76 в Steam."
++
++
+ def translate(text, language):
+     from . import i18n_baseline
+-    catalog = {"de": DE, "fr": FR, "ru": RU}.get(language)
++    catalog = {"de": DE, "fr": FR, "ru": RU, "ptbr": PTBR}.get(language)
+     if catalog is None:
+         return text
+-    catalog = dict(catalog, **getattr(i18n_baseline, language.upper()))
++    catalog = dict(catalog, **getattr(i18n_baseline, language.upper(), {}))
+     if text in catalog:
+         return catalog[text]
+     # Complete user-facing sentence fragments; paths and package names stay exact.
+     for source, target in sorted(catalog.items(), key=lambda p: len(p[0]), reverse=True):
+         if len(source) > 18:
+             text = text.replace(source, target)
+-    for source, target in {"de": PREFIXES, "fr": FR_PREFIXES, "ru": RU_PREFIXES}[language].items():
++    for source, target in {"de": PREFIXES, "fr": FR_PREFIXES, "ru": RU_PREFIXES, "ptbr": PTBR_PREFIXES}[language].items():
+         text = text.replace(source, target)
+-    if language in ("fr", "ru"):
++    if language in ("fr", "ru", "ptbr"):
+         patterns = {
++            "ptbr": (r" · assinatura e todos os \1 arquivos verificados",
++                     r"\1 de \2 arquivos de conteúdo diferem.",
++                     r"Pacote de conteúdo \1 verificado.",
++                     " Selecionado: ", " Instalado: ", " instalado e verificado."),
+             "fr": (
+                 r" · signature et \1 fichiers vérifiés",
+                 r"\1 fichiers de contenu sur \2 diffèrent.",
+@@ -214,7 +225,7 @@ def load_language():
+     try:
+         if os.name == "nt":
+             primary = ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF
+-            return {7: "de", 12: "fr", 25: "ru"}.get(primary, "en")
++            return {7: "de", 12: "fr", 25: "ru", 22: "ptbr"}.get(primary, "en")
+     except (AttributeError, OSError):
+         pass
+     return "en"
+diff --git a/source/kks_installer/i18n_ptbr.py b/source/kks_installer/i18n_ptbr.py
+new file mode 100644
+index 0000000..94112ab
+--- /dev/null
++++ b/source/kks_installer/i18n_ptbr.py
+@@ -0,0 +1,135 @@
++"""Brazilian Portuguese UI; game language remains package-bound."""
++from .i18n_baseline import WARNING, HELP
++
++PTBR = {
++    "Language": "Idioma",
++    "CONTENT\nINSTALLER": "INSTALADOR\nDE CONTEÚDO",
++    "A BETTER-ORDERED WASTELAND.": "ORDEM NA TERRA DEVASTADA.",
++    "Make yourself at home.": "Sinta-se em casa.",
++    "Choose your game folder and a complete KKS content ZIP.": "Escolha a pasta do jogo e o ZIP completo do KKS.",
++    "01  /  GAME DIRECTORY": "01  /  PASTA DO JOGO",
++    "02  /  CONTENT PACKAGE": "02  /  PACOTE DE CONTEÚDO",
++    "03  /  INSTALLATION STATUS": "03  /  ESTADO DA INSTALAÇÃO",
++    "ACTIVITY": "ATIVIDADE",
++    "Browse…": "Procurar…",
++    "Check": "Verificar",
++    "Choose package…": "Escolher pacote…",
++    "Install content": "Instalar conteúdo",
++    "Repair": "Reparar",
++    "Restore vanilla": "Restaurar originais",
++    "Restore Baseline": "Restaurar estado inicial",
++    "Install update": "Instalar atualização",
++    "Recover previous state": "Recuperar estado anterior",
++    "Play Fallout 76": "Jogar Fallout 76",
++    "Continue": "Continuar", "Cancel": "Cancelar",
++    "Ready when you are.": "Pronto quando você estiver.",
++    "Drop one content ZIP onto this window, or choose it below.": "Arraste o ZIP de conteúdo para esta janela ou selecione-o abaixo.",
++    "Drop a ZIP here or choose a package. Keep the ZIP unopened.": "Arraste um ZIP aqui ou escolha um pacote. Não extraia o ZIP.",
++    "Select a package to check compatibility.": "Selecione um pacote para verificar a compatibilidade.",
++    "Offline by design.  Your vanilla backups stay with your game.": "Funciona offline. Os backups ficam na pasta do jogo.",
++    "Your installation baseline and backups stay with your game.": "O estado inicial e os backups ficam na pasta do jogo.",
++    "Use Choose package to select your content ZIP.": "Use Escolher pacote para selecionar o ZIP de conteúdo.",
++    "Choose the folder containing Fallout76.exe": "Escolha a pasta que contém Fallout76.exe",
++    "Choose a complete KKS content ZIP": "Escolha um ZIP completo de conteúdo KKS",
++    "Select a complete KKS content ZIP": "Selecione um ZIP completo de conteúdo KKS",
++    "KKS content package": "Pacote de conteúdo KKS",
++    "Choose one ZIP": "Escolha um ZIP",
++    "Drop one complete KKS content ZIP.": "Arraste um único ZIP completo de conteúdo KKS.",
++    "Wait for the current operation, then drop the package again.": "Aguarde o término da operação e arraste o pacote novamente.",
++    "KKS is working": "KKS em execução",
++    "Wait for the operation to finish. If it is interrupted, KKS keeps the recovery journal and backups.": "Aguarde a conclusão. Se houver interrupção, o KKS mantém o registro de recuperação e os backups.",
++    "Checking package…": "Verificando pacote…",
++    "Checking your installation…": "Verificando sua instalação…",
++    "Working…": "Processando…",
++    "KKS is verifying the package, game files and restoration data. Keep Fallout 76 closed during changes.": "O KKS está verificando o pacote, o jogo e os dados de restauração. Mantenha Fallout 76 fechado durante as alterações.",
++    "Verifying the selected package…": "Verificando o pacote selecionado…",
++    "Checking saved installation and compatibility…": "Verificando a instalação salva e a compatibilidade…",
++    "Installing the selected content package…": "Instalando o pacote selecionado…",
++    "Repairing installed content…": "Reparando o conteúdo instalado…",
++    "Restoring verified vanilla…": "Restaurando os arquivos originais verificados…",
++    "Restoring the installation baseline…": "Restaurando o estado inicial da instalação…",
++    "Recovering the interrupted operation…": "Recuperando a operação interrompida…",
++    "Needs attention before continuing": "Requer atenção antes de continuar",
++    "Ready to install.": "Pronto para instalar.",
++    "Ready to update.": "Pronto para atualizar.",
++    "KKS is installed.": "KKS instalado.",
++    "KKS 1.0 installation found.": "Instalação do KKS 1.0 encontrada.",
++    "KKS needs a repair.": "O KKS precisa de reparo.",
++    "Choose a content package.": "Escolha um pacote de conteúdo.",
++    "Recover the interrupted change.": "Recupere a alteração interrompida.",
++    "Verified.": "Verificado.",
++    "Verifying the supported game build…": "Verificando a versão compatível do jogo…",
++    "Previous file state restored. All backups are retained.": "Estado anterior restaurado. Todos os backups foram mantidos.",
++    "Saving and verifying restoration backups…": "Salvando e verificando os backups de restauração…",
++    "Applying verified files…": "Aplicando arquivos verificados…",
++    "Reopening and validating installed files…": "Reabrindo e validando os arquivos instalados…",
++    "Close Fallout 76 before continuing": "Feche Fallout 76 antes de continuar",
++    "The game executable is in use. Close the game and pause game updates": "O executável do jogo está em uso. Feche o jogo e pause suas atualizações",
++    "Another KKS operation is already running": "Outra operação do KKS já está em execução",
++    "Choose the Fallout 76 folder containing Fallout76.exe and Data": "Escolha a pasta do Fallout 76 que contém Fallout76.exe e Data",
++    "Restore vanilla before switching the KKS content language": "Restaure os arquivos originais antes de trocar o idioma do conteúdo KKS",
++    "Restore Baseline before switching the KKS content language": "Restaure o estado inicial antes de trocar o idioma do conteúdo KKS",
++    "Restore Baseline before selecting a package that removes managed game targets": "Restaure o estado inicial antes de selecionar um pacote que remova arquivos gerenciados",
++    "Restore vanilla before selecting a package that removes managed game targets": "Restaure os arquivos originais antes de selecionar um pacote que remova arquivos gerenciados",
++    "The selected package matches this game and is ready to install.": "O pacote é compatível com este jogo e está pronto para instalar.",
++    "This complete package can be installed directly; intermediate updates are not required.": "Este pacote completo pode ser instalado diretamente, sem atualizações intermediárias.",
++    "Choose a complete KKS content ZIP to check compatibility and install.": "Escolha um ZIP completo do KKS para verificar a compatibilidade e instalar.",
++    "An interrupted change needs recovery before another operation.": "Recupere a alteração interrompida antes de iniciar outra operação.",
++    "Recover the interrupted managed operation first.": "Recupere primeiro a operação interrompida.",
++    "An interrupted operation needs recovery before installation can continue.": "Recupere a operação interrompida antes de continuar a instalação.",
++    "Verified vanilla files restored. All restoration history is retained.": "Arquivos originais restaurados e verificados. Todo o histórico foi mantido.",
++    "Baseline restored and verified. All restoration history is retained.": "Estado inicial restaurado e verificado. Todo o histórico foi mantido.",
++    "Baseline restored. Backups retained.": "Estado inicial restaurado. Backups mantidos.",
++    "Baseline restoration is still available.": "A restauração do estado inicial continua disponível.",
++    "There is no pending recovery.": "Não há recuperação pendente.",
++    "The managed file state was recovered. Run Check to see whether repair is still needed.": "Os arquivos gerenciados foram recuperados. Use Verificar para saber se ainda precisam de reparo.",
++    "The completed installation was verified and its saved state recovered.": "A instalação concluída foi verificada e seu estado salvo foi recuperado.",
++    "The previous managed file state was recovered; retry the update when ready.": "O estado anterior foi recuperado. Tente atualizar novamente quando estiver pronto.",
++    "Verified vanilla is the recovery checkpoint. Select the content package to install again.": "Os arquivos originais verificados foram restaurados. Selecione o pacote para reinstalar.",
++    "The interrupted managed operation was recovered.": "A operação interrompida foi recuperada.",
++    "KKS 1.0 is installed. Select a content package to migrate, or restore vanilla without the old EXE.": "O KKS 1.0 está instalado. Selecione um pacote para migrar ou restaure os originais sem o executável antigo.",
++    "This package is older than or conflicts with an installed release. Select a newer complete package": "Este pacote é mais antigo ou conflita com uma versão instalada. Selecione um pacote completo mais recente",
++    "This content package needs a newer KKS Installer": "Este pacote exige uma versão mais recente do KKS Installer",
++    "This package is not signed by a trusted KKS publisher": "O pacote não foi assinado por um publicador KKS confiável",
++    "The KKS package signature is invalid": "A assinatura do pacote KKS é inválida",
++    "ZIP files do not match the signed asset profile": "Os arquivos ZIP não correspondem ao perfil de recursos assinado",
++    "Content language must match the fixed Steam asset profile": "O idioma do conteúdo deve corresponder ao perfil fixo de recursos do Steam",
++    "Brazilian Portuguese packages require Installer 1.8.0 or newer": "Pacotes em português brasileiro exigem o Installer 1.8.0 ou mais recente",
++    "No managed KKS installation is available": "Nenhuma instalação gerenciada do KKS disponível",
++    "Supported vanilla files found.": "Arquivos originais compatíveis encontrados.",
++    "KKS files are installed and verified.": "Arquivos KKS instalados e verificados.",
++    "KKS files need repair.": "Os arquivos KKS precisam de reparo.",
++    "Vanilla files have been restored.": "Os arquivos originais foram restaurados.",
++    "Vanilla files restored. Backups retained.": "Arquivos originais restaurados. Backups mantidos.",
++    "KKS installed and verified.": "KKS instalado e verificado.",
++    "KKS is installed and verified.": "KKS instalado e verificado.",
++    "Recovery needs attention: ": "A recuperação requer atenção: ",
++    "Backups and journals are retained.": "Backups e registros foram mantidos.",
++    "Known files were reset or removed. Repair can restore KKS.": "Arquivos conhecidos foram redefinidos ou removidos. Reparar pode restaurar o KKS.",
++    "This installation is compatible and ready.": "Esta instalação está compatível e pronta.",
++    "KKS Weapon & Armor Treatment (Recommended)": "Nomes KKS de armas e armaduras (recomendado)",
++    "Vanilla Equipment Naming": "Nomes originais de equipamentos",
++    "KKS Perk Cards On (Recommended)": "Cartas de vantagens KKS (recomendado)",
++    "KKS Perk Cards Off (Vanilla)": "Cartas de vantagens originais",
++    "Vanilla Perk Cards": "Cartas de vantagens originais",
++    "Existing interface modifications detected": "Modificações de interface existentes detectadas",
++    HELP: "Retorna os arquivos gerenciados pelo KKS ao estado anterior à instalação do KKS.",
++    WARNING: "O KKS encontrou modificações em recursos que precisa atualizar. Elas podem pertencer a outro mod de interface, ordenação ou ícones.\n\nO KKS preservará o estado atual antes de substituir os recursos necessários. Restaurar estado inicial permite devolver esses recursos ao estado salvo.\n\nContinuar a instalação do KKS?",
++    "Launching Fallout 76 through Steam…": "Iniciando Fallout 76 pelo Steam…",
++    "Fallout 76 launch requested through Steam.": "Inicialização do Fallout 76 solicitada pelo Steam.",
++    "Content language: English.": "Idioma do conteúdo: inglês.",
++    "Content language: German. Set Fallout 76 to Deutsch in Steam.": "Conteúdo em alemão. Selecione Deutsch no Steam para Fallout 76.",
++    "Content language: Russian. Set Fallout 76 to Русский in Steam.": "Conteúdo em russo. Selecione Русский no Steam para Fallout 76.",
++    "Content language: French. Set Fallout 76 to Français in Steam.": "Conteúdo em francês. Selecione Français no Steam para Fallout 76.",
++    "Content language: Brazilian Portuguese. Set Fallout 76 to Português (Brasil) in Steam.": "Conteúdo em português brasileiro. Selecione Português (Brasil) no Steam para Fallout 76.",
++}
++
++PTBR_PREFIXES = {
++    "Unsupported or changed game build: ": "Versão do jogo incompatível ou alterada: ",
++    "A loose interface override conflicts with KKS: ": "Um arquivo de interface avulso conflita com o KKS: ",
++    "Building and validating ": "Montando e validando ",
++    "A cached payload is missing or damaged. Select the same content ZIP again: ": "Um arquivo em cache está ausente ou danificado. Selecione novamente o mesmo ZIP: ",
++    "Foreign or unsupported file: ": "Arquivo externo ou incompatível: ",
++    "Not enough free space": "Espaço livre insuficiente",
++    "Operation stopped: ": "Operação interrompida: ",
++}
+diff --git a/source/kks_installer/manager.py b/source/kks_installer/manager.py
+index e321a68..b22834c 100644
+--- a/source/kks_installer/manager.py
++++ b/source/kks_installer/manager.py
+@@ -160,7 +160,7 @@ class Manager:
+         }
+ 
+     def _validate_state(self, data):
+-        integer(data.get("schema") if isinstance(data, dict) else None, 2, 6)
++        integer(data.get("schema") if isinstance(data, dict) else None, 2, 7)
+         fields(
+             data,
+             "schema root installation_id active highest_sequence release_ids baseline_ids retired"
+@@ -169,7 +169,8 @@ class Manager:
+         if data["schema"] >= 3:
+             fields(
+                 data["language_sequences"],
+-                "en de" if data["schema"] == 3 else " ".join(CONTENT_LANGUAGES),
++                "en de" if data["schema"] == 3 else
++                "en de ru fr" if data["schema"] <= 6 else " ".join(CONTENT_LANGUAGES),
+             )
+             for value in data["language_sequences"].values():
+                 integer(value, 0, 2**53 - 1)
+@@ -195,6 +196,8 @@ class Manager:
+             demand(
+                 re.fullmatch(
+                     (
++                        r"(?:(?:de|ru|fr|ptbr)/)?[0-9.]+/[0-9]+"
++                        if data["schema"] == 7 else
+                         r"(?:(?:de|ru|fr)/)?[0-9.]+/[0-9]+"
+                         if data["schema"] >= 4
+                         else (
+@@ -949,17 +952,22 @@ class Manager:
+             language = content_language(package)
+             if m["schema"] >= 2 and state["schema"] < 5:
+                 state["language_sequences"] = {
+-                    code: sequence_highest(state, code) for code in CONTENT_LANGUAGES
++                    code: sequence_highest(state, code) for code in ("en", "de", "ru", "fr")
+                 }
+                 state["schema"] = 5
+             if m["schema"] == 3:
+-                state["schema"] = 6
++                state["schema"] = max(state["schema"], 6)
+             if language != "en" and state["schema"] == 2:
+                 state["schema"] = 3
+                 state["language_sequences"] = {"en": state["highest_sequence"], "de": 0}
+             if language in ("ru", "fr") and state["schema"] < 4:
+                 state["schema"] = 4
+                 state["language_sequences"].update(ru=0, fr=0)
++            if language == "ptbr" and state["schema"] < 7:
++                state["language_sequences"] = {
++                    code: sequence_highest(state, code) for code in CONTENT_LANGUAGES
++                }
++                state["schema"] = 7
+             if state["schema"] >= 3:
+                 state["language_sequences"][language] = max(
+                     state["language_sequences"][language], m["release_sequence"]
+diff --git a/source/kks_installer/packages.py b/source/kks_installer/packages.py
+index 5412c90..a33ec12 100644
+--- a/source/kks_installer/packages.py
++++ b/source/kks_installer/packages.py
+@@ -27,6 +27,7 @@ from ._application import LOCALIZATION_PROFILE, LOCALIZATION_CAPABILITIES
+ from ._application import GERMAN_PROFILE, GERMAN_CAPABILITIES
+ from ._application import RUSSIAN_PROFILE, FRENCH_PROFILE, LOCALIZED_PROFILES
+ from ._application import RUSSIAN_OPTIONAL_CAPABILITY, FR_DE_OPTIONAL_CAPABILITY
++from ._application import PORTUGUESE_PROFILE, PORTUGUESE_OPTIONAL_CAPABILITY
+ from .engine import demand, digest, is_digest, durable_bytes, sync_directory
+ from .ba2 import hash_file
+ from .platforms import SafetyError, safe_path
+@@ -205,7 +206,9 @@ def validate_manifest(m):
+                     + ([RUSSIAN_OPTIONAL_CAPABILITY]
+                        if schema >= 2 and m["profile"] == RUSSIAN_PROFILE else [])
+                     + ([FR_DE_OPTIONAL_CAPABILITY]
+-                       if schema >= 2 and m["profile"] in (FRENCH_PROFILE, GERMAN_PROFILE) else []))
++                       if schema >= 2 and m["profile"] in (FRENCH_PROFILE, GERMAN_PROFILE) else [])
++                    + ([PORTUGUESE_OPTIONAL_CAPABILITY]
++                       if schema >= 2 and m["profile"] == PORTUGUESE_PROFILE else []))
+     strings = profile_strings(m["profile"])
+     translation = f"interface/translate_{profile_language(m['profile'])}.txt"
+     version(m["content_version"])
+@@ -234,6 +237,9 @@ def validate_manifest(m):
+             version(m["minimum_installer_version"]) >= (1, 3, 0),
+             "German packages require Installer 1.3.0 or newer",
+         )
++    if m["profile"] == PORTUGUESE_PROFILE:
++        demand(version(m["minimum_installer_version"]) >= (1, 8, 0),
++               "Brazilian Portuguese packages require Installer 1.8.0 or newer")
+     if m["profile"] in (RUSSIAN_PROFILE, FRENCH_PROFILE):
+         demand(
+             version(m["minimum_installer_version"]) >= (1, 3, 1),
+@@ -366,7 +372,7 @@ def validate_manifest(m):
+     demand(m["qa"]["status"] in ("candidate", "approved"), "Invalid QA status")
+     plain(m["qa"]["report_id"])
+     if schema >= 2:
+-        demand(m["profile"] in (LOCALIZATION_PROFILE, RUSSIAN_PROFILE, FRENCH_PROFILE, GERMAN_PROFILE)
++        demand(m["profile"] in (LOCALIZATION_PROFILE, RUSSIAN_PROFILE, FRENCH_PROFILE, GERMAN_PROFILE, PORTUGUESE_PROFILE)
+                and version(m["minimum_installer_version"]) >= (1, 4, 0),
+                "Equipment naming requires a supported Localization profile and Installer 1.4.0")
+         if m["profile"] == RUSSIAN_PROFILE:
+@@ -431,7 +437,7 @@ class SignedRelease:
+         self.name = "KKS " + self.manifest["content_version"]
+         language = self.manifest["game"]["language"]
+         if language != "en":
+-            self.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français"}[language]
++            self.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français", "ptbr": "Português (Brasil)"}[language]
+         self.targets = self.manifest["targets"]
+         self.by_path = {t["path"]: t for t in self.targets}
+         self.files = {f["path"]: f for f in self.manifest["files"]}
+@@ -469,7 +475,7 @@ class SignedRelease:
+         result.name = "KKS " + self.manifest["content_version"]
+         language = profile_language(self.manifest["profile"])
+         if language != "en":
+-            result.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français"}[language]
++            result.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français", "ptbr": "Português (Brasil)"}[language]
+         for key, extension, cache_path, transform in result._derived():
+             option = self.manifest[key]
+             target = next(t for t in result.targets if t["path"] == f"Data/strings/seventysix_{language}.{extension}")
+diff --git a/source/tests/package_fixture.py b/source/tests/package_fixture.py
+index 96ae722..8be791e 100644
+--- a/source/tests/package_fixture.py
++++ b/source/tests/package_fixture.py
+@@ -38,7 +38,7 @@ from test_installer import archive
+ 
+ class PackageFixture:
+     def __init__(self, base, loose=False, german=False, multilingual=False):
+-        languages = ("de", "ru", "fr") if multilingual else ("de",) if german else ()
++        languages = ("de", "ru", "fr", "ptbr") if multilingual else ("de",) if german else ()
+         self.base = Path(base)
+         self.game = self.base / "game"
+         (self.game / "Data").mkdir(parents=True)
+diff --git a/source/tests/test_ptbr_modularity.py b/source/tests/test_ptbr_modularity.py
+new file mode 100644
+index 0000000..e5dcf2e
+--- /dev/null
++++ b/source/tests/test_ptbr_modularity.py
+@@ -0,0 +1,112 @@
++"""Brazilian Portuguese optional profiles restore their native bytes, never English."""
++from copy import deepcopy
++from pathlib import Path
++import tempfile
++import unittest
++from package_fixture import PackageFixture
++from test_installer import archive
++from test_equipment import table
++from test_perks import dl_table
++from kks_installer.ba2 import BA2
++from kks_installer.engine import digest
++from kks_installer.equipment import CAPABILITY, FULL, VANILLA
++from kks_installer.perks import CAPABILITY as PERK_CAPABILITY, ON, OFF
++from kks_installer._application import PORTUGUESE_OPTIONAL_CAPABILITY
++from kks_installer.packages import LOCALIZATION, validate_manifest
++from kks_installer.platforms import SafetyError
++
++def fixture(base, lang):
++    fx = PackageFixture(base, multilingual=True, loose=True)
++    names = ('Espada', 'Armadura', 'Sorte')
++    native = table([(1, names[0].encode()), (2, names[1].encode()), (3, b''), (4, names[2].encode())])
++    canonical = table([(1, ('KKS '+names[0]).encode()), (2, ('KKS '+names[1]).encode()), (3, b'KKS'), (4, names[2].encode())])
++    desc = ('Dano <mag>%\r\n<dur> s').encode()
++    perk_native = dl_table([(10, desc), (20, b'\x10control'), (30, b''), (40, b'unrelated')])
++    perk_canonical = dl_table([(10, '\uea00\uea01'.encode()), (20, '\uea02'.encode()), (30, b''), (40, b'unrelated')])
++    loc = fx.game / LOCALIZATION
++    orig = BA2(loc)
++    members = [(n, orig.extract(n), True) for n in orig.by_name]
++    for language in ('en', lang):
++        members += [(f'strings/seventysix_{language}.strings', native if language == lang else table([(1,b'EN'),(2,b'EN'),(3,b'EN'),(4,b'EN')]), True),
++                    (f'strings/seventysix_{language}.dlstrings', perk_native if language == lang else dl_table([(10,b'EN'),(20,b'EN'),(30,b'EN'),(40,b'EN')]), True)]
++    archive(loc, members); fx.raw_originals[LOCALIZATION] = loc.read_bytes()
++    equip_path=f'Data/strings/seventysix_{lang}.strings'; perk_path=f'Data/strings/seventysix_{lang}.dlstrings'
++    for path,raw in ((equip_path,native),(perk_path,perk_native)):
++        fx.loose[path]=raw; (fx.game/path).write_bytes(raw)
++    before=fx.snapshot(); path,m,payloads=fx.build(10,language=lang)
++    for target,raw in ((equip_path,canonical),(perk_path,perk_canonical)):
++        payload='payload/'+target[5:];payloads[payload]=raw
++        next(f for f in m['files'] if f['path']==payload).update(sha256=digest(raw),size=len(raw))
++        next(t for t in m['targets'] if t['path']==target).update(after_sha256=digest(raw),after_size=len(raw))
++    m.update(schema=3)
++    m['required_capabilities'] += [CAPABILITY,PERK_CAPABILITY,PORTUGUESE_OPTIONAL_CAPABILITY]
++    m['equipment_naming']=dict(algorithm=CAPABILITY,categories={'WEAP:FULL':[1],'ARMO:FULL':[2],'INNR:WNAM':[3]},sha256=digest(native),size=len(native))
++    m['perk_cards']=dict(algorithm=PERK_CAPABILITY,categories={'PERK:DESC':[10,20,30]},sha256=digest(perk_native),size=len(perk_native))
++    return fx,fx.write(path,m,payloads),m,before,[(equip_path,canonical,native),(perk_path,perk_canonical,perk_native)]
++
++class PortugueseModularityTests(unittest.TestCase):
++    def test_historical_state_and_independent_portuguese_sequence(self):
++        import json
++        from kks_installer.manager import STATE
++        with tempfile.TemporaryDirectory() as d:
++            fx,path,manifest,before,files=fixture(Path(d),'ptbr')
++            manager=fx.manager()
++            # Real schema-6 history from Installer 1.5–1.7 has exactly four keys.
++            old=manager._empty()
++            old.update(schema=6, highest_sequence=80,
++                       language_sequences=dict(en=80,de=4,ru=9,fr=4))
++            manager._validate_state(old)
++            manager.state.mkdir(exist_ok=True)
++            manager.saved('installation.json').write_text(json.dumps(old))
++            release=manager.select(path)
++            manager.run('install',release,naming=VANILLA,perks=OFF)
++            saved=manager._read_state()
++            self.assertEqual(saved['schema'],7)
++            self.assertEqual(saved['language_sequences'],dict(en=80,de=4,ru=9,fr=4,ptbr=10))
++            manager.run('repair')
++            manager.run('restore')
++            self.assertEqual(fx.snapshot(),before)
++            # Old signed EN content still works and cannot drop Portuguese history.
++            newer,_,_=fx.build(81)
++            manager.run('install',manager.select(newer))
++            self.assertEqual(manager._read_state()['language_sequences']['ptbr'],10)
++            self.assertEqual(manager._read_state()['schema'],7)
++            manager.run('restore')
++            older,_,_=fx.build(9,language='ptbr')
++            with self.assertRaises(SafetyError):
++                manager.run('install',manager.select(older))
++
++    def test_legacy_schema_validation_stays_strict(self):
++        with tempfile.TemporaryDirectory() as d:
++            fx=PackageFixture(Path(d),multilingual=True);manager=fx.manager()
++            for schema in (3,4,5,6,7):
++                state=manager._empty();state['schema']=schema
++                codes=('en','de') if schema==3 else ('en','de','ru','fr') if schema<7 else ('en','de','ru','fr','ptbr')
++                state['language_sequences']=dict.fromkeys(codes,0)
++                manager._validate_state(state)
++                state['language_sequences']['unexpected']=0
++                with self.assertRaises(SafetyError):manager._validate_state(state)
++
++    def test_both_languages_all_profiles_repair_and_cacheless_restore(self):
++        for lang in ('ptbr',):
++            with self.subTest(lang=lang), tempfile.TemporaryDirectory() as d:
++                fx,path,manifest,before,files=fixture(Path(d),lang);manager=fx.manager();release=manager.select(path);baseline=None
++                for naming,perks in ((FULL,ON),(VANILLA,ON),(FULL,OFF),(VANILLA,OFF)):
++                    manager.run('install',release,naming=naming,perks=perks)
++                    current=manager._read_state()['active']['baseline'];baseline=baseline or current;self.assertEqual(baseline,current)
++                    for (target,custom,native),use_native in zip(files,(naming==VANILLA,perks==OFF)):
++                        self.assertEqual((fx.game/target).read_bytes(),native if use_native else custom)
++                        (fx.game/target).unlink()
++                    manager.run('repair',naming=FULL,perks=ON)
++                    for (target,custom,native),use_native in zip(files,(naming==VANILLA,perks==OFF)):
++                        self.assertEqual((fx.game/target).read_bytes(),native if use_native else custom)
++                for relative in release.files:(release.folder/relative).unlink()
++                for p in (release.folder/'derived').glob('*'):p.unlink()
++                path.unlink();manager.run('restore');self.assertEqual(fx.snapshot(),before)
++    def test_capability_version_and_language_are_bound(self):
++        for lang in ('ptbr',):
++            with self.subTest(lang=lang), tempfile.TemporaryDirectory() as d:
++                _,_,manifest,_,_=fixture(Path(d),lang);validate_manifest(manifest)
++                for mutate in (lambda m:m['required_capabilities'].remove(PORTUGUESE_OPTIONAL_CAPABILITY),lambda m:m.update(minimum_installer_version='1.7.0'),lambda m:m['game'].update(language='en')):
++                    bad=deepcopy(manifest);mutate(bad)
++                    with self.assertRaises(SafetyError):validate_manifest(bad)
+diff --git a/source/tests/test_ui.py b/source/tests/test_ui.py
+index 627da9b..b435d08 100644
+--- a/source/tests/test_ui.py
++++ b/source/tests/test_ui.py
+@@ -60,10 +60,32 @@ class UiTests(unittest.TestCase):
+     def test_new_controls_and_help_are_translated_in_all_supported_languages(self):
+         from kks_installer.i18n import translate
+         from kks_installer.i18n_baseline import HELP, WARNING
+-        for lang in ("de", "fr", "ru"):
++        for lang in ("de", "fr", "ru", "ptbr"):
+             for key in ("Restore Baseline", "Play Fallout 76", "Continue", "Cancel", HELP, WARNING):
+                 self.assertNotEqual(translate(key, lang), key)
+ 
++    def test_portuguese_language_preserves_profile_and_actions(self):
++        self.app.events.put(("selected", ("ptbr", "KKS Português (Brasil)", 6, "ptbr", True, True)))
++        self.app.events.put(("success", {"status": "installed", "restore_available": True, "repair_available": True}))
++        self.app.pump()
++        self.app.naming_box.current(1)
++        self.app.perks_box.current(1)
++        self.app.language = "ptbr"
++        self.app.render_language()
++        self.app.root.update()
++        self.assertIn("português brasileiro", self.app.package_text.get())
++        self.assertEqual(self.app.restore['text'], 'Restaurar estado inicial')
++        self.assertEqual(self.app.naming_box.current(), 1)
++        self.assertEqual(self.app.perks_box.current(), 1)
++        bottom = self.app.root.winfo_rooty() + self.app.root.winfo_height()
++        for w in (self.app.primary, self.app.repair, self.app.restore, self.app.play, self.app.log):
++            self.assertLessEqual(w.winfo_rooty() + w.winfo_height(), bottom)
++        self.app.language = "en"
++        self.app.render_language()
++        self.assertEqual(self.app.selected, 'ptbr')
++        self.assertEqual(self.app.naming_box.current(), 1)
++        self.assertEqual(self.app.perks_box.current(), 1)
++
+     def test_six_payload_selection_and_update_count(self):
+         self.app.events.put(("selected", ("digest", "Candidate", 6, "en")))
+         self.app.events.put(

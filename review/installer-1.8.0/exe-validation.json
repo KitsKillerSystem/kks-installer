@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "ptbr-verify",
+      "status": "verified",
+      "seconds": 4.55
+    },
+    {
+      "name": "ptbr-private-predecessor",
+      "status": "installed",
+      "seconds": 28.34
+    },
+    {
+      "name": "ptbr-update-check",
+      "status": "update_available",
+      "seconds": 8.75
+    },
+    {
+      "name": "ptbr-upgrade",
+      "status": "installed",
+      "seconds": 48.42
+    },
+    {
+      "name": "ptbr-rollback",
+      "status": "rejected",
+      "message": "This package is older than or conflicts with an installed release. Select a newer complete package"
+    },
+    {
+      "name": "ptbr-full-kks-on",
+      "status": "installed",
+      "seconds": 48.03
+    },
+    {
+      "name": "ptbr-full-kks-on-repair",
+      "status": "installed",
+      "seconds": 26.36
+    },
+    {
+      "name": "ptbr-vanilla-equipment-on",
+      "status": "installed",
+      "seconds": 48.53
+    },
+    {
+      "name": "ptbr-vanilla-equipment-on-repair",
+      "status": "installed",
+      "seconds": 27.66
+    },
+    {
+      "name": "ptbr-full-kks-off",
+      "status": "installed",
+      "seconds": 47.66
+    },
+    {
+      "name": "ptbr-full-kks-off-repair",
+      "status": "installed",
+      "seconds": 25.95
+    },
+    {
+      "name": "ptbr-vanilla-equipment-off",
+      "status": "installed",
+      "seconds": 48.16
+    },
+    {
+      "name": "ptbr-vanilla-equipment-off-repair",
+      "status": "installed",
+      "seconds": 27.58
+    },
+    {
+      "name": "ptbr-cacheless-restore",
+      "status": "restored",
+      "seconds": 23.72
+    }
+  ],
+  "count": 14,
+  "installer_sha256": "b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98",
+  "all_four_profiles": true,
+  "upgrade_private_predecessor": true,
+  "repair_each_profile": true,
+  "cacheless_restore_exact": true,
+  "all_six_resources_exact": true,
+  "unrelated_archive_members_preserved": true,
+  "native_fixture_restored": true,
+  "reference_fixture_unchanged": true,
+  "live_game_writes": false,
+  "in_game_smoke_test": false
+}

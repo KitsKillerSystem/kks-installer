@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "prepared_utc": "2026-10-13T20:15:00.040052+00:00",
+  "source_commit": "fca6a862ae138ac8953fa30fb1f69adf77718a33",
+  "exe_sha256": "b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98",
+  "zip_sha256": "44e061716b4b6be6a1a55bdf074d3417fa6d1c878add4ecc04847be31ed0ef4f",
+  "zip_bytes": 15476757,
+  "zip_members": [
+    "KKSInstaller.exe",
+    "README.txt",
+    "SECURITY_REVIEW.md",
+    "virustotal-results.json",
+    "SHA256SUMS.txt"
+  ],
+  "contains_content_or_game_resources": false,
+  "exact_scanned_exe_preserved": true,
+  "public_publication_performed": false,
+  "security_disposition": "PENDING_OWNER_RESIDUAL_ACCEPTANCE"
+}
