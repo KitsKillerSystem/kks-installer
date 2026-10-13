@@ -60,9 +60,31 @@ class UiTests(unittest.TestCase):
     def test_new_controls_and_help_are_translated_in_all_supported_languages(self):
         from kks_installer.i18n import translate
         from kks_installer.i18n_baseline import HELP, WARNING
-        for lang in ("de", "fr", "ru"):
+        for lang in ("de", "fr", "ru", "ptbr"):
             for key in ("Restore Baseline", "Play Fallout 76", "Continue", "Cancel", HELP, WARNING):
                 self.assertNotEqual(translate(key, lang), key)
+
+    def test_portuguese_language_preserves_profile_and_actions(self):
+        self.app.events.put(("selected", ("ptbr", "KKS Português (Brasil)", 6, "ptbr", True, True)))
+        self.app.events.put(("success", {"status": "installed", "restore_available": True, "repair_available": True}))
+        self.app.pump()
+        self.app.naming_box.current(1)
+        self.app.perks_box.current(1)
+        self.app.language = "ptbr"
+        self.app.render_language()
+        self.app.root.update()
+        self.assertIn("português brasileiro", self.app.package_text.get())
+        self.assertEqual(self.app.restore['text'], 'Restaurar estado inicial')
+        self.assertEqual(self.app.naming_box.current(), 1)
+        self.assertEqual(self.app.perks_box.current(), 1)
+        bottom = self.app.root.winfo_rooty() + self.app.root.winfo_height()
+        for w in (self.app.primary, self.app.repair, self.app.restore, self.app.play, self.app.log):
+            self.assertLessEqual(w.winfo_rooty() + w.winfo_height(), bottom)
+        self.app.language = "en"
+        self.app.render_language()
+        self.assertEqual(self.app.selected, 'ptbr')
+        self.assertEqual(self.app.naming_box.current(), 1)
+        self.assertEqual(self.app.perks_box.current(), 1)
 
     def test_six_payload_selection_and_update_count(self):
         self.app.events.put(("selected", ("digest", "Candidate", 6, "en")))

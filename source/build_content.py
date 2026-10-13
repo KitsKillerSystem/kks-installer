@@ -318,6 +318,9 @@ def build(
         if equipment_naming and language in ("fr", "de"):
             from kks_installer._application import FR_DE_OPTIONAL_CAPABILITY
             m["required_capabilities"].append(FR_DE_OPTIONAL_CAPABILITY)
+        if equipment_naming and language == "ptbr":
+            from kks_installer._application import PORTUGUESE_OPTIONAL_CAPABILITY
+            m["required_capabilities"].append(PORTUGUESE_OPTIONAL_CAPABILITY)
         validate_manifest(m)
         if expected_legacy:
             old = json.loads(Path(expected_legacy).read_bytes())

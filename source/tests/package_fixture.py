@@ -38,7 +38,7 @@ from test_installer import archive
 
 class PackageFixture:
     def __init__(self, base, loose=False, german=False, multilingual=False):
-        languages = ("de", "ru", "fr") if multilingual else ("de",) if german else ()
+        languages = ("de", "ru", "fr", "ptbr") if multilingual else ("de",) if german else ()
         self.base = Path(base)
         self.game = self.base / "game"
         (self.game / "Data").mkdir(parents=True)

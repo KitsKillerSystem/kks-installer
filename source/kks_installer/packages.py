@@ -27,6 +27,7 @@ from ._application import LOCALIZATION_PROFILE, LOCALIZATION_CAPABILITIES
 from ._application import GERMAN_PROFILE, GERMAN_CAPABILITIES
 from ._application import RUSSIAN_PROFILE, FRENCH_PROFILE, LOCALIZED_PROFILES
 from ._application import RUSSIAN_OPTIONAL_CAPABILITY, FR_DE_OPTIONAL_CAPABILITY
+from ._application import PORTUGUESE_PROFILE, PORTUGUESE_OPTIONAL_CAPABILITY
 from .engine import demand, digest, is_digest, durable_bytes, sync_directory
 from .ba2 import hash_file
 from .platforms import SafetyError, safe_path
@@ -205,7 +206,9 @@ def validate_manifest(m):
                     + ([RUSSIAN_OPTIONAL_CAPABILITY]
                        if schema >= 2 and m["profile"] == RUSSIAN_PROFILE else [])
                     + ([FR_DE_OPTIONAL_CAPABILITY]
-                       if schema >= 2 and m["profile"] in (FRENCH_PROFILE, GERMAN_PROFILE) else []))
+                       if schema >= 2 and m["profile"] in (FRENCH_PROFILE, GERMAN_PROFILE) else [])
+                    + ([PORTUGUESE_OPTIONAL_CAPABILITY]
+                       if schema >= 2 and m["profile"] == PORTUGUESE_PROFILE else []))
     strings = profile_strings(m["profile"])
     translation = f"interface/translate_{profile_language(m['profile'])}.txt"
     version(m["content_version"])
@@ -234,6 +237,9 @@ def validate_manifest(m):
             version(m["minimum_installer_version"]) >= (1, 3, 0),
             "German packages require Installer 1.3.0 or newer",
         )
+    if m["profile"] == PORTUGUESE_PROFILE:
+        demand(version(m["minimum_installer_version"]) >= (1, 8, 0),
+               "Brazilian Portuguese packages require Installer 1.8.0 or newer")
     if m["profile"] in (RUSSIAN_PROFILE, FRENCH_PROFILE):
         demand(
             version(m["minimum_installer_version"]) >= (1, 3, 1),
@@ -366,7 +372,7 @@ def validate_manifest(m):
     demand(m["qa"]["status"] in ("candidate", "approved"), "Invalid QA status")
     plain(m["qa"]["report_id"])
     if schema >= 2:
-        demand(m["profile"] in (LOCALIZATION_PROFILE, RUSSIAN_PROFILE, FRENCH_PROFILE, GERMAN_PROFILE)
+        demand(m["profile"] in (LOCALIZATION_PROFILE, RUSSIAN_PROFILE, FRENCH_PROFILE, GERMAN_PROFILE, PORTUGUESE_PROFILE)
                and version(m["minimum_installer_version"]) >= (1, 4, 0),
                "Equipment naming requires a supported Localization profile and Installer 1.4.0")
         if m["profile"] == RUSSIAN_PROFILE:
@@ -431,7 +437,7 @@ class SignedRelease:
         self.name = "KKS " + self.manifest["content_version"]
         language = self.manifest["game"]["language"]
         if language != "en":
-            self.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français"}[language]
+            self.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français", "ptbr": "Português (Brasil)"}[language]
         self.targets = self.manifest["targets"]
         self.by_path = {t["path"]: t for t in self.targets}
         self.files = {f["path"]: f for f in self.manifest["files"]}
@@ -469,7 +475,7 @@ class SignedRelease:
         result.name = "KKS " + self.manifest["content_version"]
         language = profile_language(self.manifest["profile"])
         if language != "en":
-            result.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français"}[language]
+            result.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français", "ptbr": "Português (Brasil)"}[language]
         for key, extension, cache_path, transform in result._derived():
             option = self.manifest[key]
             target = next(t for t in result.targets if t["path"] == f"Data/strings/seventysix_{language}.{extension}")
