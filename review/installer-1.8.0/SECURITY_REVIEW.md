@@ -1,6 +1,6 @@
 # Installer 1.8.0 — exact-file security review
 
-Reviewed October 13, 2026. Eight warnings remain unresolved. No vendor-confirmed false positives, clean result or security certification is claimed. Public release disposition is recorded separately; this review is not itself permission to publish.
+Reviewed October 13, 2026. Eight warnings remain unresolved. No vendor-confirmed false positives, clean result or security certification is claimed. The owner accepted the remaining detections and documented coverage limitations for release on October 13, 2026. [Release disposition](RELEASE_DISPOSITION.json). This acceptance does not resolve the warnings.
 
 ## File and scan
 
@@ -48,4 +48,4 @@ The available runs show temporary `_MEI` runtime extraction/loading, game-locati
 Jujubox reports a missing `api-ms-win-core-path-l1-1-0.dll`; that execution did not establish normal application behavior. No network communications were listed in the grouped summary at capture, but this is not proof of absence. Pending Zenbox results and the missing-library failure limit the evidence. No new broad certificate investigation or AV-score-chasing rebuild was performed.
 
 
-The earlier certificate inquiry remains **LIKELY BENIGN / PARTIALLY EXPLAINED** and closed at the owner's direction; the cancelled VM investigation was not restarted. Its uncertainty remains. Vendor remediation is separate unless new evidence establishes an actual security defect. No such defect was established by this bounded source/bundle review, but the eight detection triggers remain unresolved. Users should not disable protections based on this review.
+The earlier certificate inquiry remains **LIKELY BENIGN / PARTIALLY EXPLAINED** and closed at the owner's direction; the cancelled VM investigation was not restarted. Its uncertainty remains. No such defect was established by this bounded source/bundle review, but the eight detection triggers remain unresolved. Users should not disable protections based on this review.

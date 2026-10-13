@@ -1,8 +1,8 @@
 # Build installer application 1.8.0
 
-Prepared application **1.8.0**, built from `fca6a862ae138ac8953fa30fb1f69adf77718a33`. Publication changes documentation/evidence only; the scanned executable is not rebuilt. [Build/tests](review/installer-1.8.0/README.md), [security review](review/installer-1.8.0/SECURITY_REVIEW.md).
+Released application **1.8.0**, built from `fca6a862ae138ac8953fa30fb1f69adf77718a33` (`installer-v1.8.0`). Publication changes documentation/evidence only; the scanned executable is not rebuilt. [Build/tests](review/installer-1.8.0/README.md), [security review](review/installer-1.8.0/SECURITY_REVIEW.md).
 
-Adds Portuguese packages and UI, four optional profiles and independent language history. 217 regressions and 16 exact-EXE checks pass. Content is separate on Nexus; no native-speaker or in-game acceptance is claimed for this first Portuguese edition. The exact scan records eight unresolved warnings and four unsupported engines; release disposition is separate. Historical receipts below retain their original version context.
+Adds Portuguese packages and UI, four optional profiles and independent language history. 217 regressions and 16 exact-EXE checks pass. Content is separate on Nexus; no native-speaker or in-game acceptance is claimed for this first Portuguese edition. The exact scan records eight unresolved warnings and four unsupported engines; the owner accepted the documented findings and limits for this release. See [disposition](review/installer-1.8.0/RELEASE_DISPOSITION.json). Historical receipts below retain their original version context.
 
 Packaging review, 10 October 2026: `review_build.py --layout onedir` (or
 `build.ps1 -Layout onedir`) builds the same runtime as an inspectable folder.

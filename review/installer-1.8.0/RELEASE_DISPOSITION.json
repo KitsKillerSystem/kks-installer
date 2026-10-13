@@ -1,0 +1,14 @@
+{
+  "installer_version": "1.8.0",
+  "recorded_utc": "2026-10-13T20:33:07.982616+00:00",
+  "exe_sha256": "b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98",
+  "build_source_commit": "fca6a862ae138ac8953fa30fb1f69adf77718a33",
+  "release_authorized": true,
+  "security_disposition": "OWNER_ACCEPTED_REMAINING_DETECTIONS_AND_COVERAGE_LIMITATIONS",
+  "reviewed_scan": "8/71; four additional unsupported; 2026-10-13T20:08:14Z",
+  "scan_url": "https://www.virustotal.com/gui/file/b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98/detection",
+  "findings": "Eight triggers remain unresolved. No vendor-confirmed false-positive determination or security certification.",
+  "coverage": "Full standalone EXE submitted; separate coverage of every embedded member is not established. Zenbox pending at review; Jujubox missing-library limitation. CAPE certificate-related rule and other observations disclosed in SECURITY_REVIEW.md.",
+  "scope": "Installer-only GitHub release with source, checksums and review documentation. No content packages.",
+  "exe_unchanged_since_validation_and_scan": true
+}

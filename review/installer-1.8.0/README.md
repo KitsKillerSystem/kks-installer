@@ -1,6 +1,6 @@
 # Installer 1.8.0 review
 
-Prepared installer-only update; publication disposition pending. Build source `fca6a862ae138ac8953fa30fb1f69adf77718a33`.
+[Installer 1.8.0 release](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.8.0). [Accepted release disposition](RELEASE_DISPOSITION.json). Build source `fca6a862ae138ac8953fa30fb1f69adf77718a33`.
 
 Adds Brazilian Portuguese content support and Português (Brasil) UI, with independent equipment/perk options and preserved per-language history.
 
