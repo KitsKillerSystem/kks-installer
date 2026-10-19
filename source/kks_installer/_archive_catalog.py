@@ -1,4 +1,4 @@
-"""Native archive metadata certified from signed packages; no game payloads."""
+"""Native archive metadata certified from pinned baselines; no game payloads."""
 
 CATALOG = {
   "19589eb720219b0ea0118f954f804355288d24fd65374055bd8b5f87950bc85d": {
@@ -16,6 +16,22 @@ CATALOG = {
       }
     },
     "path": "Data/SeventySix - Interface_en.ba2"
+  },
+  "1fa19158a396c2cece5916a9b15133569530345641c3f7732837ab8a013997a3": {
+    "anchors": [],
+    "members": {
+      "interface/fonts_ja.swf": {
+        "metadata": [
+          3994749193,
+          "73776600",
+          3539859571,
+          1048832,
+          3131961357
+        ],
+        "sha256": "3faf9a303f57a61fa23e28c34cf7d7421f5e8c4bb53f369d12be4048417a264d"
+      }
+    },
+    "path": "Data/SeventySix - Interface_ja.ba2"
   },
   "380aeb092911d1f7be532e30524b4e3adadf93a07fa63f1336caebee0eb39908": {
     "anchors": [
@@ -5201,6 +5217,22 @@ CATALOG = {
     },
     "path": "Data/SeventySix - Interface.ba2"
   },
+  "3d54c7791dd06212d8cf271ba741524b17e7c3cc519c7127201b1abab2fd67c0": {
+    "anchors": [],
+    "members": {
+      "interface/fonts_ko.swf": {
+        "metadata": [
+          280499535,
+          "73776600",
+          3539859571,
+          1048832,
+          3131961357
+        ],
+        "sha256": "e23538e5b9be9b7d28f48afb8758b280acf2c16f979d850f6f6228fb8922221c"
+      }
+    },
+    "path": "Data/SeventySix - Interface_ko.ba2"
+  },
   "47e5d2d647d8091cba994d4ff6e9ddbe9e1450793b4822192b3a584bc0c7f725": {
     "anchors": [],
     "members": {
@@ -5216,5 +5248,37 @@ CATALOG = {
       }
     },
     "path": "Data/SeventySix - Interface_ru.ba2"
+  },
+  "63b2e7fcb541a98a52a8bab4240f04d8ae159a1c19a207be8d1381b3961d9e61": {
+    "anchors": [],
+    "members": {
+      "interface/fonts_zhhans.swf": {
+        "metadata": [
+          393087070,
+          "73776600",
+          3539859571,
+          1048832,
+          3131961357
+        ],
+        "sha256": "d78e00e50bfaea9fba3b771c6b038cf013f1a122c4d4061bd133293b78d50987"
+      }
+    },
+    "path": "Data/SeventySix - Interface_zhhans.ba2"
+  },
+  "bd2514a252ff4eee9853f54244e135c4e1470c2ff63cd2180ebd70c016a3083d": {
+    "anchors": [],
+    "members": {
+      "interface/fonts_zhhant.swf": {
+        "metadata": [
+          2299174397,
+          "73776600",
+          3539859571,
+          1048832,
+          3131961357
+        ],
+        "sha256": "e0dd56fa170e8e4905b6f7f5f9f1f008ed9803e758da7a6e4e39df77ece1e77f"
+      }
+    },
+    "path": "Data/SeventySix - Interface_zhhant.ba2"
   }
 }

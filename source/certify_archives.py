@@ -11,6 +11,7 @@ import tempfile
 from kks_installer.ba2 import BA2, hash_file
 from kks_installer.engine import demand, digest
 from kks_installer.packages import import_package, LOCALIZATION
+from kks_installer._application import CONTENT_LANGUAGES
 
 
 def certificate(path, target):
@@ -21,7 +22,7 @@ def certificate(path, target):
                for e in archive.entries}
     # Common locale profiles own these resources. Everything else can provide
     # native compatibility evidence; at least one must remain identifiable.
-    owned = {f"interface/fontconfig_{lang}.txt" for lang in ("en", "de", "ru", "fr")}
+    owned = {f"interface/fontconfig_{lang}.txt" for lang in CONTENT_LANGUAGES}
     owned |= {a["name"] for a in target["assets"]}
     anchors = sorted(set(members) - owned)
     return {"path": target["path"], "members": members, "anchors": anchors}

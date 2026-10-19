@@ -30,7 +30,8 @@ from .packages import (
     archive_members,
     profile_strings,
 )
-from ._application import PROFILE, CONTENT_LANGUAGES
+from ._application import PROFILE, CONTENT_LANGUAGES, LEGACY_CONTENT_LANGUAGES, NEW_CONTENT_LANGUAGES
+from . import string_modes as modes
 from .managed_engine import ManagedEngine, LegacyDescriptor, LEGACY_STATE
 from .equipment import FULL, NAMING_PROFILES
 from .perks import ON, PERK_PROFILES
@@ -160,7 +161,7 @@ class Manager:
         }
 
     def _validate_state(self, data):
-        integer(data.get("schema") if isinstance(data, dict) else None, 2, 7)
+        integer(data.get("schema") if isinstance(data, dict) else None, 2, 8)
         fields(
             data,
             "schema root installation_id active highest_sequence release_ids baseline_ids retired"
@@ -170,7 +171,8 @@ class Manager:
             fields(
                 data["language_sequences"],
                 "en de" if data["schema"] == 3 else
-                "en de ru fr" if data["schema"] <= 6 else " ".join(CONTENT_LANGUAGES),
+                "en de ru fr" if data["schema"] <= 6 else
+                " ".join(LEGACY_CONTENT_LANGUAGES) if data["schema"] == 7 else " ".join(CONTENT_LANGUAGES),
             )
             for value in data["language_sequences"].values():
                 integer(value, 0, 2**53 - 1)
@@ -196,6 +198,8 @@ class Manager:
             demand(
                 re.fullmatch(
                     (
+                        r"(?:(?:" + "|".join(CONTENT_LANGUAGES[1:]) + r")/)?[0-9.]+/[0-9]+"
+                        if data["schema"] >= 8 else
                         r"(?:(?:de|ru|fr|ptbr)/)?[0-9.]+/[0-9]+"
                         if data["schema"] == 7 else
                         r"(?:(?:de|ru|fr)/)?[0-9.]+/[0-9]+"
@@ -241,7 +245,8 @@ class Manager:
     def _validate_ref(self, ref):
         fields(ref, "kind manifest state baseline"
                + (" naming" if isinstance(ref, dict) and "naming" in ref else "")
-               + (" perks" if isinstance(ref, dict) and "perks" in ref else ""))
+               + (" perks" if isinstance(ref, dict) and "perks" in ref else "")
+               + (" food junk" if isinstance(ref, dict) and ("food" in ref or "junk" in ref) else ""))
         demand(ref["kind"] in ("managed", "legacy"), "Unknown installation owner")
         if "naming" in ref:
             demand(ref["kind"] == "managed" and ref["naming"] in NAMING_PROFILES,
@@ -249,6 +254,9 @@ class Manager:
         if "perks" in ref:
             demand(ref["kind"] == "managed" and ref["perks"] in PERK_PROFILES,
                    "Invalid saved perk card choice")
+        if "food" in ref:
+            demand(ref["kind"] == "managed" and ref["food"] in modes.FOOD_PROFILES
+                   and ref["junk"] in modes.JUNK_PROFILES, "Invalid saved food or junk choice")
         demand(
             type(ref["manifest"]) is str and re.fullmatch("[0-9a-f]{64}", ref["manifest"]),
             "Invalid descriptor reference",
@@ -278,8 +286,11 @@ class Manager:
         if "naming" in ref:
             demand(result.manifest["schema"] >= 2, "Saved naming profile requires a supported package")
         if "perks" in ref:
-            demand(result.manifest["schema"] == 3, "Saved perk choice requires a supported package")
-        return result.with_features(naming=ref.get("naming", FULL), perks=ref.get("perks", ON))
+            demand(result.manifest["schema"] >= 3, "Saved perk choice requires a supported package")
+        if "food" in ref:
+            demand(result.manifest["schema"] == 4, "Saved food or junk choice requires a supported package")
+        return result.with_features(naming=ref.get("naming", FULL), perks=ref.get("perks", ON),
+                                    food=ref.get("food", modes.FOOD_DEFAULT), junk=ref.get("junk", modes.JUNK_DEFAULT))
 
     def package(self, manifest):
         demand(
@@ -599,9 +610,9 @@ class Manager:
             "This package is older than or conflicts with an installed release. Select a newer complete package",
         )
 
-    def inspect(self, selected=None, *, naming=None, perks=None):
+    def inspect(self, selected=None, *, naming=None, perks=None, food=None, junk=None):
         if selected is not None:
-            selected = selected.with_features(naming=naming, perks=perks)
+            selected = selected.with_features(naming=naming, perks=perks, food=food, junk=junk)
         state = self._read_state()
         result = {
             "application_version": APP_VERSION,
@@ -662,6 +673,8 @@ class Manager:
             result["installed_content"] = engine.release.name
             result["installed_naming"] = getattr(engine.release, "naming", FULL)
             result["installed_perks"] = getattr(engine.release, "perks", ON)
+            result["installed_food"] = getattr(engine.release, "food", modes.FOOD_DEFAULT)
+            result["installed_junk"] = getattr(engine.release, "junk", modes.JUNK_DEFAULT)
             result["repair_available"] = cache_ready
             result["restore_available"] = True
             if active["kind"] == "legacy":
@@ -692,7 +705,9 @@ class Manager:
                 )
                 if (active["kind"] == "legacy" or active["manifest"] != selected.manifest_digest
                         or active.get("naming", FULL) != selected.naming
-                        or active.get("perks", ON) != selected.perks):
+                        or active.get("perks", ON) != selected.perks
+                        or active.get("food", modes.FOOD_DEFAULT) != selected.food
+                        or active.get("junk", modes.JUNK_DEFAULT) != selected.junk):
                     result.update(
                         status="update_available",
                         message="This complete package can be installed directly; intermediate updates are not required.",
@@ -718,6 +733,9 @@ class Manager:
                 equipment_naming_available="equipment_naming" in selected.manifest,
                 selected_perks=selected.perks,
                 perk_cards_available="perk_cards" in selected.manifest,
+                selected_food=selected.food,
+                selected_junk=selected.junk,
+                string_modes_available="string_modes" in selected.manifest,
                 selected_manifest=selected.manifest_digest,
                 supported_build=selected.data["supported_build"],
                 qa_status=selected.manifest["qa"]["status"],
@@ -955,7 +973,7 @@ class Manager:
                     code: sequence_highest(state, code) for code in ("en", "de", "ru", "fr")
                 }
                 state["schema"] = 5
-            if m["schema"] == 3:
+            if m["schema"] >= 3:
                 state["schema"] = max(state["schema"], 6)
             if language != "en" and state["schema"] == 2:
                 state["schema"] = 3
@@ -965,9 +983,12 @@ class Manager:
                 state["language_sequences"].update(ru=0, fr=0)
             if language == "ptbr" and state["schema"] < 7:
                 state["language_sequences"] = {
-                    code: sequence_highest(state, code) for code in CONTENT_LANGUAGES
+                    code: sequence_highest(state, code) for code in LEGACY_CONTENT_LANGUAGES
                 }
                 state["schema"] = 7
+            if m["schema"] == 4 or language in NEW_CONTENT_LANGUAGES:
+                state["language_sequences"] = {code: sequence_highest(state, code) for code in CONTENT_LANGUAGES}
+                state["schema"] = 8
             if state["schema"] >= 3:
                 state["language_sequences"][language] = max(
                     state["language_sequences"][language], m["release_sequence"]
@@ -990,15 +1011,17 @@ class Manager:
         sync_directory(self.state)
         self.event("after_plan_retirement", plan)
 
-    def run(self, operation, selected=None, *, naming=None, perks=None, accept_modifications=None):
+    def run(self, operation, selected=None, *, naming=None, perks=None, food=None, junk=None, accept_modifications=None):
         demand(operation in ("install", "repair", "restore"), "Unknown operation")
         if selected is not None:
             naming = getattr(selected, "naming", FULL) if naming is None else naming
             perks = getattr(selected, "perks", ON) if perks is None else perks
+            food = getattr(selected, "food", modes.FOOD_DEFAULT) if food is None else food
+            junk = getattr(selected, "junk", modes.JUNK_DEFAULT) if junk is None else junk
             # Reopen the authenticated local descriptor rather than use a stale UI object.
             selected = self.package(
                 selected.manifest_digest if isinstance(selected, SignedRelease) else selected
-            ).with_features(naming=naming, perks=perks)
+            ).with_features(naming=naming, perks=perks, food=food, junk=junk)
         with self._locks():
             demand(
                 not self.saved("pending.json").exists(),
@@ -1150,8 +1173,10 @@ class Manager:
                 )
                 if new is not None and selected.manifest["schema"] >= 2:
                     new = dict(new, naming=selected.naming)
-                if new is not None and selected.manifest["schema"] == 3:
+                if new is not None and selected.manifest["schema"] >= 3:
                     new = dict(new, perks=selected.perks)
+                if new is not None and selected.manifest["schema"] == 4:
+                    new = dict(new, food=selected.food, junk=selected.junk)
                 if new is not None and prepared["migrated"]:
                     self._capture_context(new, prepared, None if reconcile else old)
                 plan = {

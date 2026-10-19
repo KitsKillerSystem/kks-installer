@@ -18,6 +18,33 @@ class UiTests(unittest.TestCase):
     def tearDown(self):
         self.app.close()
 
+    def test_food_and_junk_choices_require_support_and_survive_ui_language_change(self):
+        from kks_installer.string_modes import FOOD_LABELS, JUNK_LABELS
+        self.assertEqual(str(self.app.food_box["state"]), "disabled")
+        self.assertEqual(str(self.app.junk_box["state"]), "disabled")
+        self.app.events.put(("selected", ("new", "KKS Japanese", 7, "ja", True, True, True)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(str(self.app.food_box["state"]), "readonly")
+        self.assertEqual(str(self.app.junk_box["state"]), "readonly")
+        self.app.food_box.current(1)
+        self.app.junk_box.current(2)
+        for lang in ("de", "fr", "ru", "ptbr", "en"):
+            self.app.language = lang
+            self.app.render_language()
+            self.app.root.update()
+            self.assertEqual(self.app.food_value.get(), self.app.t(FOOD_LABELS["family-food"]))
+            self.assertEqual(self.app.junk_value.get(), self.app.t(JUNK_LABELS["none"]))
+            self.assertTrue(self.app.food_box.winfo_ismapped())
+            self.assertTrue(self.app.junk_box.winfo_ismapped())
+        self.app.events.put(("selected", ("old", "KKS English", 6, "en", True, True)))
+        self.app.events.put(("success", {"status": "ready"}))
+        self.app.pump()
+        self.assertEqual(str(self.app.food_box["state"]), "disabled")
+        self.assertEqual(str(self.app.junk_box["state"]), "disabled")
+        self.assertEqual(self.app.food_value.get(), FOOD_LABELS["food-v2"])
+        self.assertEqual(self.app.junk_value.get(), JUNK_LABELS["glyph"])
+
     def test_long_error_remains_readable_without_hiding_actions(self):
         message = "A long compatibility failure. " * 60
         self.app.events.put(("error", message))

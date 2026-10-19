@@ -10,6 +10,7 @@ from .platforms import discover
 from .windows_drop import enable_file_drop
 from .equipment import FULL, LABELS
 from .perks import ON, LABELS as PERK_LABELS
+from .string_modes import FOOD_DEFAULT, JUNK_DEFAULT, FOOD_LABELS, JUNK_LABELS
 
 BG = "#e8e2d4"
 PANEL = "#f5f0e5"
@@ -24,7 +25,8 @@ DARK = "#27312e"
 
 
 class App:
-    def __init__(self, package=None, game=None, language=None, naming=FULL, perks=ON):
+    def __init__(self, package=None, game=None, language=None, naming=FULL, perks=ON,
+                 food=FOOD_DEFAULT, junk=JUNK_DEFAULT):
         self.language = language or load_language()
         self.log_lines = []
         self.status_title_key = "Ready when you are."
@@ -45,6 +47,8 @@ class App:
         self.initial_naming = naming
         self.perks_available = False
         self.initial_perks = perks
+        self.string_modes_available = False
+        self.initial_food, self.initial_junk = food, junk
         self.root.protocol("WM_DELETE_WINDOW", self.close)
         style = ttk.Style()
         style.theme_use("clam")
@@ -101,7 +105,7 @@ class App:
         ).pack(fill="x", padx=22, pady=(6, 0))
         tk.Label(
             spine,
-            text="FALLOUT 76\nSTEAM\nEN · DE · RU · FR",
+            text="FALLOUT 76\nSTEAM\n13 CONTENT LANGUAGES",
             font=("Consolas", 9),
             fg="#b4bfb5",
             bg=DARK,
@@ -140,11 +144,11 @@ class App:
         tk.Label(
             outer,
             text="Make yourself at home.",
-            font=("Bahnschrift", 25),
+            font=("Bahnschrift", 16),
             fg=INK,
             bg=BG,
             anchor="w",
-        ).pack(fill="x", pady=(3, 5))
+        ).pack(fill="x", pady=(0, 1))
         tk.Label(
             outer,
             text="Choose your game folder and a complete KKS content ZIP.",
@@ -193,7 +197,7 @@ class App:
         )
         self.package_label.pack(fill="x", padx=13, pady=(8, 5))
         package_actions = tk.Frame(package_row, bg=PANEL)
-        package_actions.pack(fill="x", padx=12, pady=(0, 8))
+        package_actions.pack(fill="x", padx=12, pady=(0, 4))
         self.package_button = self.button(package_actions, "Choose package…", self.choose_package)
         self.package_button.pack(side="left")
         self.naming_value = tk.StringVar(value=LABELS[FULL])
@@ -202,12 +206,26 @@ class App:
         self.naming_box.pack(side="left", fill="x", expand=True, padx=(12, 0))
         self.naming_box.bind("<<ComboboxSelected>>", lambda event: self.start("check"))
         perk_actions = tk.Frame(package_row, bg=PANEL)
-        perk_actions.pack(fill="x", padx=12, pady=(0, 8))
+        perk_actions.pack(fill="x", padx=12, pady=(0, 4))
         self.perks_value = tk.StringVar(value=PERK_LABELS[ON])
         self.perks_box = ttk.Combobox(perk_actions, textvariable=self.perks_value,
                                       values=tuple(PERK_LABELS.values()), state="disabled")
         self.perks_box.pack(fill="x")
         self.perks_box.bind("<<ComboboxSelected>>", lambda event: self.start("check"))
+        mode_actions = tk.Frame(package_row, bg=PANEL)
+        mode_actions.pack(fill="x", padx=12, pady=(0, 4))
+        self.label(mode_actions, "Food:").pack(side="left", padx=(0, 5))
+        self.food_value = tk.StringVar(value=FOOD_LABELS[FOOD_DEFAULT])
+        self.food_box = ttk.Combobox(mode_actions, textvariable=self.food_value,
+                                    values=tuple(FOOD_LABELS.values()), state="disabled", width=13)
+        self.food_box.pack(side="left", fill="x", expand=True)
+        self.label(mode_actions, "Junk Components:").pack(side="left", padx=(12, 5))
+        self.junk_value = tk.StringVar(value=JUNK_LABELS[JUNK_DEFAULT])
+        self.junk_box = ttk.Combobox(mode_actions, textvariable=self.junk_value,
+                                    values=tuple(JUNK_LABELS.values()), state="disabled", width=30)
+        self.junk_box.pack(side="left", fill="x", expand=True)
+        for box in (self.food_box, self.junk_box):
+            box.bind("<<ComboboxSelected>>", lambda event: self.start("check"))
         self.label(outer, "03  /  INSTALLATION STATUS", BG).pack(fill="x", pady=(5, 3))
         status = tk.Frame(outer, bg=PANEL)
         status.pack(fill="x")
@@ -332,7 +350,8 @@ class App:
         self.render_language()
 
     def render_language(self):
-        for box, labels in ((self.naming_box, LABELS), (self.perks_box, PERK_LABELS)):
+        for box, labels in ((self.naming_box, LABELS), (self.perks_box, PERK_LABELS),
+                            (self.food_box, FOOD_LABELS), (self.junk_box, JUNK_LABELS)):
             selected = box.current()
             box.configure(values=tuple(self.t(label) for label in labels.values()))
             box.current(max(0, selected))
@@ -406,6 +425,11 @@ class App:
             self.perks_available = False
             self.perks_value.set(self.t(PERK_LABELS[ON]))
             self.perks_box.configure(state="disabled")
+            self.string_modes_available = False
+            self.food_value.set(self.t(FOOD_LABELS[FOOD_DEFAULT]))
+            self.junk_value.set(self.t(JUNK_LABELS[JUNK_DEFAULT]))
+            self.food_box.configure(state="disabled")
+            self.junk_box.configure(state="disabled")
             self.set_package("Drop a ZIP here or choose a package. Keep the ZIP unopened.")
             for b in (self.primary, self.repair, self.restore, self.play):
                 b.configure(state="disabled")
@@ -502,8 +526,12 @@ class App:
         self.busy = True
         naming = next(key for key, label in LABELS.items() if self.t(label) == self.naming_value.get())
         perks = next(key for key, label in PERK_LABELS.items() if self.t(label) == self.perks_value.get())
+        food = next(key for key, label in FOOD_LABELS.items() if self.t(label) == self.food_value.get())
+        junk = next(key for key, label in JUNK_LABELS.items() if self.t(label) == self.junk_value.get())
         self.naming_box.configure(state="disabled")
         self.perks_box.configure(state="disabled")
+        self.food_box.configure(state="disabled")
+        self.junk_box.configure(state="disabled")
         self.language_box.configure(state="disabled")
         self.last_status = None
         for w in (
@@ -568,14 +596,17 @@ class App:
                                 release.manifest["game"]["language"],
                                 "equipment_naming" in release.manifest,
                                 "perk_cards" in release.manifest,
+                                "string_modes" in release.manifest,
                             ),
                         )
                     )
                     result = manager.inspect(release,
                         naming=self.initial_naming if "equipment_naming" in release.manifest else FULL,
-                        perks=self.initial_perks if "perk_cards" in release.manifest else ON)
+                        perks=self.initial_perks if "perk_cards" in release.manifest else ON,
+                        food=self.initial_food if "string_modes" in release.manifest else FOOD_DEFAULT,
+                        junk=self.initial_junk if "string_modes" in release.manifest else JUNK_DEFAULT)
                 elif action == "check":
-                    result = manager.inspect(release, naming=naming, perks=perks)
+                    result = manager.inspect(release, naming=naming, perks=perks, food=food, junk=junk)
                 elif action == "play":
                     result = manager.play()
                     self.events.put(("log", result["message"]))
@@ -584,7 +615,7 @@ class App:
                 else:
                     consent = None
                     if action == "install":
-                        inspection = manager.inspect(release, naming=naming, perks=perks)
+                        inspection = manager.inspect(release, naming=naming, perks=perks, food=food, junk=junk)
                         if inspection.get("existing_modifications"):
                             ready, answer = threading.Event(), {}
                             self.events.put(("confirm", (inspection["existing_modifications"], ready, answer)))
@@ -595,7 +626,7 @@ class App:
                                 return
                             consent = inspection["confirmation_token"]
                     result = (
-                        manager.recover() if action == "recover" else manager.run(action, release, naming=naming, perks=perks,
+                        manager.recover() if action == "recover" else manager.run(action, release, naming=naming, perks=perks, food=food, junk=junk,
                                                                                  accept_modifications=consent)
                     )
                     self.events.put(("log", result.get("message", result["status"])))
@@ -626,6 +657,9 @@ class App:
                     self.naming_value.set(self.t(LABELS[self.initial_naming] if self.naming_available else LABELS[FULL]))
                     self.perks_available = bool(len(data) > 5 and data[5])
                     self.perks_value.set(self.t(PERK_LABELS[self.initial_perks] if self.perks_available else PERK_LABELS[ON]))
+                    self.string_modes_available = bool(len(data) > 6 and data[6])
+                    self.food_value.set(self.t(FOOD_LABELS[self.initial_food if self.string_modes_available else FOOD_DEFAULT]))
+                    self.junk_value.set(self.t(JUNK_LABELS[self.initial_junk if self.string_modes_available else JUNK_DEFAULT]))
                     self.set_package(
                         name
                         + f" · signature and all {file_count} files verified"
@@ -637,6 +671,8 @@ class App:
                 self.language_box.configure(state="readonly")
                 self.naming_box.configure(state="readonly" if self.naming_available else "disabled")
                 self.perks_box.configure(state="readonly" if self.perks_available else "disabled")
+                self.food_box.configure(state="readonly" if self.string_modes_available else "disabled")
+                self.junk_box.configure(state="readonly" if self.string_modes_available else "disabled")
                 self.progress.stop()
                 self.progress.configure(value=0)
                 for w in (self.entry, self.browse, self.check, self.package_button):
@@ -699,5 +735,5 @@ class App:
         self.root.mainloop()
 
 
-def launch(package=None, game=None, naming=FULL, perks=ON):
-    App(package, game, naming=naming, perks=perks).run()
+def launch(package=None, game=None, naming=FULL, perks=ON, food=FOOD_DEFAULT, junk=JUNK_DEFAULT):
+    App(package, game, naming=naming, perks=perks, food=food, junk=junk).run()

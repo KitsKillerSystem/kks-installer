@@ -1,7 +1,7 @@
 """Application policy. Content packages cannot expand these capabilities."""
 
-APP_VERSION = "1.8.0"
-BUILD_LABEL = "Release"
+APP_VERSION = "1.9.0"
+BUILD_LABEL = "Candidate"
 INSTALLER_API = 1
 PROFILE = "fo76-steam-en-fonts-strings-v1"
 WRITER = "ba2-v1-gnrl-kks-writer-v1"
@@ -20,7 +20,17 @@ FRENCH_PROFILE = "fo76-steam-fr-fonts-strings-localization-v1"
 PORTUGUESE_PROFILE = "fo76-steam-ptbr-fonts-strings-localization-v1"
 PORTUGUESE_OPTIONAL_CAPABILITY = "optional-features-ptbr-v1"
 LOCALIZED_PROFILES = {"de": GERMAN_PROFILE, "ru": RUSSIAN_PROFILE, "fr": FRENCH_PROFILE, "ptbr": PORTUGUESE_PROFILE}
-CONTENT_LANGUAGES = ("en", "de", "ru", "fr", "ptbr")
+LEGACY_CONTENT_LANGUAGES = ("en", "de", "ru", "fr", "ptbr")
+NEW_CONTENT_LANGUAGES = ("es", "esmx", "it", "ja", "ko", "pl", "zhhans", "zhhant")
+LOCALIZED_PROFILES.update({lang: f"fo76-steam-{lang}-fonts-strings-localization-v1"
+                           for lang in NEW_CONTENT_LANGUAGES})
+CONTENT_LANGUAGES = LEGACY_CONTENT_LANGUAGES + NEW_CONTENT_LANGUAGES
+CONTENT_NAMES = {"en": "English", "de": "Deutsch", "ru": "Русский", "fr": "Français",
+                 "ptbr": "Português (Brasil)", "es": "Español", "esmx": "Español (Latinoamérica)",
+                 "it": "Italiano", "ja": "日本語", "ko": "한국어", "pl": "Polski",
+                 "zhhans": "简体中文", "zhhant": "繁體中文"}
+FONT_LANGUAGES = {lang: lang if lang in ("ru", "ja", "ko", "zhhans", "zhhant") else "en"
+                  for lang in CONTENT_LANGUAGES}
 # Public verification keys only. Private signing keys never ship with the app.
 TRUSTED_KEYS = {
     "kks-release-2026-10": "1ff7681dfa502f1478154b412b7f37a284cca141436022f6c76bd653f0685103"

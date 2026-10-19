@@ -163,6 +163,7 @@ def build(
     language="en",
     equipment_naming=False,
     perk_cards=False,
+    string_mode_tables=None,
 ):
     game = Path(game)
     payload = Path(payload)
@@ -177,6 +178,8 @@ def build(
     demand(language in CONTENT_LANGUAGES, "Unsupported content language")
     demand(not perk_cards or equipment_naming,
            "Optional perk cards require the equipment-capable content profile")
+    demand(string_mode_tables is None or (equipment_naming and perk_cards and translation_localization),
+           "Food and junk modes require the complete optional feature Localization profile")
     demand(
         language == "en" or (translation_localization and not include_translation),
         "Localized content requires the Localization profile",
@@ -321,6 +324,16 @@ def build(
         if equipment_naming and language == "ptbr":
             from kks_installer._application import PORTUGUESE_OPTIONAL_CAPABILITY
             m["required_capabilities"].append(PORTUGUESE_OPTIONAL_CAPABILITY)
+        mode_payload = None
+        if string_mode_tables is not None:
+            from mode_catalog import build_modes
+            from kks_installer import string_modes as modes
+            member = f"strings/seventysix_{language}.strings"
+            mode_payload, option = build_modes((payload / member).read_bytes(),
+                localization.extract(member), m["equipment_naming"]["categories"], string_mode_tables)
+            m.update(schema=4, string_modes=option)
+            m["required_capabilities"].append(modes.CAPABILITY)
+            files.append(dict(path=modes.PAYLOAD, sha256=digest(mode_payload), size=len(mode_payload)))
         validate_manifest(m)
         if expected_legacy:
             old = json.loads(Path(expected_legacy).read_bytes())
@@ -354,7 +367,10 @@ def build(
             z.writestr("manifest.json", raw)
             z.writestr("manifest.sig.json", json.dumps(envelope, sort_keys=True).encode())
             for f in files:
-                z.write(payload / f["path"].removeprefix("payload/"), f["path"])
+                if mode_payload is not None and f["path"] == modes.PAYLOAD:
+                    z.writestr(f["path"], mode_payload)
+                else:
+                    z.write(payload / f["path"].removeprefix("payload/"), f["path"])
         verified = import_package(
             output,
             Path(temporary) / "verification",
@@ -372,6 +388,7 @@ def build(
 
 
 def main():
+    from mode_catalog import load_mode_tables
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest="command", required=True)
     k = sub.add_parser("create-key")
@@ -400,6 +417,7 @@ def main():
     b.add_argument("--language", choices=CONTENT_LANGUAGES, default="en")
     b.add_argument("--equipment-naming", action="store_true")
     b.add_argument("--perk-cards", action="store_true")
+    b.add_argument("--string-modes", help="JSON rows containing food, junk, path for all six STRINGS combinations; paths relative to this JSON")
     a = p.parse_args()
     if a.command == "create-key":
         result = create_key(a.key, a.key_id)
@@ -423,6 +441,7 @@ def main():
             language=a.language,
             equipment_naming=a.equipment_naming,
             perk_cards=a.perk_cards,
+            string_mode_tables=load_mode_tables(a.string_modes) if a.string_modes else None,
         )
     print(json.dumps(result, indent=2))
 
