@@ -101,6 +101,33 @@ class StringModesTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.base = Path(self.temp.name)
 
+    def test_installed_ui_metadata_comes_from_verified_active_profile(self):
+        fx = fixture(self.base)
+        manager = fx.manager()
+        release = manager.select(fx.option_zip)
+        manager.run("install", release, naming=VANILLA, perks=OFF, food="family-food", junk="none")
+        before = fx.snapshot()
+        with patch("kks_installer.manager.can_launch", return_value=True), patch(
+            "kks_installer.manager.game_running", return_value=False
+        ):
+            result = manager.inspect(release, naming=FULL, perks=ON, food="food-v2", junk="glyph")
+        self.assertEqual(fx.snapshot(), before)
+        self.assertEqual(result["status"], "update_available")
+        self.assertTrue(result["installed_verified"])
+        self.assertTrue(result["installed_play_available"])
+        self.assertFalse(result["play_available"])
+        self.assertEqual(result["installed_manifest"], release.manifest_digest)
+        self.assertEqual(
+            tuple(result["installed_" + key] for key in ("naming", "perks", "food", "junk")),
+            (VANILLA, OFF, "family-food", "none"),
+        )
+        for key in ("equipment_naming", "perk_cards", "string_modes"):
+            self.assertTrue(result["installed_" + key + "_available"])
+        (fx.game / "Data/strings/seventysix_en.strings").unlink()
+        result = manager.inspect()
+        self.assertEqual(result["status"], "repairable")
+        self.assertFalse(result["installed_verified"])
+
     def test_all_312_profiles_switch_repair_restore_and_preserve_baseline(self):
         count = 0
         for lang in CONTENT_LANGUAGES:

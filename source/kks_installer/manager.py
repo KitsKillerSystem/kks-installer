@@ -675,6 +675,16 @@ class Manager:
             result["installed_perks"] = getattr(engine.release, "perks", ON)
             result["installed_food"] = getattr(engine.release, "food", modes.FOOD_DEFAULT)
             result["installed_junk"] = getattr(engine.release, "junk", modes.JUNK_DEFAULT)
+            # Read-only UI metadata from the already inspected active release.
+            # A repairable owner record is not a verified installed configuration.
+            result["installed_verified"] = (
+                active["kind"] == "managed" and current["status"] == "installed"
+            )
+            if active["kind"] == "managed":
+                result["installed_manifest"] = engine.release.manifest_digest
+                result["installed_equipment_naming_available"] = "equipment_naming" in engine.release.manifest
+                result["installed_perk_cards_available"] = "perk_cards" in engine.release.manifest
+                result["installed_string_modes_available"] = "string_modes" in engine.release.manifest
             result["repair_available"] = cache_ready
             result["restore_available"] = True
             if active["kind"] == "legacy":
@@ -747,8 +757,14 @@ class Manager:
                 restore_available=False,
                 repair_available=False,
             )
-        result["play_available"] = (result["status"] == "installed" and not result["game_running"]
-                                    and can_launch(self.root))
+        result["installed_play_available"] = (
+            result.get("installed_verified", False)
+            and (selected is None or selected.manifest_digest == result.get("installed_manifest"))
+            and not result["game_running"] and can_launch(self.root)
+        )
+        result["play_available"] = (
+            result["status"] == "installed" and result["installed_play_available"]
+        )
         return result
 
     def play(self):

@@ -74,3 +74,46 @@ the publisher round trip. Exact final build/test receipts belong with the
 candidate artifact. Public release separately requires the established exact-file
 installer security scan and owner disposition; no scan or publication occurs
 as part of authoring these features.
+
+## Staged configuration draft — October 20, 2026
+
+Source preparation only on `codex/staged-apply-r001`, after the sealed 1.9.0
+candidate. The owner deferred executable building and full validation until the
+live Bethesda-version diff is complete. The sealed EXE and content are unchanged;
+the application version remains unbumped until the next build is prepared.
+
+The four configuration selectors now change an in-memory pending configuration.
+They start no worker, package processing, verification, deployment or filesystem
+operation. Apply Changes sits beside Play in the existing presentation. It is
+enabled only for a different draft on the verified installed package with an
+available cache. Returning all four choices to their installed values disables
+Apply; calling its handler directly with equal values also does no backend work.
+
+Startup loads the authenticated installed choices and cached manifest identity.
+Apply captures the complete draft and uses the existing install preflight,
+overlap consent and transaction. Only successful post-operation inspection can
+establish installed state. Failure retains the last verified snapshot and draft,
+disables Apply, and requires an explicit Check/recovery. Cancellation retains the
+draft. Recovery synchronizes the UI with the configuration actually recovered.
+Pending choices are session-local and are not saved as installation receipts.
+
+Repair takes the currently installed configuration from the manager and leaves
+an unapplied draft intact. Restore uses its existing independent transaction and
+clears the installed UI snapshot after inspection. No transaction, rollback,
+cache format, package schema, CLI deployment behavior or game-running guard is
+redesigned. No partial/delta deployment optimization is introduced.
+
+Package selection/drop retains signature verification, cache import and explicit
+Install/Install update behavior. A new manifest is still an update even when its
+four choices equal those installed; it is not hidden by the Apply no-op rule.
+Selecting the exact installed package loads its actual installed choices rather
+than misleading constructor defaults. Other selected packages retain their
+existing initial-choice/capability behavior. Explicit Check can still perform
+verification; selector changes cannot.
+
+Focused source tests cover selector I/O prohibition, change-and-revert, direct
+no-op Apply, startup/cache identity, complete Apply dispatch, verification failure,
+cancellation, recovery, Repair/Restore, package update identity, older capability
+gates, translations and the existing 900x700 minimum layout. Full regression,
+new-baseline archive fixtures, executable build and exact-EXE checks remain
+deferred. No themes, preview artwork or unrelated UI polish was added.

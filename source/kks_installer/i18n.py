@@ -32,6 +32,15 @@ MODE_TEXT = {
              "Food V2": "Comida V2", "Family Food": "Comida por família"},
 }
 
+APPLY_TEXT = {
+    "de": {"Apply Changes": "Änderungen anwenden", "No changes to apply.": "Keine Änderungen anzuwenden."},
+    "fr": {"Apply Changes": "Appliquer les modifications", "No changes to apply.": "Aucune modification à appliquer."},
+    "ru": {"Apply Changes": "Применить изменения", "No changes to apply.": "Нет изменений для применения."},
+    "ptbr": {"Apply Changes": "Aplicar alterações", "No changes to apply.": "Nenhuma alteração para aplicar."},
+}
+for _language, _text in APPLY_TEXT.items():
+    MODE_TEXT[_language].update(_text)
+
 DE = {
     "KKS Weapon & Armor Treatment (Recommended)": "KKS-Waffen- und Rüstungsnamen (empfohlen)",
     "Vanilla Equipment Naming": "Originale Ausrüstungsnamen",

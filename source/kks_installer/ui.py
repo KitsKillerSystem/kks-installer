@@ -1,6 +1,7 @@
 """Native offline installer: select, check, update, repair and restore."""
 
 from pathlib import Path
+from typing import NamedTuple
 import queue, threading, tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from ._application import APP_VERSION
@@ -22,6 +23,13 @@ LINE = "#afa997"
 RED = "#a4402c"
 ACCENT = "#ce653c"
 DARK = "#27312e"
+
+
+class Configuration(NamedTuple):
+    naming: str
+    perks: str
+    food: str
+    junk: str
 
 
 class App:
@@ -49,6 +57,11 @@ class App:
         self.initial_perks = perks
         self.string_modes_available = False
         self.initial_food, self.initial_junk = food, junk
+        self.installed_verified_configuration = None
+        self.installed_manifest = None
+        self.pending_selected_configuration = Configuration(naming, perks, food, junk)
+        self.configuration_apply_available = False
+        self.active_action = None
         self.root.protocol("WM_DELETE_WINDOW", self.close)
         style = ttk.Style()
         style.theme_use("clam")
@@ -204,14 +217,14 @@ class App:
         self.naming_box = ttk.Combobox(package_actions, textvariable=self.naming_value,
                                        values=tuple(LABELS.values()), state="disabled", width=45)
         self.naming_box.pack(side="left", fill="x", expand=True, padx=(12, 0))
-        self.naming_box.bind("<<ComboboxSelected>>", lambda event: self.start("check"))
+        self.naming_box.bind("<<ComboboxSelected>>", self.configuration_changed)
         perk_actions = tk.Frame(package_row, bg=PANEL)
         perk_actions.pack(fill="x", padx=12, pady=(0, 4))
         self.perks_value = tk.StringVar(value=PERK_LABELS[ON])
         self.perks_box = ttk.Combobox(perk_actions, textvariable=self.perks_value,
                                       values=tuple(PERK_LABELS.values()), state="disabled")
         self.perks_box.pack(fill="x")
-        self.perks_box.bind("<<ComboboxSelected>>", lambda event: self.start("check"))
+        self.perks_box.bind("<<ComboboxSelected>>", self.configuration_changed)
         mode_actions = tk.Frame(package_row, bg=PANEL)
         mode_actions.pack(fill="x", padx=12, pady=(0, 4))
         self.label(mode_actions, "Food:").pack(side="left", padx=(0, 5))
@@ -225,7 +238,7 @@ class App:
                                     values=tuple(JUNK_LABELS.values()), state="disabled", width=30)
         self.junk_box.pack(side="left", fill="x", expand=True)
         for box in (self.food_box, self.junk_box):
-            box.bind("<<ComboboxSelected>>", lambda event: self.start("check"))
+            box.bind("<<ComboboxSelected>>", self.configuration_changed)
         self.label(outer, "03  /  INSTALLATION STATUS", BG).pack(fill="x", pady=(5, 3))
         status = tk.Frame(outer, bg=PANEL)
         status.pack(fill="x")
@@ -274,11 +287,20 @@ class App:
         launch_row.pack(fill="x", pady=(6, 0))
         self.play = self.button(launch_row, "Play Fallout 76", lambda: self.start("play"))
         self.play.pack(side="right")
-        for button in (self.primary, self.repair, self.restore, self.play):
+        self.apply = self.button(launch_row, "Apply Changes", lambda: self.start("apply"))
+        self.apply.pack(side="right", padx=(0, 8))
+        for button in (self.primary, self.repair, self.restore, self.play, self.apply):
             button.configure(state="disabled")
         baseline_help = self.label(launch_row, "Returns KKS-managed files to the state they were in before KKS was installed.", BG)
         baseline_help.configure(wraplength=420, font=("Segoe UI", 9), justify="left")
         baseline_help.pack(side="left", fill="x", expand=True)
+        launch_row.bind(
+            "<Configure>",
+            lambda event: baseline_help.configure(
+                wraplength=max(100, event.width - self.play.winfo_reqwidth()
+                               - self.apply.winfo_reqwidth() - 12)
+            ),
+        )
         self.label(outer, "ACTIVITY", BG).pack(fill="x", pady=(3, 3))
         self.log = tk.Text(
             outer,
@@ -415,10 +437,69 @@ class App:
         self.log.see("end")
         self.log.configure(state="disabled")
 
+    def read_configuration(self):
+        return Configuration(*(
+            next(key for key, label in labels.items() if self.t(label) == value.get())
+            for value, labels in (
+                (self.naming_value, LABELS), (self.perks_value, PERK_LABELS),
+                (self.food_value, FOOD_LABELS), (self.junk_value, JUNK_LABELS),
+            )
+        ))
+
+    def set_pending_configuration(self, configuration):
+        self.pending_selected_configuration = configuration
+        for value, labels, choice in zip(
+            (self.naming_value, self.perks_value, self.food_value, self.junk_value),
+            (LABELS, PERK_LABELS, FOOD_LABELS, JUNK_LABELS), configuration,
+        ):
+            value.set(self.t(labels[choice]))
+
+    def can_apply(self):
+        return (
+            not self.busy and self.last_status == "installed"
+            and self.configuration_apply_available
+            and self.installed_verified_configuration is not None
+            and self.selected == self.installed_manifest
+            and self.pending_selected_configuration != self.installed_verified_configuration
+        )
+
+    def configuration_changed(self, event=None):
+        """An in-memory edit only: no worker, package, verification or disk access."""
+        if not self.busy:
+            self.pending_selected_configuration = self.read_configuration()
+            self.apply.configure(state="normal" if self.can_apply() else "disabled")
+
+    def inspected_configuration(self, data, completed_action=None):
+        """Only backend inspection may establish installed truth; never use a draft."""
+        previous = self.installed_verified_configuration
+        was_clean = previous is None or self.pending_selected_configuration == previous
+        self.configuration_apply_available = False
+        if data.get("installed_verified"):
+            installed = Configuration(*(data["installed_" + field]
+                                        for field in Configuration._fields))
+            self.installed_verified_configuration = installed
+            self.installed_manifest = data["installed_manifest"]
+            if self.selected is None:
+                self.selected = self.installed_manifest
+                self.set_package(data["installed_content"])
+            if self.selected == self.installed_manifest:
+                self.naming_available = data["installed_equipment_naming_available"]
+                self.perks_available = data["installed_perk_cards_available"]
+                self.string_modes_available = data["installed_string_modes_available"]
+                self.configuration_apply_available = data.get("repair_available", False)
+                if was_clean or completed_action in ("select", "install", "apply", "recover"):
+                    self.set_pending_configuration(installed)
+        elif data["status"] in ("package_required", "ready") and not data.get("installed_content"):
+            self.installed_verified_configuration = None
+            self.installed_manifest = None
+
     def path_changed(self, *args):
         if not self.busy:
             self.last_status = None
             self.selected = None
+            self.installed_verified_configuration = None
+            self.installed_manifest = None
+            self.configuration_apply_available = False
             self.naming_available = False
             self.naming_value.set(self.t(LABELS[FULL]))
             self.naming_box.configure(state="disabled")
@@ -430,8 +511,9 @@ class App:
             self.junk_value.set(self.t(JUNK_LABELS[JUNK_DEFAULT]))
             self.food_box.configure(state="disabled")
             self.junk_box.configure(state="disabled")
+            self.pending_selected_configuration = self.read_configuration()
             self.set_package("Drop a ZIP here or choose a package. Keep the ZIP unopened.")
-            for b in (self.primary, self.repair, self.restore, self.play):
+            for b in (self.primary, self.repair, self.restore, self.play, self.apply):
                 b.configure(state="disabled")
 
     def choose_game(self):
@@ -473,7 +555,8 @@ class App:
         self.start("select", path)
 
     def primary_action(self):
-        self.start("recover" if self.last_status == "recovery_required" else "install")
+        if self.last_status in ("ready", "update_available", "recovery_required"):
+            self.start("recover" if self.last_status == "recovery_required" else "install")
 
     def confirm_modifications(self, resources):
         dialog = tk.Toplevel(self.root)
@@ -519,15 +602,18 @@ class App:
     def start(self, action, zip_path=None):
         if self.busy:
             return
+        self.configuration_changed()
+        if action == "apply" and not self.can_apply():
+            if self.pending_selected_configuration == self.installed_verified_configuration:
+                self.append("No changes to apply.")
+            return
         game = self.path.get().strip()
         if not game:
             self.choose_game()
             return
         self.busy = True
-        naming = next(key for key, label in LABELS.items() if self.t(label) == self.naming_value.get())
-        perks = next(key for key, label in PERK_LABELS.items() if self.t(label) == self.perks_value.get())
-        food = next(key for key, label in FOOD_LABELS.items() if self.t(label) == self.food_value.get())
-        junk = next(key for key, label in JUNK_LABELS.items() if self.t(label) == self.junk_value.get())
+        self.active_action = action
+        naming, perks, food, junk = self.pending_selected_configuration
         self.naming_box.configure(state="disabled")
         self.perks_box.configure(state="disabled")
         self.food_box.configure(state="disabled")
@@ -543,6 +629,7 @@ class App:
             self.repair,
             self.restore,
             self.play,
+            self.apply,
         ):
             w.configure(state="disabled")
         self.progress.start(12)
@@ -562,6 +649,7 @@ class App:
                 "select": "Verifying the selected package…",
                 "check": "Checking saved installation and compatibility…",
                 "install": "Installing the selected content package…",
+                "apply": "Installing the selected content package…",
                 "repair": "Repairing installed content…",
                 "restore": "Restoring the installation baseline…",
                 "recover": "Recovering the interrupted operation…",
@@ -614,7 +702,7 @@ class App:
                     result["play_available"] = False
                 else:
                     consent = None
-                    if action == "install":
+                    if action in ("install", "apply"):
                         inspection = manager.inspect(release, naming=naming, perks=perks, food=food, junk=junk)
                         if inspection.get("existing_modifications"):
                             ready, answer = threading.Event(), {}
@@ -622,13 +710,19 @@ class App:
                             ready.wait()
                             if not answer.get("accepted"):
                                 self.events.put(("log", "Installation cancelled. Game files were not changed."))
-                                self.events.put(("success", inspection))
+                                self.events.put(("cancelled", inspection))
                                 return
                             consent = inspection["confirmation_token"]
-                    result = (
-                        manager.recover() if action == "recover" else manager.run(action, release, naming=naming, perks=perks, food=food, junk=junk,
-                                                                                 accept_modifications=consent)
-                    )
+                    if action == "recover":
+                        result = manager.recover()
+                    elif action in ("install", "apply"):
+                        result = manager.run(
+                            "install", release, naming=naming, perks=perks,
+                            food=food, junk=junk, accept_modifications=consent,
+                        )
+                    else:
+                        # Repair and Restore use authenticated installed state, never the draft.
+                        result = manager.run(action)
                     self.events.put(("log", result.get("message", result["status"])))
                     result = manager.inspect()
                 self.events.put(("success", result))
@@ -660,6 +754,9 @@ class App:
                     self.string_modes_available = bool(len(data) > 6 and data[6])
                     self.food_value.set(self.t(FOOD_LABELS[self.initial_food if self.string_modes_available else FOOD_DEFAULT]))
                     self.junk_value.set(self.t(JUNK_LABELS[self.initial_junk if self.string_modes_available else JUNK_DEFAULT]))
+                    self.pending_selected_configuration = self.read_configuration()
+                    self.configuration_apply_available = False
+                    self.apply.configure(state="disabled")
                     self.set_package(
                         name
                         + f" · signature and all {file_count} files verified"
@@ -667,7 +764,11 @@ class App:
                         + (CONTENT_HINTS[language])
                     )
                     continue
+                completed_action = self.active_action if kind == "success" else None
+                self.active_action = None
                 self.busy = False
+                if kind != "error":
+                    self.inspected_configuration(data, completed_action)
                 self.language_box.configure(state="readonly")
                 self.naming_box.configure(state="readonly" if self.naming_available else "disabled")
                 self.perks_box.configure(state="readonly" if self.perks_available else "disabled")
@@ -678,13 +779,21 @@ class App:
                 for w in (self.entry, self.browse, self.check, self.package_button):
                     w.configure(state="normal")
                 if kind == "error":
-                    for button in (self.primary, self.repair, self.restore, self.play):
+                    self.last_status = None
+                    self.configuration_apply_available = False
+                    for button in (self.primary, self.repair, self.restore, self.play, self.apply):
                         button.configure(state="disabled")
                     self.set_title("Needs attention before continuing", RED)
                     self.status_text(data)
                     self.append(data)
                 else:
                     status = data["status"]
+                    play_available = data.get("play_available", False)
+                    if (data.get("installed_verified")
+                            and data.get("selected_manifest") == self.installed_manifest):
+                        # A different draft on the same package is not a package update.
+                        status = "installed"
+                        play_available = data.get("installed_play_available", play_available)
                     self.last_status = status
                     titles = {
                         "ready": "Ready to install.",
@@ -726,7 +835,8 @@ class App:
                     self.restore.configure(
                         state="normal" if data.get("restore_available") else "disabled"
                     )
-                    self.play.configure(state="normal" if data.get("play_available") else "disabled")
+                    self.play.configure(state="normal" if play_available else "disabled")
+                    self.apply.configure(state="normal" if self.can_apply() else "disabled")
         except queue.Empty:
             pass
         self.root.after(100, self.pump)
