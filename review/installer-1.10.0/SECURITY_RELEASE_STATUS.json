@@ -1,0 +1,35 @@
+{
+  "status": "OWNER_ACCEPTED_REMAINING_DETECTIONS_AND_COVERAGE_LIMITS",
+  "date_utc": "2026-10-20T19:43:23.842766+00:00",
+  "installer": "1.10.0",
+  "filename": "KKSInstaller.exe",
+  "sha256": "5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "bytes": 20363770,
+  "source_commit": "e3760cd115d4852f2ee13384b10788a91afa25c7",
+  "report_url": "https://www.virustotal.com/gui/file/5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f/detection",
+  "analysis_utc": "2026-10-20T19:29:42Z",
+  "counts": {
+    "malicious": 7,
+    "undetected": 63,
+    "displayed_denominator": 70,
+    "timeout": 1,
+    "type_unsupported": 4,
+    "total_vendor_rows": 75
+  },
+  "owner_decision": "OWNER_RELEASE_DECISION.json",
+  "owner_decision_sha256": "a1830b7e6e61f3896dcb094a89a5498177016ae2e0fa040f8fc88bcb792c5a2b",
+  "scan_capture_sha256": "3ddbf6b719bf5f555a9244cab9c187bdf8640ffff3ddd9d38158904d79dd5cc6",
+  "behavior_capture_sha256": "1be7323c9223b20d4d217fe7fde7377dadd529a0223175c5192d7297c88605e2",
+  "false_positive_determination": false,
+  "security_certification": false,
+  "limits": [
+    "Seven vendor triggers remain unresolved; no false-positive determination or comprehensive safety finding.",
+    "One timeout and four unsupported engines are not clean outcomes.",
+    "Behavioral coverage is partial; Jujubox shows a missing-DLL startup failure; some sandboxes remain in progress.",
+    "CAPA static labels do not establish executed evasion, and some rule-match causes remain unlocated.",
+    "No live-game or native-speaker test is inferred from this publication instruction."
+  ],
+  "no_executable_rebuild": true,
+  "publication_authorized": true,
+  "publication_status": "Authorized release artifact; actual publication receipt recorded separately."
+}

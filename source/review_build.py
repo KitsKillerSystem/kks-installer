@@ -75,6 +75,8 @@ def main():
         str(build / "pyinstaller"),
         "--specpath",
         str(build),
+        "--add-data",
+        str(source / "kks_installer/assets") + ";kks_installer/assets",
         "launcher.py",
     ]
     for name, command in (

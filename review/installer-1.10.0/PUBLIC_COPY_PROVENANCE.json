@@ -1,0 +1,113 @@
+{
+  "status": "PASS",
+  "copies": [
+    {
+      "original_sha256": "5aa5fb67490f162fa1b13a06b44d3da943e90472dc651cde49120c045a756521",
+      "public_copy": "build/build-receipt.json",
+      "public_sha256": "348485a5b47d32c2beb5fdfcd477fab59f7a847d3213d57e774e5a1d217ce714",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "16992bb18e8295b7261e2396d6ef7a6a50d3d52e3dc70380212078094a3819a3",
+      "public_copy": "build/build.log",
+      "public_sha256": "7f543f9fc2ca43e325bf9e5542ebaf203da372e3fee02b567ff7db9539904aca",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "564e435ea657398eec4cc604274796dc84d23219e7fa3579f214eac3fb54793e",
+      "public_copy": "build/full-suite-tests.log",
+      "public_sha256": "8b22835da9afe4eee8c426f10c0f91fbd9e00281e0f193cf4ae4c87d13648dbd",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "a9bf47e1a44e1bbde5196849a357fc5ee36bba9696e0eb4c5b7aa3b11fb6ccdf",
+      "public_copy": "build/focused-ui-tests.log",
+      "public_sha256": "967e667e6788f61e3aa0ce627afeb578d6d3ab7dada2c7538f0aff8f0710db6b",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "05da957523315fd690939716e34cd00838a5cf400238403d8af69e2f19b36822",
+      "public_copy": "presentation-test-reuse.json",
+      "public_sha256": "7ee45a31772f9034a4ac25dcd4c2ea67084f3c050a81f21858a9c0c495f59c80",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "04c55eaaae4a8d54ee3b22d66ddb494d39a1d93dea5e52c2cb6a4d83d4fa0446",
+      "public_copy": "exact-exe-validation.json",
+      "public_sha256": "ef075f1032fdedf0007789696c433507e1a6a0bd556bee5ea34d45f5721dfb77",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "7f073cda467a603fe4252d51ab4eaf9606e573fa4eb104588bb1e08466cbae89",
+      "public_copy": "presentation-validation.json",
+      "public_sha256": "1b412b98b0f47a5b8f2cbce7e6a1c6d2b48c241f8aa5ecb24168575e2886e57c",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "29fd52c8afd4dcd56fa509b4cf0044ca5018658a1d565e4c4e26eec4cf05c17e",
+      "public_copy": "binary-source-review.json",
+      "public_sha256": "6242ffe5b62e5eeadef53b5539ee0a6d0029952c4b621dc84cdcf16e44ad92bd",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "8e29345f950bc5dc0eb36d540715d3d7af7b35f86b3a298eb13d3cf8b24f7810",
+      "public_copy": "source-diff.patch",
+      "public_sha256": "10b177c8a51887a59c6c04eade3641264a66dd6683546c4d3dfa397910c39efe",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "fc96ea4dd328672e71a2174388a95d18d71c3e8e2bf354d397959bd8f038ed7d",
+      "public_copy": "polish-package-validation.json",
+      "public_sha256": "27ec13275d6ae1d534ce40985d6d09de6077bf221c907cc6e01b28faf0de278e",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "61bc5ffcc089a2aeb24f3e929c3418cde44add072d139a6e64b60658c5b3c1b6",
+      "public_copy": "polish-font-validation.json",
+      "public_sha256": "2e878cb072cad353a1f7f590bb9bb64af1f692530a2dfda5a49791aa56a06d2f",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "8d38b54de1c5d8268236f26bdec7708d8e83821f5defbf22ae7bceeb31ccae75",
+      "public_copy": "polish-package-provenance.json",
+      "public_sha256": "ab8af73fbf75764b89f9e0d293d075c723c8f7b98c2cc6f5a19bce56cadd8b3e",
+      "transformation": "Home paths redacted; evidence findings unchanged."
+    },
+    {
+      "original_sha256": "3ddbf6b719bf5f555a9244cab9c187bdf8640ffff3ddd9d38158904d79dd5cc6",
+      "public_copy": "virustotal-results.json",
+      "public_sha256": "eca85a6e03683724d80c380517e8f93317e483d28d38573bb46806af4a8d2fd8",
+      "transformation": "Workstation home paths redacted; original dated evidence preserved."
+    },
+    {
+      "original_sha256": "1be7323c9223b20d4d217fe7fde7377dadd529a0223175c5192d7297c88605e2",
+      "public_copy": "virustotal-behavior.json",
+      "public_sha256": "9a78a99c210d9a38a8f3c5aa88cea6929a9a1016950cc387d2d139f922cafbde",
+      "transformation": "Workstation home paths redacted; original dated evidence preserved."
+    },
+    {
+      "original_sha256": "2c7dfc0a81db15b5603f84cd0ffe6c862990b938295e5785a1a43b9959c961f2",
+      "public_copy": "capa-static-context.json",
+      "public_sha256": "2c7dfc0a81db15b5603f84cd0ffe6c862990b938295e5785a1a43b9959c961f2",
+      "transformation": "Workstation home paths redacted; original dated evidence preserved."
+    },
+    {
+      "original_sha256": "abe353bd88b67d97f0a6e5e8d3ce017eb7f7729f850fe5ff779f1799d271d39d",
+      "public_copy": "scan-comparison-1.8-to-1.10.json",
+      "public_sha256": "abe353bd88b67d97f0a6e5e8d3ce017eb7f7729f850fe5ff779f1799d271d39d",
+      "transformation": "Workstation home paths redacted; original dated evidence preserved."
+    },
+    {
+      "original_sha256": "a1830b7e6e61f3896dcb094a89a5498177016ae2e0fa040f8fc88bcb792c5a2b",
+      "public_copy": "OWNER_RELEASE_DECISION.json",
+      "public_sha256": "481a45efd6748d1e818f35bcdce04148b78f4e522a16610247b315c2b06de4bd",
+      "transformation": "Workstation home paths redacted; original dated evidence preserved."
+    },
+    {
+      "original_sha256": "4b9c5be82b4faf9b1f8260664bfcce562409d09ef3a81b00f04b18f150cddac9",
+      "public_copy": "FINDINGS_AT_REVIEW.json",
+      "public_sha256": "4b9c5be82b4faf9b1f8260664bfcce562409d09ef3a81b00f04b18f150cddac9",
+      "transformation": "Workstation home paths redacted; original dated evidence preserved."
+    }
+  ]
+}

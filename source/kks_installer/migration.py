@@ -63,9 +63,11 @@ def inspect_original(path, target):
 
 
 def consent_token(root, release, originals):
-    return digest(json.dumps({"root": str(root), "manifest": release.manifest_digest,
-        "naming": release.naming, "perks": release.perks, "originals": originals},
-        sort_keys=True).encode())
+    data = {"root": str(root), "manifest": release.manifest_digest,
+            "naming": release.naming, "perks": release.perks, "originals": originals}
+    if release.manifest["schema"] == 4:
+        data.update(food=release.food, junk=release.junk)
+    return digest(json.dumps(data, sort_keys=True).encode())
 
 
 class BaselineRelease:

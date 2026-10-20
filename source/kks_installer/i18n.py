@@ -4,6 +4,7 @@ from pathlib import Path
 import ctypes, json, os, re, uuid
 from .i18n_ptbr import PTBR, PTBR_PREFIXES
 from .i18n_fr_ru import FR, RU, FR_PREFIXES, RU_PREFIXES
+from ._application import CONTENT_NAMES, NEW_CONTENT_LANGUAGES
 
 LANGUAGE_NAMES = {"en": "English", "de": "Deutsch", "ru": "Русский", "fr": "Français", "ptbr": "Português (Brasil)"}
 CONTENT_HINTS = {
@@ -13,6 +14,32 @@ CONTENT_HINTS = {
     "ru": "Content language: Russian. Set Fallout 76 to Русский in Steam.",
     "fr": "Content language: French. Set Fallout 76 to Français in Steam.",
 }
+CONTENT_HINTS.update({lang: f"Content language: {CONTENT_NAMES[lang]}. Select the same Fallout 76 language in Steam."
+                      for lang in NEW_CONTENT_LANGUAGES})
+
+MODE_TEXT = {
+    "de": {"Food:": "Nahrung:", "Junk Components:": "Schrottbestandteile:",
+           "KKS Default (Glyph Components)": "KKS-Standard (Komponentensymbole)", "Text Based": "Text", "None": "Keine",
+           "Kit's Style": "Kit's Style", "Abby's Style": "Abby's Style"},
+    "fr": {"Food:": "Nourriture :", "Junk Components:": "Composants :",
+           "KKS Default (Glyph Components)": "KKS par défaut (glyphes)", "Text Based": "Texte", "None": "Aucun",
+           "Kit's Style": "Kit's Style", "Abby's Style": "Abby's Style"},
+    "ru": {"Food:": "Еда:", "Junk Components:": "Компоненты хлама:",
+           "KKS Default (Glyph Components)": "KKS по умолчанию (символы)", "Text Based": "Текст", "None": "Нет",
+           "Kit's Style": "Kit's Style", "Abby's Style": "Abby's Style"},
+    "ptbr": {"Food:": "Comida:", "Junk Components:": "Componentes:",
+             "KKS Default (Glyph Components)": "Padrão KKS (glifos)", "Text Based": "Texto", "None": "Nenhum",
+             "Kit's Style": "Kit's Style", "Abby's Style": "Abby's Style"},
+}
+
+APPLY_TEXT = {
+    "de": {"Apply Changes": "Änderungen anwenden", "No changes to apply.": "Keine Änderungen anzuwenden."},
+    "fr": {"Apply Changes": "Appliquer les modifications", "No changes to apply.": "Aucune modification à appliquer."},
+    "ru": {"Apply Changes": "Применить изменения", "No changes to apply.": "Нет изменений для применения."},
+    "ptbr": {"Apply Changes": "Aplicar alterações", "No changes to apply.": "Nenhuma alteração para aplicar."},
+}
+for _language, _text in APPLY_TEXT.items():
+    MODE_TEXT[_language].update(_text)
 
 DE = {
     "KKS Weapon & Armor Treatment (Recommended)": "KKS-Waffen- und Rüstungsnamen (empfohlen)",
@@ -150,6 +177,16 @@ RU[CONTENT_HINTS["ptbr"]] = "Язык контента: бразильский �
 
 def translate(text, language):
     from . import i18n_baseline
+    if text in MODE_TEXT.get(language, {}):
+        return MODE_TEXT[language][text]
+    for code in NEW_CONTENT_LANGUAGES:
+        if text == CONTENT_HINTS[code] and language in ("de", "fr", "ru", "ptbr"):
+            return {
+                "de": "Inhaltssprache: {name}. Wähle dieselbe Sprache für Fallout 76 in Steam.",
+                "fr": "Langue du contenu : {name}. Choisissez la même langue pour Fallout 76 dans Steam.",
+                "ru": "Язык контента: {name}. Выберите тот же язык Fallout 76 в Steam.",
+                "ptbr": "Idioma do conteúdo: {name}. Selecione o mesmo idioma de Fallout 76 no Steam.",
+            }[language].format(name=CONTENT_NAMES[code])
     catalog = {"de": DE, "fr": FR, "ru": RU, "ptbr": PTBR}.get(language)
     if catalog is None:
         return text

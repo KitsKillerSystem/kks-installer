@@ -1,0 +1,194 @@
+{
+  "status": "BOUNDED_CONTEXT_COMPLETE",
+  "reviewed_utc": "2026-10-20T19:36:52.676914+00:00",
+  "exe_sha256": "5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "previous_exe_sha256": "b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98",
+  "source_binary_review_sha256": "29fd52c8afd4dcd56fa509b4cf0044ca5018658a1d565e4c4e26eec4cf05c17e",
+  "behavior_capture_sha256": "1be7323c9223b20d4d217fe7fde7377dadd529a0223175c5192d7297c88605e2",
+  "xen_strings": [],
+  "query_performance_counter_imports": [
+    {
+      "member": "VCRUNTIME140.dll",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": true,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "VCRUNTIME140_1.dll",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": true,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_bz2.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_cffi_backend.cp312-win_amd64.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": true,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_ctypes.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_decimal.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_hashlib.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_lzma.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_queue.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_socket.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_tkinter.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_uuid.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "_wmi.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "cryptography\\hazmat\\bindings\\_rust.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": true,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "libcrypto-3-x64.dll",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "libffi-8.dll",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "python312.dll",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "select.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "tcl86t.dll",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": true,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "tk86t.dll",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": true,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "ucrtbase.dll",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": true,
+      "loaded_native_content_exact_to_1_8": true
+    },
+    {
+      "member": "unicodedata.pyd",
+      "imports": [
+        "QueryPerformanceCounter"
+      ],
+      "whole_member_exact_to_1_8": false,
+      "loaded_native_content_exact_to_1_8": true
+    }
+  ],
+  "kks_source_term_hits": [],
+  "limitations": [
+    "The captured CAPA labels do not provide rule-match addresses or exact matched strings; these occurrences are context, not a proven attribution of CAPA's match.",
+    "Unchanged native content establishes continuity, not whether any particular capability executed or is harmless.",
+    "The Reference analysis tools strings label cannot be attributed to a component from the captured summary alone.",
+    "No fresh dynamic run, VM, vendor submission or certificate investigation was performed."
+  ]
+}

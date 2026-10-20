@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\polish-font-routing-r001\\packages\\KKS_1.3.0_Polish_Steam_26054086_R003.zip",
+  "sha256": "351f1526f7330006b8ae72c1dd66d1a86868e8d7eb2bc3cf26c15ef9599bf50a",
+  "old_package": "<USER_HOME>\\Documents\\Codex\\2026-10-18\\referenced-chatgpt-conversation-this-is-an\\outputs\\KKS_All_Languages_1.3.0_Steam_26054086_R002\\packages\\KKS_1.3.0_Polish_Steam_26054086_R002.zip",
+  "old_sha256": "708ecb9e252af65e638b316ec4922b23562b45ff6a0f3d224fc4a8708a6da8fa",
+  "revision": 3,
+  "sequence": 3,
+  "changed_payloads": [
+    "payload/interface/fontconfig_pl.txt",
+    "payload/interface/fonts_en.swf"
+  ],
+  "all_other_payloads_identical": true,
+  "all_string_modes_and_optional_profiles_identical": true,
+  "font_validation_sha256": "61bc5ffcc089a2aeb24f3e929c3418cde44add072d139a6e64b60658c5b3c1b6",
+  "build_result": {
+    "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\polish-font-routing-r001\\packages\\KKS_1.3.0_Polish_Steam_26054086_R003.zip",
+    "sha256": "351f1526f7330006b8ae72c1dd66d1a86868e8d7eb2bc3cf26c15ef9599bf50a",
+    "size": 49824960,
+    "manifest_sha256": "3f0123278506e0547c864f2b9098be40f78826131277c8a0b593f12790e6eb21",
+    "content_version": "1.3.0",
+    "payload_files": [
+      {
+        "path": "payload/interface/fontconfig_pl.txt",
+        "sha256": "aee47b9cf649f1570dde45c416eddd4985ef28a28618b7c1b6c793c4a0f4235d",
+        "size": 4746
+      },
+      {
+        "path": "payload/interface/fonts_en.swf",
+        "sha256": "4b44faad7cd95d466212ddcce7c6c1fbb505b3ffae7d7a869c9710779bb68249",
+        "size": 43361418
+      },
+      {
+        "path": "payload/interface/translate_pl.txt",
+        "sha256": "390feb90ece6be008efb3fa30a2dccd419cc5cfe4499c9823bd7c1f2fbd6e08f",
+        "size": 409172
+      },
+      {
+        "path": "payload/strings/seventysix_pl.dlstrings",
+        "sha256": "df0885ff37e2ee52c3f780d1b984d1047434c49f1e777e6f11b42578af51e53d",
+        "size": 4050853
+      },
+      {
+        "path": "payload/strings/seventysix_pl.ilstrings",
+        "sha256": "bbf6df941eeb7b60e141e73a037457e1695892fce1f56bc0ac168545a2f2d5ff",
+        "size": 6145046
+      },
+      {
+        "path": "payload/strings/seventysix_pl.strings",
+        "sha256": "a06f054b66ea8eecea5d0fe05230c126521a5569403e009b63ea6eb2235a580b",
+        "size": 8060177
+      },
+      {
+        "path": "payload/string-modes.json",
+        "sha256": "20326ea5617dd4dc56ef7ee9f6148873cc6a50853fd151acfaf40ce8734699e6",
+        "size": 133266
+      }
+    ],
+    "targets_match_frozen_1_0": false
+  },
+  "publication": false
+}

@@ -1,0 +1,429 @@
+{
+  "schema": 1,
+  "status": "REPORT_CAPTURED_REVIEW_AND_OWNER_DISPOSITION_PENDING",
+  "observed_at_utc": "2026-10-20 19:33:22 UTC",
+  "source": "Owner supplied URL; directly read public VirusTotal Detection, Details and Behavior tabs through in-app browser accessibility state.",
+  "report_url": "https://www.virustotal.com/gui/file/5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "filename": "KKSInstaller.exe",
+  "installer_version": "1.10.0",
+  "sha256": "5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "size_bytes": 20363770,
+  "sha1": "6303cb252cf2ebc09f25e3fe2e94145107ebb040",
+  "md5": "0bf6052820bd5936a50a47e9ee33fa83",
+  "analysis_utc": "2026-10-20T19:29:42Z",
+  "first_submission_utc": "2026-10-20T19:29:42Z",
+  "last_submission_utc": "2026-10-20T19:29:42Z",
+  "counts": {
+    "malicious": 7,
+    "undetected": 63,
+    "displayed_denominator": 70,
+    "timeout": 1,
+    "type_unsupported": 4,
+    "total_vendor_rows": 75
+  },
+  "vendors": [
+    {
+      "vendor": "Bkav Pro",
+      "category": "malicious",
+      "label": "W32.Malware.CCC32327"
+    },
+    {
+      "vendor": "DeepInstinct",
+      "category": "malicious",
+      "label": "MALICIOUS"
+    },
+    {
+      "vendor": "Elastic",
+      "category": "malicious",
+      "label": "Malicious (moderate Confidence)"
+    },
+    {
+      "vendor": "McAfee Scanner",
+      "category": "malicious",
+      "label": "Ti!5B49321EBB89"
+    },
+    {
+      "vendor": "SecureAge",
+      "category": "malicious",
+      "label": "Malicious"
+    },
+    {
+      "vendor": "SentinelOne (Static ML)",
+      "category": "malicious",
+      "label": "Static AI - Suspicious PE"
+    },
+    {
+      "vendor": "Zillya",
+      "category": "malicious",
+      "label": "Trojan.Blank.Script.2228"
+    },
+    {
+      "vendor": "Acronis (Static ML)",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "AhnLab-V3",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Alibaba",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "AliCloud",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "ALYac",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Antiy-AVL",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Arcabit",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Arctic Wolf",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Avast",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "AVG",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Avira (no cloud)",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "BitDefender",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "ClamAV",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "CMC",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "CrowdStrike Falcon",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "CTX",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Cynet",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "DrWeb",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Emsisoft",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "eScan",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "ESET-NOD32",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Fortinet",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "GData",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Google",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Gridinsoft (no cloud)",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Huorong",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Ikarus",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Jiangmin",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "K7AntiVirus",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "K7GW",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Kaspersky",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Kingsoft",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Lionic",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Malwarebytes",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "MaxSecure",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Microsoft",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "NANO-Antivirus",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Palo Alto Networks",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Panda",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "QuickHeal",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Rising",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Sangfor Engine Zero",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Skyhigh (SWG)",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Sophos",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "SUPERAntiSpyware",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Symantec",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "TACHYON",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Tencent",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Trapmine",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Trellix ENS",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "TrendMicro",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "TrendMicro-HouseCall",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Varist",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "VBA32",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "VIPRE",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "VirIT",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "ViRobot",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Webroot",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "WithSecure",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Xcitium",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Yandex",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "ZoneAlarm by Check Point",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "Zoner",
+      "category": "undetected",
+      "label": "Undetected"
+    },
+    {
+      "vendor": "TEHTRIS",
+      "category": "timeout",
+      "label": "Timeout"
+    },
+    {
+      "vendor": "Avast-Mobile",
+      "category": "type-unsupported",
+      "label": "Unable to process file type"
+    },
+    {
+      "vendor": "BitDefenderFalx",
+      "category": "type-unsupported",
+      "label": "Unable to process file type"
+    },
+    {
+      "vendor": "Symantec Mobile Insight",
+      "category": "type-unsupported",
+      "label": "Unable to process file type"
+    },
+    {
+      "vendor": "Trustlook",
+      "category": "type-unsupported",
+      "label": "Unable to process file type"
+    }
+  ],
+  "behavior": {
+    "status": "IN_PROGRESS",
+    "notice": "There are some sandboxes still analysing the file.",
+    "listed_sandboxes": [
+      "Zenbox",
+      "VirusTotal Jujubox",
+      "CAPE Sandbox",
+      "CAPA"
+    ],
+    "at_observation": {
+      "detections": "NOT FOUND",
+      "mitre_signatures": "NOT FOUND",
+      "ids_rules": "NOT FOUND",
+      "sigma_rules": "NOT FOUND",
+      "dropped_files": "NOT FOUND",
+      "network_comms": "NOT FOUND"
+    },
+    "limitation": "These interim NOT FOUND fields are not a clean or complete dynamic-analysis result."
+  },
+  "limits": [
+    "Vendor reasons and engine versions are not exposed in the captured overview.",
+    "Undetected does not establish safety.",
+    "Timeout and unsupported results are not clean scans.",
+    "No claim that all embedded Python/native resources were inspected by each vendor.",
+    "No vendor false-positive determination obtained for this exact executable."
+  ],
+  "publication": false,
+  "owner_residual_acceptance": false
+}

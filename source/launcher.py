@@ -9,6 +9,7 @@ from kks_installer.packages import import_package
 from kks_installer.platforms import discover
 from kks_installer.equipment import NAMING_PROFILES, FULL
 from kks_installer.perks import PERK_PROFILES, ON
+from kks_installer.string_modes import FOOD_DEFAULT, JUNK_DEFAULT, FOOD_PROFILES, JUNK_PROFILES
 
 
 def main():
@@ -33,6 +34,10 @@ def main():
                         help="Equipment naming for check/install; repair preserves the installed choice")
     parser.add_argument("--perk-cards", choices=PERK_PROFILES, default=ON,
                         help="KKS perk cards for check/install; repair preserves the installed choice")
+    parser.add_argument("--food", choices=FOOD_PROFILES, default=FOOD_DEFAULT,
+                        help="Food presentation for check/install; repair preserves the installed choice")
+    parser.add_argument("--junk", choices=JUNK_PROFILES, default=JUNK_DEFAULT,
+                        help="Junk components for check/install; repair preserves the installed choice")
     parser.add_argument(
         "package_path", nargs="?", help="A ZIP dropped onto the application or supplied at launch"
     )
@@ -61,6 +66,7 @@ def main():
                     "payload_files": len(release.files),
                     "equipment_naming_available": "equipment_naming" in release.manifest,
                     "perk_cards_available": "perk_cards" in release.manifest,
+                    "string_modes_available": "string_modes" in release.manifest,
                 }
         else:
             action = next(
@@ -74,7 +80,7 @@ def main():
             if action is None:
                 from kks_installer.ui import launch
 
-                launch(package, args.game, naming=args.naming, perks=args.perk_cards)
+                launch(package, args.game, naming=args.naming, perks=args.perk_cards, food=args.food, junk=args.junk)
                 return 0
             if not args.game:
                 raise ValueError("--game is required for command-line operations")
@@ -85,14 +91,14 @@ def main():
                 if package:
                     with tempfile.TemporaryDirectory(prefix="kks-check-") as cache:
                         selected = import_package(package, cache)
-                        result = manager.inspect(selected, naming=args.naming, perks=args.perk_cards)
+                        result = manager.inspect(selected, naming=args.naming, perks=args.perk_cards, food=args.food, junk=args.junk)
                 else:
                     result = manager.inspect()
             elif action == "recover":
                 result = manager.recover()
             else:
                 selected = manager.select(package) if package else None
-                result = manager.run(action, selected, naming=args.naming, perks=args.perk_cards,
+                result = manager.run(action, selected, naming=args.naming, perks=args.perk_cards, food=args.food, junk=args.junk,
                                      accept_modifications=args.accept_modifications)
             result["activity"] = logs
         code = 0

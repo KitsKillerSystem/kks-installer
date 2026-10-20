@@ -1,0 +1,91 @@
+{
+  "status": "PASS",
+  "scope": "Dated results of different exact files; not a resolution or safety comparison.",
+  "previous_sha256": "b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98",
+  "previous_analysis_utc": "2026-10-13T20:08:14+00:00",
+  "current_sha256": "5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "current_analysis_utc": "2026-10-20T19:29:42Z",
+  "previous_capture_sha256": "c2f4f4b72463378bdca9e196624284d1bfcaa36d60557231bdefd6e1bc3395a2",
+  "current_capture_sha256": "3ddbf6b719bf5f555a9244cab9c187bdf8640ffff3ddd9d38158904d79dd5cc6",
+  "previous_counts": {
+    "malicious": 8,
+    "undetected": 63,
+    "type-unsupported": 4
+  },
+  "current_counts": {
+    "malicious": 7,
+    "undetected": 63,
+    "timeout": 1,
+    "type-unsupported": 4
+  },
+  "changes": [
+    {
+      "vendor": "Arctic Wolf",
+      "before": {
+        "vendor": "Arctic Wolf",
+        "category": "malicious",
+        "label": "Unsafe"
+      },
+      "after": {
+        "vendor": "Arctic Wolf",
+        "category": "undetected",
+        "label": "Undetected"
+      }
+    },
+    {
+      "vendor": "Bkav Pro",
+      "before": {
+        "vendor": "Bkav Pro",
+        "category": "malicious",
+        "label": "W32.Malware.E7662435"
+      },
+      "after": {
+        "vendor": "Bkav Pro",
+        "category": "malicious",
+        "label": "W32.Malware.CCC32327"
+      }
+    },
+    {
+      "vendor": "McAfee Scanner",
+      "before": {
+        "vendor": "McAfee Scanner",
+        "category": "undetected",
+        "label": "Undetected"
+      },
+      "after": {
+        "vendor": "McAfee Scanner",
+        "category": "malicious",
+        "label": "Ti!5B49321EBB89"
+      }
+    },
+    {
+      "vendor": "Skyhigh (SWG)",
+      "before": {
+        "vendor": "Skyhigh (SWG)",
+        "category": "malicious",
+        "label": "BehavesLike.Win64.Backdoor.wc"
+      },
+      "after": {
+        "vendor": "Skyhigh (SWG)",
+        "category": "undetected",
+        "label": "Undetected"
+      }
+    },
+    {
+      "vendor": "TEHTRIS",
+      "before": {
+        "vendor": "TEHTRIS",
+        "category": "undetected",
+        "label": "Undetected"
+      },
+      "after": {
+        "vendor": "TEHTRIS",
+        "category": "timeout",
+        "label": "Timeout"
+      }
+    }
+  ],
+  "identical_vendor_outcomes": 70,
+  "added_vendors": [],
+  "removed_vendors": []
+}

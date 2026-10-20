@@ -1,26 +1,20 @@
 # KKS — Kit's Killer System
 
-KKS adds custom glyphs, clearer item information, useful sorting and redesigned perk-card descriptions to Fallout 76.
+Installer 1.10.0 is the current release for the KKS 1.3.0 update.
 
-## Installer 1.8.0
+KKS adds custom glyphs, item information, sorting and perk-card descriptions to Fallout 76.
+[Installer 1.10.0 release](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.10.0) · [Content on Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301).
 
-Adds Brazilian Portuguese content support and Português (Brasil) UI. English, Russian, German and French remain supported. [Download Installer 1.8.0](https://github.com/KitsKillerSystem/kks-installer/releases/tag/v1.8.0). Previous releases remain unchanged.
+Installer 1.10.0 supports thirteen content languages and independent Equipment, Perk, Food and Junk choices. Changes are staged until **Apply Changes**; reverting to installed settings does nothing. Play does not apply drafts.
 
-**Content downloads belong on [Nexus Mods](https://www.nexusmods.com/fallout76/mods/4301).** GitHub distributes the installer and its public source/review evidence. The installer does not download content. Portuguese content 1.2.0 requires Installer 1.8.0 or later; the first Portuguese edition has not received native-speaker review or in-game testing.
+Close the game, extract the installer ZIP, run KKSInstaller.exe, select the game folder and choose/drop the unopened signed content ZIP. Select options and Install. Match the Steam content language. Restore the verified current baseline before switching languages. Preserve .kks-manager and backups. After a supported game update, choose the new content ZIP; never force an older baseline over updated game files.
 
-Close Fallout 76, extract the installer ZIP and run `KKSInstaller.exe`. Select the game folder, choose/drop the unopened signed content ZIP, choose options and Install. Selection verifies the package; it does not install. Manual/source archives are not installer inputs. Set the game's Steam language to match the content. Restore Baseline before switching content languages; the installer UI language does not translate content.
+The installer stays offline. UI translations cover English, German, French, Russian and Brazilian Portuguese; content supports all thirteen vanilla languages. Python and xTranslator are not required. Use corrected Polish R003 for Steam build 26054086.
 
-| Equipment naming | Perk descriptions | Result |
-|---|---|---|
-| KKS | KKS | Full KKS; defaults |
-| Native | KKS | Native equipment with KKS cards |
-| KKS | Native | KKS equipment with native perk descriptions |
-| Native | Native | Both native treatments; other KKS features remain |
+[Release notes](RELEASE_NOTES.md) · [Security review](review/installer-1.10.0/SECURITY_REVIEW.md) · [Build evidence](review/installer-1.10.0/README.md).
 
-Options require a supporting verified package. Reinstall to change them; Repair preserves them. Restore Baseline returns the verified pre-KKS state, including supported prior modifications. Keep `.kks-manager` and KKS backups. Overlapping changes require confirmation; incompatible archives and unknown later edits remain blocked. Current content baseline: Steam build 25636769. Python and xTranslator are not required by installer users.
+Full suite: 250 tests on 8c9e21a. Final presentation: 26 focused tests with unchanged backend/test proof. Exact EXE checks include historical English migration and corrected Polish installation/update/Repair/Restore. The owner accepted the exact-file 7/70 scan with unresolved warnings and coverage limitations; read the linked security review.
+EXE SHA-256: 5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f
+Build source: e3760cd115d4852f2ee13384b10788a91afa25c7
 
-## Release evidence
-
-The exact 1.8.0 EXE records **8/71 detections** on October 13, 2026, plus four unsupported engines. Remaining warnings are unresolved and accepted for this release; no false-positive determination or security certification. [Detailed review](review/installer-1.8.0/SECURITY_REVIEW.md) · [Exact scan](https://www.virustotal.com/gui/file/b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98/detection) · [Release notes](RELEASE_NOTES.md).
-
-217 regressions and 16 exact-EXE checks pass. [Build and comparison evidence](review/installer-1.8.0/README.md). Build source `fca6a862ae138ac8953fa30fb1f69adf77718a33`; EXE SHA-256 `b5950ae64451436dc65c3a6934a01ba493b272280896c863d25c3ac5f2599e98`. The EXE is not Authenticode-signed; content has separate publisher signatures. No game archives, backups, signing keys or private authoring material belong in this repository.
+No game archives, new content payloads, backups or signing keys belong in this publication.

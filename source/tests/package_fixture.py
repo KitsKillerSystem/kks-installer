@@ -30,6 +30,8 @@ from kks_installer._application import (
     LOCALIZATION_PROFILE,
     GERMAN_PROFILE,
     LOCALIZED_PROFILES,
+    CONTENT_LANGUAGES,
+    FONT_LANGUAGES,
 )
 from kks_installer.manager import Manager
 from kks_installer.managed_engine import LegacyDescriptor
@@ -38,7 +40,7 @@ from test_installer import archive
 
 class PackageFixture:
     def __init__(self, base, loose=False, german=False, multilingual=False):
-        languages = ("de", "ru", "fr", "ptbr") if multilingual else ("de",) if german else ()
+        languages = tuple(x for x in CONTENT_LANGUAGES if x != "en") if multilingual else ("de",) if german else ()
         self.base = Path(base)
         self.game = self.base / "game"
         (self.game / "Data").mkdir(parents=True)
@@ -48,7 +50,8 @@ class PackageFixture:
             (self.game / path).write_bytes(("game identity " + path).encode())
         font_archives = dict(ARCHIVES)
         if multilingual:
-            font_archives[RUSSIAN_FONT] = "interface/fonts_ru.swf"
+            for lang in set(FONT_LANGUAGES.values()):
+                font_archives[f"Data/SeventySix - Interface_{lang}.ba2"] = f"interface/fonts_{lang}.swf"
         for path, name in font_archives.items():
             archive(
                 self.game / path,

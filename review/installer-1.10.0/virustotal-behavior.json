@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "observed_at_utc": "2026-10-20 19:35:52 UTC",
+  "sha256": "5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "source_url": "https://www.virustotal.com/gui/file/5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f/behavior",
+  "source": "Direct read of visible grouped behavior tab in the in-app browser.",
+  "status": "PARTIAL_SANDBOX_RESULTS_WITH_STARTUP_FAILURE",
+  "remaining_notice": "There are some sandboxes still analysing the file.",
+  "visible_report_names": [
+    "CAPA",
+    "VirusTotal Jujubox",
+    "VirusTotal Observer",
+    "Zenbox",
+    "CAPE Sandbox"
+  ],
+  "summary": {
+    "detections": "NOT FOUND",
+    "mitre_signatures": "NOT FOUND",
+    "ids_rules": "NOT FOUND",
+    "sigma_rules": "NOT FOUND",
+    "dropped_files": "NOT FOUND",
+    "network_comms": "NOT FOUND"
+  },
+  "runtime_activity": "Observed extraction/open/load activity under C:\\Users\\<USER>\\AppData\\Local\\Temp\\_MEI000006082, including Visual C++ DLLs and Python .pyd runtime modules.",
+  "files_opened_total_visible_plus_collapsed": 101,
+  "files_written_total_visible_plus_collapsed": 51,
+  "registry_observation": "VirusTotal Observer: HKEY_USERS\\<sandbox user SID>\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.exe\\OpenWithProgids\\exefile",
+  "process_observation": "VirusTotal Observer: Processes Terminated: 1560 - \"KKSInstaller.exe\"",
+  "jujubox_highlighted_call": "GetTickCount",
+  "jujubox_highlighted_text": [
+    "KKSInstaller.exe - System Error",
+    "The program can't start because api-ms-win-core-path-l1-1-0.dll is missing from your computer. Try reinstalling the program to fix this problem. "
+  ],
+  "capa_anti_analysis_labels": [
+    "Reference anti-VM strings targeting Xen",
+    "Reference analysis tools strings",
+    "Check for time delay via QueryPerformanceCounter"
+  ],
+  "limitations": [
+    "Jujubox startup failure does not establish successful application execution or a clean transaction run.",
+    "Remaining sandbox analysis was still in progress at capture.",
+    "Static capability labels do not establish that evasion was executed; component-level assessment is separate.",
+    "Visible summary NOT FOUND fields and zero report counters are not a comprehensive clean bill of health.",
+    "Expanded file lists/full individual sandbox reports were not obtained; observed activity description is bounded to visible excerpts."
+  ],
+  "publication": false
+}

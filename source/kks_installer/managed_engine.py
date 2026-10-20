@@ -21,6 +21,7 @@ from ._application import PROFILE, GERMAN_PROFILE
 from .platforms import SafetyError
 from . import _legacy
 from .migration import BaselineRelease, inspect_original
+from . import string_modes as modes
 
 LEGACY_STATE = ".kks-installer-1.0.0"
 
@@ -169,8 +170,17 @@ class ManagedEngine(Installer):
         demand(type(value["files"]) is dict, "Invalid saved target records")
         for record in value["files"].values():
             fields(record, "before after")
+        names = {self.release.name}
+        if (getattr(self.release, "manifest", {}).get("schema") == 4
+                and self.release.food == "family-food"):
+            # Historical receipts persisted the display caption. Accept only
+            # the two shipped captions for this authenticated feature view;
+            # the manifest, root, target set and every hash still validate below.
+            caption = " — " + modes.FOOD_LABELS["family-food"]
+            for historical in ("Family Food", "Abby's Style"):
+                names.add(self.release.name.replace(caption, " — " + historical, 1))
         demand(
-            value["release"] == self.release.name,
+            type(value["release"]) is str and value["release"] in names,
             "Saved content identity is inconsistent",
         )
         return super()._validate_receipt(value)

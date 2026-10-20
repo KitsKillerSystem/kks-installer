@@ -1,0 +1,54 @@
+{
+  "status": "PASS_SOURCE_ONLY",
+  "baseline_commit": "8c9e21a8768598228be6d5cd785f446652976045",
+  "changed_app_methods": [
+    "__init__",
+    "render_language",
+    "label"
+  ],
+  "all_operational_handlers_identical": true,
+  "render_language_existing_behavior_identical": true,
+  "existing_event_bindings_preserved": true,
+  "new_presentation_callbacks": "Canvas geometry refresh, in-memory image crop/quiet-band tiling, sidebar footer placement only.",
+  "live_resize_language_checks": 18,
+  "canvas_images_bounded_at_origin": true,
+  "static_text_bounds_and_translations_pass": true,
+  "resize_max_seconds": 0.2712,
+  "resize_average_seconds": 0.2057,
+  "layout": "190px full-height sidebar; working surface starts at213px; 16px top/24px bottom margins. Owner authorized minor cosmetic placement changes.",
+  "asset": "Exact approved1448x1086 plate; Tk zoom2 then subsample3 at startup; quiet center paper and upper charcoal bands are tiled/cropped to resize. Original pumpkin/frame/corner leaves retained.",
+  "source_files": {
+    "source/kks_installer/ui.py": "a572cef652e3236e24e4e3557316c8fb4c4c74c564450853878b0ca2b583fe1c",
+    "source/review_build.py": "ef43f4a65ecd336cd3e8d0abc1c3642df0ad50410f5c885d4d7da1319253fe11",
+    "source/kks_installer/assets/halloween-plate.png": "d1fcb23dcd76fd4b68b7965c7dc612e0e0b301fc1a3fdb5f3faa4bfb466abe2a"
+  },
+  "build_performed_on_this_lane": false,
+  "game_writes": false,
+  "publication": false,
+  "source_commit": "e3760cd115d4852f2ee13384b10788a91afa25c7",
+  "focused_tests": {
+    "passed": 26,
+    "seconds": 11.994,
+    "log_sha256": "a9bf47e1a44e1bbde5196849a357fc5ee36bba9696e0eb4c5b7aa3b11fb6ccdf"
+  },
+  "visual_checks": {
+    "layouts": 10,
+    "languages": [
+      "en",
+      "de",
+      "fr",
+      "ru",
+      "ptbr"
+    ],
+    "sizes": [
+      "900x700",
+      "1000x760"
+    ],
+    "screenshots_visually_reviewed": true,
+    "operational_controls_in_bounds": true,
+    "fixture_only": true,
+    "visual_check_sha256": "5a352d82abac73f6029c86ffb4df9f417d49cde273e35da2af6b950b6e638583"
+  },
+  "text_encoding_proof": "Pinned git bytes explicitly decoded UTF8; current source explicitly read UTF8; no caption normalization. LF preserved.",
+  "frame_plate_sha256": "d1fcb23dcd76fd4b68b7965c7dc612e0e0b301fc1a3fdb5f3faa4bfb466abe2a"
+}

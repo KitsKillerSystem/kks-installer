@@ -28,6 +28,8 @@ from ._application import GERMAN_PROFILE, GERMAN_CAPABILITIES
 from ._application import RUSSIAN_PROFILE, FRENCH_PROFILE, LOCALIZED_PROFILES
 from ._application import RUSSIAN_OPTIONAL_CAPABILITY, FR_DE_OPTIONAL_CAPABILITY
 from ._application import PORTUGUESE_PROFILE, PORTUGUESE_OPTIONAL_CAPABILITY
+from ._application import FONT_LANGUAGES, CONTENT_NAMES, NEW_CONTENT_LANGUAGES
+from . import string_modes as modes
 from .engine import demand, digest, is_digest, durable_bytes, sync_directory
 from .ba2 import hash_file
 from .platforms import SafetyError, safe_path
@@ -81,10 +83,12 @@ def archive_members(profile):
     """The application, never package-provided paths, controls both catalogs."""
     demand(profile in PROFILES, "Unsupported asset profile")
     result = {path: (name,) for path, name in ARCHIVES.items()}
-    if profile == RUSSIAN_PROFILE:
+    language = profile_language(profile)
+    if FONT_LANGUAGES[language] != "en":
+        font_language = FONT_LANGUAGES[language]
         result = {
-            RUSSIAN_FONT: ("interface/fonts_ru.swf",),
-            CONFIG: ("interface/fontconfig_ru.txt",),
+            f"Data/SeventySix - Interface_{font_language}.ba2": (f"interface/fonts_{font_language}.swf",),
+            CONFIG: (f"interface/fontconfig_{language}.txt",),
         }
     if profile in LOCALIZED_PROFILES.values():
         language = profile_language(profile)
@@ -185,12 +189,13 @@ def hash_size(value):
 
 def validate_manifest(m):
     schema = m.get("schema") if isinstance(m, dict) else None
-    integer(schema, 1, 3)
+    integer(schema, 1, 4)
     fields(
         m,
         "schema package_type product channel content_version package_revision release_sequence created_utc installer_api minimum_installer_version required_capabilities profile game files targets qa"
         + (" equipment_naming" if schema >= 2 else "")
-        + (" perk_cards" if schema == 3 else ""),
+        + (" perk_cards" if schema >= 3 else "")
+        + (" string_modes" if schema == 4 else ""),
     )
     integer(m["installer_api"], INSTALLER_API, INSTALLER_API)
     demand(
@@ -200,18 +205,24 @@ def validate_manifest(m):
     )
     catalog = archive_members(m["profile"])
     permitted_payloads = profile_payloads(m["profile"])
+    if schema == 4:
+        permitted_payloads = permitted_payloads | {modes.PAYLOAD}
     capabilities = (profile_capabilities(m["profile"])
                     + ([CAPABILITY] if schema >= 2 else [])
-                    + ([PERK_CAPABILITY] if schema == 3 else [])
+                    + ([PERK_CAPABILITY] if schema >= 3 else [])
                     + ([RUSSIAN_OPTIONAL_CAPABILITY]
                        if schema >= 2 and m["profile"] == RUSSIAN_PROFILE else [])
                     + ([FR_DE_OPTIONAL_CAPABILITY]
                        if schema >= 2 and m["profile"] in (FRENCH_PROFILE, GERMAN_PROFILE) else [])
                     + ([PORTUGUESE_OPTIONAL_CAPABILITY]
-                       if schema >= 2 and m["profile"] == PORTUGUESE_PROFILE else []))
+                       if schema >= 2 and m["profile"] == PORTUGUESE_PROFILE else [])
+                    + ([modes.CAPABILITY] if schema == 4 else []))
     strings = profile_strings(m["profile"])
     translation = f"interface/translate_{profile_language(m['profile'])}.txt"
     version(m["content_version"])
+    if schema == 4 or profile_language(m["profile"]) in NEW_CONTENT_LANGUAGES:
+        demand(version(m["minimum_installer_version"]) >= (1, 9, 0),
+               "These content features require Installer 1.9.0 or newer")
     demand(
         version(m["minimum_installer_version"]) <= version(APP_VERSION),
         "This content package needs a newer KKS Installer",
@@ -286,6 +297,7 @@ def validate_manifest(m):
         integer(
             f["size"],
             1,
+            modes.MAX_PATCH if f["path"] == modes.PAYLOAD else
             MAX_TRANSLATION if f["path"] == "payload/" + translation else MAX_ASSET,
         )
         payloads[f["path"]] = f
@@ -372,7 +384,7 @@ def validate_manifest(m):
     demand(m["qa"]["status"] in ("candidate", "approved"), "Invalid QA status")
     plain(m["qa"]["report_id"])
     if schema >= 2:
-        demand(m["profile"] in (LOCALIZATION_PROFILE, RUSSIAN_PROFILE, FRENCH_PROFILE, GERMAN_PROFILE, PORTUGUESE_PROFILE)
+        demand(m["profile"] in (LOCALIZATION_PROFILE, *LOCALIZED_PROFILES.values())
                and version(m["minimum_installer_version"]) >= (1, 4, 0),
                "Equipment naming requires a supported Localization profile and Installer 1.4.0")
         if m["profile"] == RUSSIAN_PROFILE:
@@ -381,11 +393,11 @@ def validate_manifest(m):
         if m["profile"] in (FRENCH_PROFILE, GERMAN_PROFILE):
             demand(version(m["minimum_installer_version"]) >= (1, 7, 0),
                    "French and German optional features require Installer 1.7.0 or newer")
-    if schema == 3:
+    if schema >= 3:
         demand(version(m["minimum_installer_version"]) >= (1, 5, 0),
                "Optional perk cards require Installer 1.5.0 or newer")
     options = [("equipment_naming", CAPABILITY, CATEGORIES)] if schema >= 2 else []
-    if schema == 3:
+    if schema >= 3:
         options.append(("perk_cards", PERK_CAPABILITY, PERK_CATEGORIES))
     for key, capability, categories in options:
         option = m[key]
@@ -402,6 +414,30 @@ def validate_manifest(m):
             seen_ids.update(ids)
         hash_size({k: option[k] for k in ("sha256", "size")})
         integer(option["size"], 8, MAX_ASSET)
+    if schema == 4:
+        option = m["string_modes"]
+        fields(option, "algorithm payload outputs")
+        demand(option["algorithm"] == modes.CAPABILITY and option["payload"] == modes.PAYLOAD,
+               "Unknown string mode algorithm or payload")
+        demand(type(option["outputs"]) is list and len(option["outputs"]) == 12,
+               "String modes require all 12 equipment, food and junk combinations")
+        expected = {(n, f, j) for n in NAMING_PROFILES for f in modes.FOOD_PROFILES for j in modes.JUNK_PROFILES}
+        seen = set()
+        for output in option["outputs"]:
+            fields(output, "naming food junk sha256 size")
+            key = (output["naming"], output["food"], output["junk"])
+            demand(all(type(part) is str for part in key) and key in expected and key not in seen,
+                   "Duplicate or unsupported string mode combination")
+            seen.add(key)
+            hash_size({k: output[k] for k in ("sha256", "size")})
+            integer(output["size"], 8, MAX_ASSET)
+            if key == (FULL, modes.FOOD_DEFAULT, modes.JUNK_DEFAULT):
+                reference = payloads[f"payload/strings/seventysix_{game['language']}.strings"]
+                demand(all(output[k] == reference[k] for k in ("sha256", "size")),
+                       "Default string mode disagrees with canonical content")
+            if key == (VANILLA, modes.FOOD_DEFAULT, modes.JUNK_DEFAULT):
+                demand(all(output[k] == m["equipment_naming"][k] for k in ("sha256", "size")),
+                       "Native equipment mode disagrees with equipment output")
     return m
 
 
@@ -434,10 +470,12 @@ class SignedRelease:
         self.manifest_digest = digest(raw)
         self.naming = FULL
         self.perks = ON
+        self.food = modes.FOOD_DEFAULT
+        self.junk = modes.JUNK_DEFAULT
         self.name = "KKS " + self.manifest["content_version"]
         language = self.manifest["game"]["language"]
         if language != "en":
-            self.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français", "ptbr": "Português (Brasil)"}[language]
+            self.name += " " + CONTENT_NAMES[language]
         self.targets = self.manifest["targets"]
         self.by_path = {t["path"]: t for t in self.targets}
         self.files = {f["path"]: f for f in self.manifest["files"]}
@@ -455,54 +493,83 @@ class SignedRelease:
     def with_perks(self, perks):
         return self.with_features(perks=perks)
 
-    def with_features(self, *, naming=None, perks=None):
+    def with_features(self, *, naming=None, perks=None, food=None, junk=None):
         naming = self.naming if naming is None else naming
         perks = self.perks if perks is None else perks
+        food = self.food if food is None else food
+        junk = self.junk if junk is None else junk
+        demand(food in modes.FOOD_PROFILES and junk in modes.JUNK_PROFILES, "Unknown food or junk mode")
+        demand((food == modes.FOOD_DEFAULT and junk == modes.JUNK_DEFAULT) or "string_modes" in self.manifest,
+               "This content package does not support food or junk choices")
         demand(naming in NAMING_PROFILES, "Unknown equipment naming profile")
         demand(perks in PERK_PROFILES, "Unknown perk card choice")
         demand(naming == FULL or "equipment_naming" in self.manifest,
                "This content package does not support Vanilla Equipment Naming")
         demand(perks == ON or "perk_cards" in self.manifest,
                "This content package does not support turning off KKS Perk Cards")
-        if naming == self.naming and perks == self.perks:
+        if (naming, perks, food, junk) == (self.naming, self.perks, self.food, self.junk):
             return self
         result = copy(self)
         result.naming = naming
         result.perks = perks
+        result.food, result.junk = food, junk
         # Always rebuild the view from authenticated canonical metadata.
         result.targets = deepcopy(self.manifest["targets"])
         result.files = {f["path"]: dict(f) for f in self.manifest["files"]}
         result.name = "KKS " + self.manifest["content_version"]
         language = profile_language(self.manifest["profile"])
         if language != "en":
-            result.name += " " + {"de": "Deutsch", "ru": "Русский", "fr": "Français", "ptbr": "Português (Brasil)"}[language]
+            result.name += " " + CONTENT_NAMES[language]
         for key, extension, cache_path, transform in result._derived():
             option = self.manifest[key]
             target = next(t for t in result.targets if t["path"] == f"Data/strings/seventysix_{language}.{extension}")
+            target.update(after_sha256=option["sha256"], after_size=option["size"])
+            result.files[target["payload"]].update(sha256=option["sha256"], size=option["size"])
+        if "string_modes" in self.manifest:
+            option = result._mode_output()
+            target = next(t for t in result.targets if t["path"] == f"Data/strings/seventysix_{language}.strings")
             target.update(after_sha256=option["sha256"], after_size=option["size"])
             result.files[target["payload"]].update(sha256=option["sha256"], size=option["size"])
         if naming == VANILLA:
             result.name += " — Vanilla Equipment Naming"
         if perks == OFF:
             result.name += " — Vanilla Perk Cards"
+        if food != modes.FOOD_DEFAULT:
+            result.name += " — " + modes.FOOD_LABELS[food]
+        if junk != modes.JUNK_DEFAULT:
+            result.name += " — Junk: " + modes.JUNK_LABELS[junk]
         result.by_path = {t["path"]: t for t in result.targets}
         result.data = dict(self.data, targets=result.targets, release=result.name)
         return result
 
     def _derived(self):
-        if self.naming == VANILLA:
+        if self.naming == VANILLA and "string_modes" not in self.manifest:
             yield "equipment_naming", "strings", "derived/vanilla-equipment.strings", reset_equipment
         if self.perks == OFF:
             yield "perk_cards", "dlstrings", "derived/vanilla-perks.dlstrings", reset_perks
+
+    def _mode_output(self):
+        return next(o for o in self.manifest["string_modes"]["outputs"]
+                    if (o["naming"], o["food"], o["junk"]) == (self.naming, self.food, self.junk))
+
+    def _mode_cache(self):
+        if "string_modes" in self.manifest and (self.naming, self.food, self.junk) != (FULL, modes.FOOD_DEFAULT, modes.JUNK_DEFAULT):
+            return f"derived/{self.naming}-{self.food}-{self.junk}.strings"
+
+    def _patch(self):
+        item = self.files[modes.PAYLOAD]
+        raw = self.payload(modes.PAYLOAD, item["sha256"]).read_bytes()
+        ids = set().union(*(set(v) for v in self.manifest["equipment_naming"]["categories"].values()))
+        return modes.decode_patch(strict_json(raw, modes.MAX_PATCH), ids)
 
     def prepare_naming(self, game):
         self.prepare_features(game)
 
     def prepare_features(self, game):
         """Generate only in cache, before any game transaction; verify the signed output."""
-        if self.naming == FULL and self.perks == ON:
+        if self.naming == FULL and self.perks == ON and not self._mode_cache():
             return
-        source = self.with_features(naming=FULL, perks=ON)
+        source = self.with_features(naming=FULL, perks=ON, food=modes.FOOD_DEFAULT, junk=modes.JUNK_DEFAULT)
         source.verify_payloads()
         from .ba2 import BA2
         archive = BA2(safe_path(Path(game), LOCALIZATION, regular=True))
@@ -518,6 +585,19 @@ class SignedRelease:
             demand(len(derived) == option["size"] and digest(derived) == option["sha256"],
                    "Derived feature output does not match its signed checksum")
             durable_bytes(safe_path(self.folder, cache_path, regular=True), derived)
+        if self._mode_cache():
+            target = source.by_path[f"Data/strings/seventysix_{language}.strings"]
+            canonical = source.payload(target["payload"], target["after_sha256"]).read_bytes()
+            derived = modes.apply_modes(canonical, source._patch(), self.food, self.junk)
+            if self.naming == VANILLA:
+                vanilla = archive.extract(f"strings/seventysix_{language}.strings")
+                demand(len(vanilla) == target["vanilla_size"] and digest(vanilla) == target["vanilla_sha256"],
+                       "Optional features require the certified vanilla string baseline")
+                derived = reset_equipment(derived, vanilla, self.manifest["equipment_naming"]["categories"])
+            option = self._mode_output()
+            demand(len(derived) == option["size"] and digest(derived) == option["sha256"],
+                   "Derived string mode output does not match its signed checksum")
+            durable_bytes(safe_path(self.folder, self._mode_cache(), regular=True), derived)
 
     @classmethod
     def load(cls, folder, keys=None):
@@ -534,6 +614,8 @@ class SignedRelease:
         language = profile_language(self.manifest["profile"])
         cache_path = next((path for _, ext, path, _ in self._derived()
                            if relative == f"payload/strings/seventysix_{language}.{ext}"), relative)
+        if self._mode_cache() and relative == f"payload/strings/seventysix_{language}.strings":
+            cache_path = self._mode_cache()
         p = safe_path(self.folder, cache_path, regular=True)
         demand(
             p.is_file()
@@ -545,13 +627,21 @@ class SignedRelease:
         return p
 
     def verify_payloads(self):
-        if self.naming == VANILLA or self.perks == OFF:
+        if self.naming == VANILLA or self.perks == OFF or self._mode_cache():
             # Repairability depends on the canonical authenticated cache. Derived
             # bytes are regenerated before installation and checked by payload().
-            self.with_features(naming=FULL, perks=ON).verify_payloads()
+            self.with_features(naming=FULL, perks=ON, food=modes.FOOD_DEFAULT, junk=modes.JUNK_DEFAULT).verify_payloads()
             return
         for f in self.files.values():
             self.payload(f["path"], f["sha256"])
+        if "string_modes" in self.manifest:
+            from .string_tables import read_table
+            patch = self._patch()
+            language = profile_language(self.manifest["profile"])
+            item = self.files[f"payload/strings/seventysix_{language}.strings"]
+            ids = {sid for sid, _ in read_table(self.payload(item["path"], item["sha256"]).read_bytes(), "strings")}
+            demand(all(set(values) <= ids for group in patch.values() for values in group.values()),
+                   "String mode IDs are missing from content")
 
 
 def bounded_file(path, limit):
@@ -581,7 +671,7 @@ def _container(file):
         sig == b"PK\x05\x06"
         and disk == cd_disk == 0
         and disk_n == n
-        and 7 <= n <= 11
+        and 7 <= n <= 12
         and comment == 0,
         "Unsupported, multipart, ZIP64, or malformed ZIP directory",
     )
@@ -602,6 +692,7 @@ def _container(file):
             and name
             in set().union(*(profile_payloads(p) for p in PROFILES))
             | {"manifest.json", "manifest.sig.json"}
+            | {modes.PAYLOAD}
             | DIRECTORIES,
             "Unexpected, duplicate or unsafe ZIP path",
         )
@@ -623,6 +714,8 @@ def _container(file):
             limit = MAX_MANIFEST
         elif name == "manifest.sig.json":
             limit = MAX_SIGNATURE
+        elif name == modes.PAYLOAD:
+            limit = modes.MAX_PATCH
         elif name in DIRECTORIES:
             limit = 0
         elif name in {TRANSLATION_PAYLOAD} | {
