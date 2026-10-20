@@ -20,16 +20,16 @@ CONTENT_HINTS.update({lang: f"Content language: {CONTENT_NAMES[lang]}. Select th
 MODE_TEXT = {
     "de": {"Food:": "Nahrung:", "Junk Components:": "Schrottbestandteile:",
            "KKS Default (Glyph Components)": "KKS-Standard (Komponentensymbole)", "Text Based": "Text", "None": "Keine",
-           "Food V2": "Nahrung V2", "Family Food": "Nahrung nach Familie"},
+           "Kit's Style": "Kit's Style", "Abby's Style": "Abby's Style"},
     "fr": {"Food:": "Nourriture :", "Junk Components:": "Composants :",
            "KKS Default (Glyph Components)": "KKS par défaut (glyphes)", "Text Based": "Texte", "None": "Aucun",
-           "Food V2": "Nourriture V2", "Family Food": "Nourriture par famille"},
+           "Kit's Style": "Kit's Style", "Abby's Style": "Abby's Style"},
     "ru": {"Food:": "Еда:", "Junk Components:": "Компоненты хлама:",
            "KKS Default (Glyph Components)": "KKS по умолчанию (символы)", "Text Based": "Текст", "None": "Нет",
-           "Food V2": "Еда V2", "Family Food": "Еда по категориям"},
+           "Kit's Style": "Kit's Style", "Abby's Style": "Abby's Style"},
     "ptbr": {"Food:": "Comida:", "Junk Components:": "Componentes:",
              "KKS Default (Glyph Components)": "Padrão KKS (glifos)", "Text Based": "Texto", "None": "Nenhum",
-             "Food V2": "Comida V2", "Family Food": "Comida por família"},
+             "Kit's Style": "Kit's Style", "Abby's Style": "Abby's Style"},
 }
 
 APPLY_TEXT = {

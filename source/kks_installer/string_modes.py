@@ -13,7 +13,7 @@ FOOD_DEFAULT = "food-v2"
 JUNK_DEFAULT = "glyph"
 FOOD_PROFILES = (FOOD_DEFAULT, "family-food")
 JUNK_PROFILES = (JUNK_DEFAULT, "text", "none")
-FOOD_LABELS = {FOOD_DEFAULT: "Food V2", "family-food": "Family Food"}
+FOOD_LABELS = {FOOD_DEFAULT: "Kit's Style", "family-food": "Abby's Style"}
 JUNK_LABELS = {JUNK_DEFAULT: "KKS Default (Glyph Components)", "text": "Text Based", "none": "None"}
 
 

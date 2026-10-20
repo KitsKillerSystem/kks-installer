@@ -15,8 +15,15 @@ Supported schema-4 packages expose four independent choices:
 |---|---|---|
 | Equipment | KKS / Vanilla Equipment Naming | KKS |
 | Perk cards | KKS / Vanilla | KKS |
-| Food | Food V2 / Family Food | Food V2 |
+| Food | Kit's Style / Abby's Style | Kit's Style |
 | Junk components | KKS Default (Glyph Components) / Text Based / None | KKS Default |
+
+Kit's Style groups prepared food by gameplay use; Abby's Style groups it by food
+family. These final KKS 1.3.0 names are presentation changes only, prepared with
+the staged Apply work for the next installer build. Classification, sorting,
+glyph allocation, codepoints and package behavior are unchanged. The installer
+uses the short names in every interface language to preserve the existing layout.
+The sealed 1.9.0 candidate retains its historical labels.
 
 There are 24 configurations per language. Junk None removes component labels;
 the authored content retains a weight annotation only for Junk-Heavy. The
@@ -25,7 +32,7 @@ Those literal localized values come from the signed content.
 
 One language's package contains six canonical resources and a seventh small
 `payload/string-modes.json` file. Its fixed schema describes sorted raw-byte
-replacements for Family Food, text components and no components. It cannot
+replacements for Abby's Style, text components and no components. It cannot
 introduce filesystem targets, executable hooks, additional options or arbitrary
 archives. Food and junk IDs must be disjoint, must exist in the canonical table,
 and cannot overlap complete native-equipment categories. Every equipment × food
@@ -49,6 +56,8 @@ content, including after Restore; older installers cannot read this history.
 CLI additions: `--food food-v2|family-food` and `--junk glyph|text|none` for Check
 or Install. Repair and Restore use the recorded installation choices. Existing
 `--naming` and `--perk-cards` options retain their meanings.
+The stable food identifiers remain `food-v2` for Kit's Style and `family-food`
+for Abby's Style in packages, saved state and the CLI; no migration is required.
 
 Publisher API: `build_content.build(..., string_mode_tables={(food, junk): Path,
 ...}, equipment_naming=True, perk_cards=True, translation_localization=True)`.
