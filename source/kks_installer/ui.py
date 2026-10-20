@@ -13,16 +13,16 @@ from .equipment import FULL, LABELS
 from .perks import ON, LABELS as PERK_LABELS
 from .string_modes import FOOD_DEFAULT, JUNK_DEFAULT, FOOD_LABELS, JUNK_LABELS
 
-BG = "#e8e2d4"
-PANEL = "#f5f0e5"
-PANEL2 = "#d9d2c2"
-INK = "#252d2b"
-MUTED = "#59625c"
-GREEN = "#536b3e"
-LINE = "#afa997"
-RED = "#a4402c"
-ACCENT = "#ce653c"
-DARK = "#27312e"
+BG = "#eee3ca"
+PANEL = "#f7efdf"
+PANEL2 = "#d9cbb0"
+INK = "#242820"
+MUTED = "#605a49"
+GREEN = "#49613d"
+LINE = "#a99a7c"
+RED = "#9c3b21"
+ACCENT = "#b65325"
+DARK = "#23271f"
 
 
 class Configuration(NamedTuple):
@@ -66,6 +66,16 @@ class App:
         style = ttk.Style()
         style.theme_use("clam")
         style.configure(
+            "TCombobox", fieldbackground=PANEL, background=PANEL2,
+            foreground=INK, arrowcolor=INK, bordercolor=LINE,
+            lightcolor=LINE, darkcolor=LINE, selectbackground=PANEL2,
+            selectforeground=INK,
+        )
+        style.map(
+            "TCombobox", fieldbackground=[("readonly", PANEL), ("disabled", PANEL2)],
+            foreground=[("disabled", MUTED)], arrowcolor=[("disabled", MUTED)],
+        )
+        style.configure(
             "KKS.Horizontal.TProgressbar",
             troughcolor=PANEL2,
             bordercolor=PANEL2,
@@ -98,12 +108,12 @@ class App:
             justify="left",
             anchor="w",
         ).pack(fill="x", padx=22)
-        tk.Frame(spine, bg="#65716a", height=1).pack(fill="x", padx=22, pady=23)
+        tk.Frame(spine, bg=ACCENT, height=1).pack(fill="x", padx=22, pady=23)
         tk.Label(
             spine,
             text="CONTENT\nINSTALLER",
             font=("Consolas", 10),
-            fg="#b4bfb5",
+            fg=PANEL2,
             bg=DARK,
             justify="left",
             anchor="w",
@@ -112,7 +122,7 @@ class App:
             spine,
             text="v" + APP_VERSION,
             font=("Consolas", 10),
-            fg="#b4bfb5",
+            fg=PANEL2,
             bg=DARK,
             anchor="w",
         ).pack(fill="x", padx=22, pady=(6, 0))
@@ -120,7 +130,7 @@ class App:
             spine,
             text="FALLOUT 76\nSTEAM\n13 CONTENT LANGUAGES",
             font=("Consolas", 9),
-            fg="#b4bfb5",
+            fg=PANEL2,
             bg=DARK,
             justify="left",
             anchor="w",
@@ -143,6 +153,18 @@ class App:
         )
         self.language_box.pack(fill="x", padx=18)
         self.language_box.bind("<<ComboboxSelected>>", self.change_language)
+
+        # Decorative only: load once at startup, outside all configuration paths.
+        # Integer subsampling keeps Tk as the only runtime image dependency.
+        artwork = tk.PhotoImage(file=str(Path(__file__).resolve().parent / "assets" / "halloween.png"))
+        scale = max(1, (artwork.width() + 147) // 148)
+        self.seasonal_art = artwork.subsample(scale, scale)
+        self.seasonal_canvas = tk.Canvas(
+            spine, bg=DARK, width=148, height=self.seasonal_art.height(),
+            highlightthickness=0, borderwidth=0, takefocus=False,
+        )
+        self.seasonal_canvas.pack(fill="x", padx=11, pady=(12, 0))
+        self.seasonal_canvas.create_image(74, 0, image=self.seasonal_art, anchor="n")
 
         outer = tk.Frame(self.root, bg=BG)
         outer.pack(side="left", fill="both", expand=True, padx=28, pady=6)
@@ -412,9 +434,9 @@ class App:
             font=("Segoe UI", 11, "bold" if primary else "normal"),
             bg=GREEN if primary else PANEL2,
             fg="#ffffff" if primary else INK,
-            activebackground="#415631" if primary else "#c6beab",
+            activebackground="#344e2f" if primary else "#cabea3",
             activeforeground="#ffffff" if primary else INK,
-            disabledforeground="#8b9282",
+            disabledforeground="#767b69",
             relief="flat",
             borderwidth=0,
             padx=17,

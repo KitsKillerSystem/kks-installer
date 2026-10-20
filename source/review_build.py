@@ -75,6 +75,8 @@ def main():
         str(build / "pyinstaller"),
         "--specpath",
         str(build),
+        "--add-data",
+        "kks_installer/assets/halloween.png;kks_installer/assets",
         "launcher.py",
     ]
     for name, command in (
