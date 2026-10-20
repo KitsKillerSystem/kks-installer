@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "date_utc": "2026-10-20 19:37:40 UTC",
+  "owner": "Allen",
+  "status": "OWNER_ACCEPTED_RELEASE_WITH_REMAINING_WARNINGS",
+  "instruction": "I accept get this thing on GitHub already lol, the next phase of work is all about security hardening",
+  "context": "Owner supplied the exact VirusTotal report, was told the exact EXE has 7/70 detections, one timeout, four unsupported scanners and that residual acceptance was required, then explicitly accepted and instructed immediate GitHub publication.",
+  "exe": {
+    "filename": "KKSInstaller.exe",
+    "version": "1.10.0",
+    "sha256": "5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+    "size_bytes": 20363770
+  },
+  "report_url": "https://www.virustotal.com/gui/file/5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "analysis_utc": "2026-10-20T19:29:42Z",
+  "scan_evidence": "evidence/VT_SCAN_2026-10-20.json",
+  "behavior_evidence": "evidence/VT_BEHAVIOR_2026-10-20.json",
+  "review": "scan-review-r001/SECURITY_REVIEW.md",
+  "known_limits": [
+    "Seven vendor triggers remain unresolved; no false-positive determination or comprehensive safety finding.",
+    "One timeout and four unsupported engines are not clean outcomes.",
+    "Behavioral coverage is partial; Jujubox shows a missing-DLL startup failure; some sandboxes remain in progress.",
+    "CAPA static labels do not establish executed evasion, and some rule-match causes remain unlocated.",
+    "No live-game or native-speaker test is inferred from this publication instruction."
+  ],
+  "scope": "Publish the reviewed installer source and installer-only GitHub release. Verify public download before notifying owner to proceed with Nexus.",
+  "excluded": [
+    "Content packages on GitHub",
+    "Manual packages on GitHub",
+    "Agent publication to Nexus",
+    "Rebuild to change antivirus score"
+  ],
+  "next_phase": "Dedicated security hardening, as directed by owner; not performed by this publication step.",
+  "publication": false
+}

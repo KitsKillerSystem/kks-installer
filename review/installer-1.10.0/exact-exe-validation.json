@@ -1,0 +1,114 @@
+{
+  "status": "PASS",
+  "executable": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\installer\\revision-r003\\build-final\\app\\KKSInstaller.exe",
+  "exe_sha256": "5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "source_commit": "e3760cd115d4852f2ee13384b10788a91afa25c7",
+  "package_authentication": [
+    {
+      "language": "en",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_English_Steam_26054086_R003.zip",
+      "sha256": "de72766781b4c57d61d3b1a83dac97883e44d04c24c5bd2bc7e980b6925fdb2b",
+      "manifest": "050b3a5b71ff67307cf8396335e56d8c3ee739d6f9b0a5f89ac211509632ae31"
+    },
+    {
+      "language": "de",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Deutsch_Steam_26054086_R003.zip",
+      "sha256": "b1b2b0d4fa8aa65b173e87c7fdfb8163a0e4bae2b1bad2e70242fcb993569204",
+      "manifest": "2f6b6796f31c97ca9542accc98c9bdcd26163ecaf0525a8d9d63bd9b5ff08ef7"
+    },
+    {
+      "language": "ru",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Russian_Steam_26054086_R003.zip",
+      "sha256": "a6b17d156c5e36f27ee63557d46920487441c3521b464daab3faa1b6d0699601",
+      "manifest": "4069706e50d175aaac28915a22f3574860e631e6d945ea0c26b1abe774dea3e1"
+    },
+    {
+      "language": "fr",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_French_Steam_26054086_R003.zip",
+      "sha256": "3367209258910de95b250f85a103b80666d691b9a0335a34e3d78e180919935e",
+      "manifest": "9a26093783f156a716334211034558f529da21aa9632e4b0f5b1acf42c55a049"
+    },
+    {
+      "language": "ptbr",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Portuguese_BR_Steam_26054086_R003.zip",
+      "sha256": "cdd957142c15d3ff628df69d8e7180a2bce7b3b1fd4f53369276a2c1adf1c8e6",
+      "manifest": "453efa8748596a461649ae41febe78a3a42835b9213f906001c667abb5d96574"
+    },
+    {
+      "language": "es",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Spanish_Steam_26054086_R002.zip",
+      "sha256": "b2ce440a48caed4c55190ae2becf20aa4feb09fa24af919045b2e360df3644d6",
+      "manifest": "8dd94816a24e70a5cdf8b7e48fe0a771382a8ffc478be711689d57410f2bb8ea"
+    },
+    {
+      "language": "esmx",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Spanish_Latin_America_Steam_26054086_R002.zip",
+      "sha256": "859841b2525938eece05f4d716b570d7220e5063c105536b23f6882c96f60b2e",
+      "manifest": "03b78cabb84005aeed1e18146c901942632509f53c36c92725ab194362c41cdf"
+    },
+    {
+      "language": "it",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Italian_Steam_26054086_R002.zip",
+      "sha256": "62ae6bda61f4e4e187cfd9fbaf5db5398995f62a7359555230c9d05dab996454",
+      "manifest": "7caa6e930d4bce9d1b545e7e71d2ff27f322c33e1da6dc7b5eb77e0579b2e235"
+    },
+    {
+      "language": "ja",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Japanese_Steam_26054086_R002.zip",
+      "sha256": "f476391665d041fc3c110a2bfdfa4d9afe37bb6ffa6022ccea0fa17a30db8077",
+      "manifest": "4273714cf955d80a71a8ed7f200fab6ac66e5e20346c5dc6d252195f36b7380c"
+    },
+    {
+      "language": "ko",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Korean_Steam_26054086_R002.zip",
+      "sha256": "cd4191788bc3c3949b4f3b326a2ca4b8e08502ae9cae12f8099733a8d0f6e2cf",
+      "manifest": "e292efeb3b4ecd7c1d36d778712ce8ce7e7cd0b0e65f9d0a6e78c1a45d975daf"
+    },
+    {
+      "language": "pl",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Polish_Steam_26054086_R002.zip",
+      "sha256": "708ecb9e252af65e638b316ec4922b23562b45ff6a0f3d224fc4a8708a6da8fa",
+      "manifest": "2bee6a52bf93e31641f922fa5e7eea6f767fbc03008bffd9a351cc28a4675ad1"
+    },
+    {
+      "language": "zhhans",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Chinese_Simplified_Steam_26054086_R002.zip",
+      "sha256": "fe5c0d410a6683adbc50ccf976365c3e035808b8bbb93eb512a8368458517c0b",
+      "manifest": "d944953a4e1ed10ee81fcfa9943196f2a6346d91e0ad4331fcf722988312bffb"
+    },
+    {
+      "language": "zhhant",
+      "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\packages\\KKS_1.3.0_Chinese_Traditional_Steam_26054086_R002.zip",
+      "sha256": "49b1a4c7dbc1f4e022bdb0c9df59b95b3abf63f66fc341c6743fe5efe2e3de24",
+      "manifest": "69a8d7a305c1e200eda6746795a496507c3ecaa117e9c07551df978e719a7921"
+    }
+  ],
+  "historical_source_commit": "13539b0308ab516b0dedc0ec6725b9634fb77306",
+  "old_receipt_sha256": "6d9c6b8140997c37f3c2158908aa61a6a3b18af70988d8b8b1f85990e3e07f31",
+  "same_historical_receipt_preserved": true,
+  "migration_verified": true,
+  "repair_preserved_profile": true,
+  "cacheless_restore_exact_new_baseline": true,
+  "bundled_art_sha256": {
+    "source/kks_installer/assets/halloween-plate.png": "d1fcb23dcd76fd4b68b7965c7dc612e0e0b301fc1a3fdb5f3faa4bfb466abe2a",
+    "source/kks_installer/assets/halloween.png": "d39912b675c3688bc7a543db8bf99dcb133051b893b5df044c3a684cc2c33383"
+  },
+  "fixture": "<USER_HOME>\\Documents\\KKS_TestGames\\LIVE26054086_EXE_MIGRATION_R003\\en",
+  "restored_files": {
+    "Fallout76.exe": "e28dc3070aaa6946f93bb833ae62ca07d9e7cabe0e0f362aa79955026c25cf0e",
+    "Data/SeventySix - Interface.ba2": "324cfed70e5bebf99334503659e2945a2507595ee9471f4b71cf2ca77fb29de2",
+    "Data/SeventySix - Interface_en.ba2": "a1311afefbc5fce4f4b5389684e84d86a845abd7e0fc91593ae4f4cb81466655",
+    "Data/SeventySix - Interface_ja.ba2": "c81f7cc1cc659d0d4aafc3a01d81073ad0f9639aaf1c53acbdc03adb8cdadf4e",
+    "Data/SeventySix - Interface_ko.ba2": "b928c3e207445e4a309a83e3664bc3027ec5d7300820304fd42020495e3ea3c5",
+    "Data/SeventySix - Interface_ru.ba2": "1fc6b0fdb71fb97821189bddd3d603589a6890e64e1f42032cdeda5eb4206167",
+    "Data/SeventySix - Interface_zhhans.ba2": "e32735f87ca05bb3e7a56df26ed3b19a075f34cf1f605a3a418bd17f9d9a07cb",
+    "Data/SeventySix - Interface_zhhant.ba2": "d351c3fa686da33f79fb1a26d6d90081a2aacde5c3f1124a86205733a4694378",
+    "Data/SeventySix - Localization.ba2": "b3dc3e54cc4e46b1e5d34ad03bc7cb7238ce4f623d3e8af78669ece8e83fff19",
+    "Data/SeventySix.esm": "7558250d700db08035b90f4a97cb2da2182ace8885ad82e66caf5d2519412fd1",
+    "Data/strings/seventysix_en.ilstrings": "4cee7b3cb5913d69a09ee695ab705c945a975a35c60354df9583807fa13179b2"
+  },
+  "live_game_writes": false,
+  "publication": false,
+  "gameplay_acceptance": false,
+  "security_scan_performed": false
+}

@@ -1,0 +1,519 @@
+{
+  "status": "PASS",
+  "language": "pl",
+  "live_build": "26054086",
+  "reason": "Sealed Polish config selected fonts_ru but package deployed fonts_en; the deployed EN-based library also lacked Roboto Condensed Light required by five Polish aliases.",
+  "correction": "Use all native RU/Polish faces with accepted Polish artwork, store at existing authorized fonts_en path, and route only copied fontlib line to fonts_en.",
+  "native_face_count": 13,
+  "mapped_face_count": 13,
+  "alias_count": 25,
+  "faces": [
+    {
+      "native_id": 1,
+      "native_name": "Brush Script Std Medium",
+      "polish_donor_id": 26,
+      "polish_donor_name": "Brush Script Std Medium",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 140,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 245,
+      "native_glyph_count": 247,
+      "output_glyph_count": 6647,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 399
+    },
+    {
+      "native_id": 2,
+      "native_name": "Slate Mobile",
+      "polish_donor_id": 25,
+      "polish_donor_name": "Slate Mobile",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 132,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 189,
+      "native_glyph_count": 191,
+      "output_glyph_count": 6591,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 1722
+    },
+    {
+      "native_id": 3,
+      "native_name": "Kiddie Cocktails",
+      "polish_donor_id": 24,
+      "polish_donor_name": "Kiddie Cocktails",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 132,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 241,
+      "native_glyph_count": 243,
+      "output_glyph_count": 6643,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 339
+    },
+    {
+      "native_id": 4,
+      "native_name": "Roboto Condensed Light",
+      "polish_donor_id": 16,
+      "polish_donor_name": "Roboto Condensed",
+      "reason": "Missing native Light face uses established regular KKS bank",
+      "flags_before": 140,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 824,
+      "native_glyph_count": 826,
+      "output_glyph_count": 7226,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 0
+    },
+    {
+      "native_id": 5,
+      "native_name": "Guidestone.fcp Symbols",
+      "polish_donor_id": 19,
+      "polish_donor_name": "Guidestone.fcp Symbols",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 132,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 30,
+      "native_glyph_count": 30,
+      "output_glyph_count": 6432,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 0
+    },
+    {
+      "native_id": 6,
+      "native_name": "Roboto Condensed",
+      "polish_donor_id": 16,
+      "polish_donor_name": "Roboto Condensed",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 140,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 824,
+      "native_glyph_count": 826,
+      "output_glyph_count": 7226,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 0
+    },
+    {
+      "native_id": 7,
+      "native_name": "Roboto Condensed Bold",
+      "polish_donor_id": 15,
+      "polish_donor_name": "Roboto Condensed Bold",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 141,
+      "flags_after": 141,
+      "native_ordinary_glyphs_preserved": 824,
+      "native_glyph_count": 826,
+      "output_glyph_count": 7226,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "f139f835f08cdb2d432807dfdf126caab897b7fb3cc1152cc943e170050b536d",
+      "native_kerning_pairs_preserved": 0
+    },
+    {
+      "native_id": 8,
+      "native_name": "Share-TechMono Regular",
+      "polish_donor_id": 14,
+      "polish_donor_name": "Share-TechMono Regular",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 140,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 325,
+      "native_glyph_count": 327,
+      "output_glyph_count": 6727,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 0
+    },
+    {
+      "native_id": 9,
+      "native_name": "Controller  Buttons",
+      "polish_donor_id": 13,
+      "polish_donor_name": "Controller  Buttons",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 132,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 57,
+      "native_glyph_count": 57,
+      "output_glyph_count": 6459,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 0
+    },
+    {
+      "native_id": 10,
+      "native_name": "Controller  Buttons inverted",
+      "polish_donor_id": 12,
+      "polish_donor_name": "Controller  Buttons inverted",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 132,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 57,
+      "native_glyph_count": 57,
+      "output_glyph_count": 6459,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 0
+    },
+    {
+      "native_id": 11,
+      "native_name": "NixieTube",
+      "polish_donor_id": 6,
+      "polish_donor_name": "NixieTube",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 132,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 105,
+      "native_glyph_count": 105,
+      "output_glyph_count": 6507,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 0
+    },
+    {
+      "native_id": 12,
+      "native_name": "Arial",
+      "polish_donor_id": 5,
+      "polish_donor_name": "Arial",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 132,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 115,
+      "native_glyph_count": 115,
+      "output_glyph_count": 6517,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 909
+    },
+    {
+      "native_id": 13,
+      "native_name": "Consolas",
+      "polish_donor_id": 4,
+      "polish_donor_name": "Consolas",
+      "reason": "Exact accepted Polish bank for the same native face role",
+      "flags_before": 132,
+      "flags_after": 140,
+      "native_ordinary_glyphs_preserved": 115,
+      "native_glyph_count": 115,
+      "output_glyph_count": 6517,
+      "pua_glyphs_transferred": 6400,
+      "intentional_overrides": [
+        "U+00AC",
+        "U+00B1"
+      ],
+      "copied_bank_sha256": "82580d017f1d41b2dbbac40ca8b5ed3e8321ba2932fb5ce3e3e4e978790d7827",
+      "native_kerning_pairs_preserved": 0
+    }
+  ],
+  "aliases": [
+    {
+      "alias": "$76HandwrittenIlliterate",
+      "face": "Roboto Condensed Light",
+      "style": "Normal",
+      "font_id": 4
+    },
+    {
+      "alias": "$76HandwrittenNeat_Font",
+      "face": "Roboto Condensed Light",
+      "style": "Normal",
+      "font_id": 4
+    },
+    {
+      "alias": "$BerlinDemi",
+      "face": "Roboto Condensed Bold",
+      "style": "Bold",
+      "font_id": 7
+    },
+    {
+      "alias": "$BRODY",
+      "face": "Roboto Condensed Bold",
+      "style": "Bold",
+      "font_id": 7
+    },
+    {
+      "alias": "$Brush_Script_Std",
+      "face": "Brush Script Std Medium",
+      "style": "Normal",
+      "font_id": 1
+    },
+    {
+      "alias": "$ChowderHead",
+      "face": "Roboto Condensed Bold",
+      "style": "Bold",
+      "font_id": 7
+    },
+    {
+      "alias": "$ConsoleFont",
+      "face": "Arial",
+      "style": "Normal",
+      "font_id": 12
+    },
+    {
+      "alias": "$Controller_Buttons",
+      "face": "Controller  Buttons",
+      "style": "Normal",
+      "font_id": 9
+    },
+    {
+      "alias": "$Controller_Buttons_inverted",
+      "face": "Controller  Buttons inverted",
+      "style": "Normal",
+      "font_id": 10
+    },
+    {
+      "alias": "$Credits_Font",
+      "face": "Roboto Condensed",
+      "style": "Normal",
+      "font_id": 6
+    },
+    {
+      "alias": "$DebugTextFont",
+      "face": "Consolas",
+      "style": "Normal",
+      "font_id": 13
+    },
+    {
+      "alias": "$DotMatrix_Font",
+      "face": "Share-TechMono Regular",
+      "style": "Normal",
+      "font_id": 8
+    },
+    {
+      "alias": "$evaScript_Font",
+      "face": "Roboto Condensed Light",
+      "style": "Normal",
+      "font_id": 4
+    },
+    {
+      "alias": "$Futura_Bold",
+      "face": "Roboto Condensed Bold",
+      "style": "Bold",
+      "font_id": 7
+    },
+    {
+      "alias": "$Guidestone",
+      "face": "Guidestone.fcp Symbols",
+      "style": "Normal",
+      "font_id": 5
+    },
+    {
+      "alias": "$HandwrittenFont",
+      "face": "Roboto Condensed Light",
+      "style": "Normal",
+      "font_id": 4
+    },
+    {
+      "alias": "$KiddieCocktails",
+      "face": "Kiddie Cocktails",
+      "style": "Normal",
+      "font_id": 3
+    },
+    {
+      "alias": "$Leiascript_Font",
+      "face": "Roboto Condensed Light",
+      "style": "Normal",
+      "font_id": 4
+    },
+    {
+      "alias": "$MAIN_Font",
+      "face": "Roboto Condensed",
+      "style": "Normal",
+      "font_id": 6
+    },
+    {
+      "alias": "$MAIN_Font_Bold",
+      "face": "Roboto Condensed Bold",
+      "style": "Bold",
+      "font_id": 7
+    },
+    {
+      "alias": "$NixieTube_Font",
+      "face": "NixieTube",
+      "style": "Normal",
+      "font_id": 11
+    },
+    {
+      "alias": "$Portico_Font_Regular",
+      "face": "Roboto Condensed Bold",
+      "style": "Bold",
+      "font_id": 7
+    },
+    {
+      "alias": "$Slate_Mobile",
+      "face": "Slate Mobile",
+      "style": "Normal",
+      "font_id": 2
+    },
+    {
+      "alias": "$Terminal_Font",
+      "face": "Share-TechMono Regular",
+      "style": "Normal",
+      "font_id": 8
+    },
+    {
+      "alias": "$Typewriter_Font",
+      "face": "Share-TechMono Regular",
+      "style": "Normal",
+      "font_id": 8
+    }
+  ],
+  "native_non_pua_glyphs_preserved_excluding_intentional_AC_B1": 3951,
+  "pua_glyph_and_layout_exact_checks": 83200,
+  "intentional_AC_B1_exact_checks": 26,
+  "alignment_exact_checks": 87177,
+  "all_native_face_layout_metrics_kerning_and_registrations_exact": true,
+  "kerning_policy": "Retain native kerning byte-for-byte; neither native nor donor kerning references any transferred PUA, AC, or B1 codepoint.",
+  "ordinary_polish_alphabet": "ĄĆĘŁŃÓŚŹŻąćęłńóśźż",
+  "alphabet_faces_verified": [
+    4,
+    6,
+    7
+  ],
+  "perk_cards": 451,
+  "distinct_card_artwork_codepoints": 1956,
+  "perk_face_mapping": {
+    "accepted_polish_card_face": 15,
+    "correct_native_polish_card_face": 7
+  },
+  "all_compiled_card_description_sequences_match_accepted_patches": true,
+  "config_change": "Only fontlib fonts_ru to fonts_en; all aliases, allowlists and remaining bytes retained.",
+  "native_nonfont_tags_byte_exact": 20,
+  "native_import_assets_tags": 0,
+  "native_embedded_fonts_en_or_fonts_ru_filename_references": 0,
+  "native_symbols_and_class_registration_preserved": true,
+  "filename_is_external_config_and_package_route": true,
+  "codepoint_relocations": 0,
+  "artwork_regenerated": false,
+  "strings_or_mode_changes": false,
+  "installer_source_or_executable_changes": false,
+  "sealed_inputs_unchanged": true,
+  "live_game_writes": false,
+  "gameplay_verified": false,
+  "runtime_visual_check": "Owner in-game smoke check remains appropriate; this receipt proves binary structure, glyph, layout, routing and reference invariants.",
+  "inputs": [
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\native-fonts\\ru\\fonts_ru.swf",
+      "sha256": "81e74498611cadb208f2ed7ad334be759cbdceae0e9dc5fe53780761a69d54d5",
+      "bytes": 369430
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\assembled\\pl\\payload\\interface\\fonts_en.swf",
+      "sha256": "aad7d8e5b99a288dc9e115a19cb31e168de8367a01384a2bdcc1b91682b67882",
+      "bytes": 89828762
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\assembled\\pl\\payload\\interface\\fontconfig_pl.txt",
+      "sha256": "d5ab81331fa0233c07a797601d0c61f0d2c48af81ebbd2f0ff15ecb322f514fb",
+      "bytes": 4746
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\native\\pl\\interface\\fontconfig_pl.txt",
+      "sha256": "38775847d845571b9657a8e9e41c8a19e2611de3a5bc9c2ecc954425f6a5f436",
+      "bytes": 1780
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\assembled\\pl\\payload\\strings\\seventysix_pl.dlstrings",
+      "sha256": "df0885ff37e2ee52c3f780d1b984d1047434c49f1e777e6f11b42578af51e53d",
+      "bytes": 4050853
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\All_Languages_Release_R001\\font\\pl\\perks\\evidence\\allocation.json",
+      "sha256": "988445262752faf634830471618172019e8ea7d093eea54ef2936d1eff2c3f96",
+      "bytes": 724672
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\All_Languages_Release_R001\\font\\pl\\perks\\description-patches.json",
+      "sha256": "73ee7b5a5f4eaa2f49fc2af70afbfe0e7c5e72aeef208d4f6b52a9c03ac438a0",
+      "bytes": 14592
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\All_Languages_Release_R001\\font\\pl\\perks\\VALIDATION.json",
+      "sha256": "e5a36b5a242de2ded5233a68df3ba0942e7b5793380742d1e9cc1d9f74b23286",
+      "bytes": 5750
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\All_Languages_Release_R001\\source\\upstream\\Features\\Perk_Cards\\outputs\\KKS_PERK_P002\\source\\swf_font.py",
+      "sha256": "9b3fb74d5133b4bac0fb0e242e1eb3127c4de04ff7d599e681d4520ae4037251",
+      "bytes": 4822
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\All_Languages_Release_R001\\source\\upstream\\Font_Development\\Coverage_F002\\source\\build_coverage.py",
+      "sha256": "5ef3dc34fbabdd2d715fb70209f5051e05b9a4575e656cfa49c8d6f90b912630",
+      "bytes": 8138
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\tools\\compare_baseline.py",
+      "sha256": "1d4dfa9c924d3b22d5eb803bd2c37b27ba88351b665a635da882dda6ac313a24",
+      "bytes": 16061
+    }
+  ],
+  "outputs": [
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\polish-font-routing-r001\\payload\\interface\\fonts_en.swf",
+      "sha256": "4b44faad7cd95d466212ddcce7c6c1fbb505b3ffae7d7a869c9710779bb68249",
+      "bytes": 43361418
+    },
+    {
+      "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\polish-font-routing-r001\\payload\\interface\\fontconfig_pl.txt",
+      "sha256": "aee47b9cf649f1570dde45c416eddd4985ef28a28618b7c1b6c793c4a0f4235d",
+      "bytes": 4746
+    }
+  ],
+  "script": {
+    "path": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\polish-font-routing-r001\\build_polish_font.py",
+    "sha256": "d118da8bec249784481736613158d75c56566e46f8f2d50f989159fa81df986a"
+  },
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "zlib": "1.3.2"
+}

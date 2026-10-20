@@ -1,0 +1,139 @@
+{
+  "status": "BOUNDED_REVIEW_COMPLETE_OWNER_RESIDUAL_ACCEPTANCE_PENDING",
+  "reviewed_utc": "2026-10-20T19:35:22.439273+00:00",
+  "sha256": "5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "bytes": 20363770,
+  "analysis_utc": "2026-10-20T19:29:42Z",
+  "report_url": "https://www.virustotal.com/gui/file/5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "capture_sha256": "3ddbf6b719bf5f555a9244cab9c187bdf8640ffff3ddd9d38158904d79dd5cc6",
+  "binary_source_review_sha256": "29fd52c8afd4dcd56fa509b4cf0044ca5018658a1d565e4c4e26eec4cf05c17e",
+  "counts": {
+    "malicious": 7,
+    "undetected": 63,
+    "timeout": 1,
+    "type-unsupported": 4
+  },
+  "findings": [
+    {
+      "vendor": "Bkav Pro",
+      "category": "malicious",
+      "label": "W32.Malware.CCC32327",
+      "comparison": "Changed from W32.Malware.E7662435 on 1.8.0 to W32.Malware.CCC32327.",
+      "bounded_assessment": "The report provides a malware label but no matching code, rule, trace or reason. The exact new application code and native runtime provenance were checked; no unexplained embedded code was found. A changed label on a changed binary does not establish a new malicious behavior.",
+      "uncertainty": "Exact trigger unknown; not vendor-confirmed as a false positive.",
+      "disposition": "UNRESOLVED_REQUIRES_EXACT_FILE_OWNER_RESIDUAL_ACCEPTANCE",
+      "evidence": [
+        "binary-source-review.json",
+        "source-diff.patch",
+        "scan-comparison-1.8-to-1.10.json",
+        "virustotal-results.json"
+      ]
+    },
+    {
+      "vendor": "DeepInstinct",
+      "category": "malicious",
+      "label": "MALICIOUS",
+      "comparison": "Same MALICIOUS verdict as the recorded 1.8.0 scan.",
+      "bounded_assessment": "A generic verdict without an identified code path. Reviewed source changes concern bounded package features, UI and historical receipt compatibility. The report does not connect the verdict to one of those changes.",
+      "uncertainty": "Exact trigger remains unknown; recurrence does not resolve it.",
+      "disposition": "UNRESOLVED_REQUIRES_EXACT_FILE_OWNER_RESIDUAL_ACCEPTANCE",
+      "evidence": [
+        "binary-source-review.json",
+        "source-diff.patch",
+        "scan-comparison-1.8-to-1.10.json",
+        "virustotal-results.json"
+      ]
+    },
+    {
+      "vendor": "Elastic",
+      "category": "malicious",
+      "label": "Malicious (moderate Confidence)",
+      "comparison": "Same Malicious (moderate Confidence) label as 1.8.0.",
+      "bounded_assessment": "The label communicates a classifier confidence, not a demonstrated behavior. Source/bundle identity checks pass and no unexplained application or native code was found. There is no vendor rationale identifying why this file is flagged.",
+      "uncertainty": "Classifier cause unknown; confidence wording is not a safety finding.",
+      "disposition": "UNRESOLVED_REQUIRES_EXACT_FILE_OWNER_RESIDUAL_ACCEPTANCE",
+      "evidence": [
+        "binary-source-review.json",
+        "source-diff.patch",
+        "scan-comparison-1.8-to-1.10.json",
+        "virustotal-results.json"
+      ]
+    },
+    {
+      "vendor": "McAfee Scanner",
+      "category": "malicious",
+      "label": "Ti!5B49321EBB89",
+      "comparison": "Changed from Undetected on 1.8.0 to Ti!5B49321EBB89.",
+      "bounded_assessment": "This is the newly appearing vendor warning. Its suffix matches the first twelve hexadecimal characters of this file's SHA-256, but that observation does not explain the detection. The review explicitly checked all newly changed application modules, launcher/source identity and 16 native-file differences; those native loaded code/data/resources are unchanged. The captured report supplies no matching malicious code path or behavior.",
+      "uncertainty": "New unresolved warning for this exact file; do not infer a threat family or dismiss it from the label.",
+      "disposition": "UNRESOLVED_REQUIRES_EXACT_FILE_OWNER_RESIDUAL_ACCEPTANCE",
+      "evidence": [
+        "binary-source-review.json",
+        "source-diff.patch",
+        "scan-comparison-1.8-to-1.10.json",
+        "virustotal-results.json"
+      ]
+    },
+    {
+      "vendor": "SecureAge",
+      "category": "malicious",
+      "label": "Malicious",
+      "comparison": "Same Malicious verdict as 1.8.0.",
+      "bounded_assessment": "A generic verdict with no exposed rule or trace. Frozen application/source matching and bounded signed-data handling provide provenance; they do not prove the vendor's cause or negate the verdict.",
+      "uncertainty": "Exact trigger unknown; no vendor determination received.",
+      "disposition": "UNRESOLVED_REQUIRES_EXACT_FILE_OWNER_RESIDUAL_ACCEPTANCE",
+      "evidence": [
+        "binary-source-review.json",
+        "source-diff.patch",
+        "scan-comparison-1.8-to-1.10.json",
+        "virustotal-results.json"
+      ]
+    },
+    {
+      "vendor": "SentinelOne (Static ML)",
+      "category": "malicious",
+      "label": "Static AI - Suspicious PE",
+      "comparison": "Same Static AI - Suspicious PE label as 1.8.0.",
+      "bounded_assessment": "The result explicitly identifies static classification. The EXE is a PyInstaller onefile program without UPX and is not Authenticode-signed. Those are packaging facts, not a demonstrated reason for this classifier's warning.",
+      "uncertainty": "Static classifier reason unknown; no confirmed false-positive finding.",
+      "disposition": "UNRESOLVED_REQUIRES_EXACT_FILE_OWNER_RESIDUAL_ACCEPTANCE",
+      "evidence": [
+        "binary-source-review.json",
+        "source-diff.patch",
+        "scan-comparison-1.8-to-1.10.json",
+        "virustotal-results.json"
+      ]
+    },
+    {
+      "vendor": "Zillya",
+      "category": "malicious",
+      "label": "Trojan.Blank.Script.2228",
+      "comparison": "Same Trojan.Blank.Script.2228 label as 1.8.0 and recorded preceding releases.",
+      "bounded_assessment": "The label does not provide the detected script, matching rule or behavioral trace. Every embedded KKS module and the launcher match their reviewed source; no unexpected Python module was added. The known string_modes addition accepts bounded signed data and has no executable hooks.",
+      "uncertainty": "Exact trigger remains unresolved; historical recurrence is not vendor clearance.",
+      "disposition": "UNRESOLVED_REQUIRES_EXACT_FILE_OWNER_RESIDUAL_ACCEPTANCE",
+      "evidence": [
+        "binary-source-review.json",
+        "source-diff.patch",
+        "scan-comparison-1.8-to-1.10.json",
+        "virustotal-results.json"
+      ]
+    }
+  ],
+  "coverage_limits": [
+    "TEHTRIS timed out; it supplied no completed verdict. Its recorded 1.8.0 result was Undetected.",
+    "Avast-Mobile, BitDefenderFalx, Symantec Mobile Insight and Trustlook cannot process this file type. These four outcomes are not clean scans.",
+    "Behavior analysis is still in progress at the captured observation. Interim NOT FOUND fields are not a completed clean result.",
+    "The report overview does not expose vendor reasons or engine versions; no vendor-confirmed false-positive decision exists for this exact hash.",
+    "The full standalone EXE was the report target, but per-member inspection by every engine is not established.",
+    "63 undetected engines do not establish safety. The 7/70 count is not proof of improvement over 8/71 on another binary."
+  ],
+  "observed_new_confirmed_security_defect": false,
+  "assessment_scope": "Bounded source/bundle and exact-report review; not comprehensive malware exclusion.",
+  "recommendation": "Ready for the owner's explicit residual-risk disposition, with all seven unresolved warnings, timeout, unsupported outcomes and incomplete behavioral coverage disclosed. Do not publish before that decision and root readiness.",
+  "no_score_chasing_rebuild": true,
+  "no_vendor_remediation_reopened": true,
+  "no_cancelled_VM_investigation_reopened": true,
+  "owner_residual_acceptance": false,
+  "publication": false
+}

@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "package": "<USER_HOME>\\Documents\\KKS_Master\\Features\\Live_Update_26054086_R001\\polish-font-routing-r001\\packages\\KKS_1.3.0_Polish_Steam_26054086_R003.zip",
+  "sha256": "351f1526f7330006b8ae72c1dd66d1a86868e8d7eb2bc3cf26c15ef9599bf50a",
+  "old_package_sha256": "708ecb9e252af65e638b316ec4922b23562b45ff6a0f3d224fc4a8708a6da8fa",
+  "revision": 3,
+  "sequence": 3,
+  "changed_payloads": [
+    "payload/interface/fontconfig_pl.txt",
+    "payload/interface/fonts_en.swf"
+  ],
+  "all_strings_and_mode_recipe_identical": true,
+  "exact_exe_sha256": "5b49321ebb891dc33b80a4af511f5a3b1bfb55f08220a65ee215db189961480f",
+  "existing_installer_compatible": true,
+  "same_build_R002_to_R003_update": true,
+  "archive_member_readback": true,
+  "repair": true,
+  "cacheless_restore_exact": true,
+  "fixture": "<USER_HOME>\\Documents\\KKS_TestGames\\LIVE26054086_POLISH_FONT_R001\\pl",
+  "font_validation_sha256": "61bc5ffcc089a2aeb24f3e929c3418cde44add072d139a6e64b60658c5b3c1b6",
+  "live_game_writes": false,
+  "manual_gameplay_tested": false,
+  "publication": false
+}
