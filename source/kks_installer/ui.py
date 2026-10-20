@@ -25,6 +25,104 @@ ACCENT = "#b65325"
 DARK = "#23271f"
 
 
+
+class _Poster:
+    """One approved image, tiled only through its quiet paper/upper-spine bands."""
+    def __init__(self, root):
+        self.root, self.canvases, self.labels = root, [], []
+        original = tk.PhotoImage(file=str(Path(__file__).resolve().parent / "assets" / "halloween-plate.png"))
+        # Separate calls preserve detail; a combined Tk copy would subsample first.
+        self.base = original.zoom(2, 2).subsample(3, 3)
+        self.image = self.base
+        self.size = None
+        self.repaint_pending = None
+        root.bind("<Configure>", self.resize, add="+")
+
+    def canvas(self, parent):
+        canvas = tk.Canvas(parent, width=1, height=1, highlightthickness=0,
+                           borderwidth=0, takefocus=False)
+        self.attach(canvas)
+        return canvas
+
+    def attach(self, canvas):
+        item = canvas.create_image(0, 0, image=self.image, anchor="nw")
+        self.canvases.append((canvas, item))
+        canvas.bind("<Configure>", lambda event: self.request_refresh(), add="+")
+
+    def request_refresh(self):
+        if self.repaint_pending is None:
+            self.repaint_pending = self.root.after_idle(self.refresh)
+
+    def refresh(self):
+        self.repaint_pending = None
+        for canvas, item in self.canvases:
+            self.position(canvas, item)
+
+    def position(self, canvas, item):
+        x = canvas.winfo_rootx() - self.root.winfo_rootx()
+        y = canvas.winfo_rooty() - self.root.winfo_rooty()
+        width, height = canvas.winfo_width(), canvas.winfo_height()
+        if x < 0 or y < 0 or x >= self.image.width() or y >= self.image.height():
+            return
+        # Give each native surface a bounded image rather than an oversized
+        # negative-coordinate image, so Windows repaint clipping stays local.
+        crop = tk.PhotoImage(width=width, height=height)
+        crop.tk.call(crop, "copy", self.image, "-from", x, y,
+                     min(x + width, self.image.width()), min(y + height, self.image.height()))
+        canvas.poster_image = crop
+        canvas.coords(item, 0, 0)
+        canvas.itemconfigure(item, image=crop)
+
+    def resize(self, event):
+        if event.widget is not self.root or event.width < 400 or event.height < 660:
+            return
+        size = (event.width, event.height)
+        if size == self.size:
+            return
+        width, height = size
+        result = tk.PhotoImage(width=width, height=height)
+        sw, sh = self.base.width(), self.base.height()
+        # Preserve the whole left illustration, outer frame and corner leaves.
+        # Only quiet center paper and upper charcoal texture are tiled/cropped.
+        for sx, ex, dx, tx in ((0, 206, 0, 206), (206, sw-170, 206, width-170),
+                              (sw-170, sw, width-170, width)):
+            for sy, ey, dy, ty in ((0, 180, 0, 180), (180, sh-480, 180, height-480),
+                                  (sh-480, sh, height-480, height)):
+                for x in range(dx, tx, ex-sx):
+                    for y in range(dy, ty, ey-sy):
+                        result.tk.call(result, "copy", self.base, "-from", sx, sy,
+                                       sx+min(ex-sx, tx-x), sy+min(ey-sy, ty-y), "-to", x, y)
+        self.image, self.size = result, size
+        self.request_refresh()
+
+
+class _PosterLabel(tk.Canvas):
+    """Static translated text over the shared poster; never an action control."""
+    def __init__(self, poster, parent, text, font=("Segoe UI", 9, "bold"), fg=MUTED):
+        super().__init__(parent, width=1, height=1, highlightthickness=0,
+                         borderwidth=0, takefocus=False)
+        self.text_key = text
+        poster.attach(self)
+        self.text_item = self.create_text(1, 1, text=text, font=font, fill=fg, anchor="nw")
+        poster.labels.append(self)
+        self.configure(text=text)
+
+    def configure(self, cnf=None, **kwargs):
+        if not hasattr(self, "text_item"):
+            return super().configure(cnf, **kwargs)
+        text_options = {}
+        for name, target in (("text", "text"), ("font", "font"), ("fg", "fill"),
+                             ("wraplength", "width"), ("justify", "justify")):
+            if name in kwargs:
+                text_options[target] = kwargs.pop(name)
+        if text_options:
+            self.itemconfigure(self.text_item, **text_options)
+            box = self.bbox(self.text_item)
+            kwargs["height"] = box[3] - box[1] + 2
+            kwargs["width"] = box[2] - box[0] + 2
+        return super().configure(cnf, **kwargs)
+
+
 class Configuration(NamedTuple):
     naming: str
     perks: str
@@ -85,167 +183,61 @@ class App:
             thickness=5,
         )
 
-        # A compact field-manual layout: a fixed identity spine and one clear
-        # working surface. Native controls retain keyboard focus and resizing.
-        spine = tk.Frame(self.root, bg=DARK, width=170)
+
+        # The approved poster is presentation only. Native controls and actions
+        # remain real widgets over the same in-memory background.
+        self.poster = _Poster(self.root)
+        background = tk.Canvas(self.root, highlightthickness=0, borderwidth=0, takefocus=False)
+        background.place(x=0, y=0, relwidth=1, relheight=1)
+        self.poster.attach(background)
+        spine = tk.Canvas(self.root, width=190, highlightthickness=0, borderwidth=0, takefocus=False)
         spine.pack(side="left", fill="y")
         spine.pack_propagate(False)
-        # Presentation layers use place, so they never take space from controls.
-        # Native Tk loads the approved artwork once; the wide crop fills the spine.
-        self.spine_texture_canvas = tk.Canvas(
-            spine, bg=DARK, highlightthickness=0, borderwidth=0, takefocus=False,
-        )
-        self.spine_texture_canvas.place(x=0, y=0, relwidth=1, relheight=1)
-        for i in range(150):
-            x = (i * 47 + 11) % 170
-            y = (i * 83 + 17) % 1100
-            self.spine_texture_canvas.create_line(
-                x, y, x + 1 + i % 3, y, fill=("#37382a", "#494331", "#34372a")[i % 3],
-            )
-        artwork = tk.PhotoImage(file=str(Path(__file__).resolve().parent / "assets" / "halloween.png"))
-        scale = max(1, artwork.width() // 256)
-        self.seasonal_art = artwork.subsample(scale, scale)
-        self.seasonal_canvas = tk.Canvas(
-            spine, bg=DARK, width=170, height=self.seasonal_art.height(),
-            highlightthickness=0, borderwidth=0, takefocus=False,
-        )
-        self.seasonal_canvas.place(
-            x=0, rely=1, y=-84, anchor="sw", width=170, height=self.seasonal_art.height(),
-        )
-        self.seasonal_canvas.create_image(85, 0, image=self.seasonal_art, anchor="n")
-        tk.Frame(spine, bg=ACCENT, height=1).place(x=22, rely=1, y=-84, width=126)
+        self.poster.attach(spine)
+        self.seasonal_canvas = spine
+        self.canvas_text = []
 
-        # Worn poster borders stay in the existing margins, clear of all content.
-        top_edge = tk.Canvas(
-            self.root, bg=ACCENT, highlightthickness=0, borderwidth=0, takefocus=False,
-        )
-        top_edge.place(x=170, y=0, relwidth=1, width=-170, height=6)
-        for i in range(95):
-            x = (i * 59) % 1800
-            top_edge.create_rectangle(x, i % 5, x + 2 + i % 6, i % 5 + 1,
-                                      fill=(BG, "#783d24", PANEL2)[i % 3], outline="")
-        for side, color in (("left", BG), ("right", ACCENT)):
-            edge = tk.Canvas(
-                self.root, bg=color, highlightthickness=0, borderwidth=0, takefocus=False,
-            )
-            if side == "left":
-                edge.place(x=170, y=6, width=15, relheight=1, height=-6)
-            else:
-                edge.place(relx=1, y=6, anchor="ne", width=7, relheight=1, height=-6)
-            for i in range(160):
-                x = (i * 7) % (15 if side == "left" else 7)
-                y = (i * 41) % 1400
-                edge.create_line(x, y, x + i % 3, y + 1,
-                                 fill=(LINE, PANEL2, BG)[i % 3])
-        tk.Frame(spine, bg=ACCENT, height=9).pack(fill="x")
-        tk.Label(
-            spine,
-            text="KKS",
-            font=("Bahnschrift", 48, "bold"),
-            fg=BG,
-            bg=DARK,
-            anchor="w",
-        ).pack(fill="x", padx=18, pady=(22, 0))
-        tk.Label(
-            spine,
-            text="KIT’S\nKILLER\nSYSTEM",
-            font=("Bahnschrift", 15),
-            fg=BG,
-            bg=DARK,
-            justify="left",
-            anchor="w",
-        ).pack(fill="x", padx=22)
-        tk.Frame(spine, bg=ACCENT, height=1).pack(fill="x", padx=22, pady=23)
-        tk.Label(
-            spine,
-            text="CONTENT\nINSTALLER",
-            font=("Consolas", 10),
-            fg=PANEL2,
-            bg=DARK,
-            justify="left",
-            anchor="w",
-        ).pack(fill="x", padx=22)
-        tk.Label(
-            spine,
-            text="v" + APP_VERSION,
-            font=("Consolas", 10),
-            fg=PANEL2,
-            bg=DARK,
-            anchor="w",
-        ).pack(fill="x", padx=22, pady=(6, 0))
-        tk.Label(
-            spine,
-            text="FALLOUT 76\nSTEAM\n13 CONTENT LANGUAGES",
-            font=("Consolas", 8),
-            fg=PANEL2,
-            bg=DARK,
-            justify="left",
-            anchor="w",
-        ).pack(side="bottom", fill="x", padx=22, pady=24)
-        tk.Label(
-            spine,
-            text="Language",
-            fg=BG,
-            bg=DARK,
-            font=("Segoe UI", 9),
-            anchor="w",
-        ).pack(fill="x", padx=18, pady=(20, 5))
+        def spine_text(y, text, font, color=BG):
+            shadow = spine.create_text(26, y + 1, text=text, font=font, fill=DARK,
+                                       anchor="nw", justify="left")
+            item = spine.create_text(25, y, text=text, font=font, fill=color,
+                                     anchor="nw", justify="left")
+            self.canvas_text.append((spine, shadow, text))
+            self.canvas_text.append((spine, item, text))
+            return shadow, item
+
+        spine_text(30, "KKS", ("Bahnschrift", 48, "bold"))
+        spine_text(114, "KIT’S\nKILLER\nSYSTEM", ("Bahnschrift", 15))
+        spine.create_line(25, 209, 164, 209, fill=ACCENT)
+        spine_text(232, "CONTENT\nINSTALLER", ("Consolas", 10), PANEL2)
+        spine_text(275, "v" + APP_VERSION, ("Consolas", 10), PANEL2)
+        spine_text(313, "Language", ("Segoe UI", 9))
+        footer = spine_text(640, "FALLOUT 76\nSTEAM\n13 CONTENT LANGUAGES",
+                            ("Consolas", 9), PANEL2)
+        def place_footer(event):
+            spine.coords(footer[0], 26, event.height - 67)
+            spine.coords(footer[1], 25, event.height - 68)
+        spine.bind("<Configure>", place_footer, add="+")
         self.language_value = tk.StringVar(value=LANGUAGE_NAMES[self.language])
         self.language_box = ttk.Combobox(
-            spine,
-            textvariable=self.language_value,
-            values=tuple(LANGUAGE_NAMES.values()),
-            state="readonly",
-            width=13,
+            spine, textvariable=self.language_value, values=tuple(LANGUAGE_NAMES.values()),
+            state="readonly", width=13,
         )
-        self.language_box.pack(fill="x", padx=18)
+        self.language_box.place(x=23, y=335, width=144)
         self.language_box.bind("<<ComboboxSelected>>", self.change_language)
 
-        outer = tk.Frame(self.root, bg=BG)
-        outer.pack(side="left", fill="both", expand=True, padx=28, pady=6)
-        tk.Label(
-            outer,
-            text="A BETTER-ORDERED WASTELAND.",
-            font=("Consolas", 10, "bold"),
-            fg=RED,
-            bg=BG,
-            anchor="w",
-        ).pack(fill="x")
-        tk.Label(
-            outer,
-            text="Make yourself at home.",
-            font=("Bahnschrift", 16),
-            fg=INK,
-            bg=BG,
-            anchor="w",
-        ).pack(fill="x", pady=(0, 1))
-        tk.Label(
-            outer,
-            text="Choose your game folder and a complete KKS content ZIP.",
-            fg=MUTED,
-            bg=BG,
-            anchor="w",
-        ).pack(fill="x")
+        outer = self.poster.canvas(self.root)
+        outer.pack(side="left", fill="both", expand=True, padx=(23, 26), pady=(16, 24))
+        _PosterLabel(self.poster, outer, "A BETTER-ORDERED WASTELAND.",
+                     font=("Consolas", 10, "bold"), fg=RED).pack(fill="x")
+        _PosterLabel(self.poster, outer, "Make yourself at home.",
+                     font=("Bahnschrift", 16), fg=INK).pack(fill="x", pady=(0, 1))
+        _PosterLabel(self.poster, outer, "Choose your game folder and a complete KKS content ZIP.",
+                     font=("Segoe UI", 10), fg=MUTED).pack(fill="x")
         tk.Frame(outer, bg=INK, height=2).pack(fill="x", pady=(8, 6))
-        leaves = tk.Canvas(
-            outer, bg=BG, highlightthickness=0, borderwidth=0, takefocus=False,
-        )
-        leaves.place(relx=1, x=0, y=0, anchor="ne", width=126, height=48)
-        leaves.create_line(125, 1, 105, 12, 87, 21, 66, 32, fill="#85502e", width=1)
-        # Small oak leaves echo the print artwork without crossing any text.
-        oak = (0, 0, -5, -6, -3, -10, -10, -11, -13, -17, -6, -16,
-               -5, -23, 0, -19, 5, -26, 8, -19, 14, -19, 12, -12,
-               19, -10, 12, -6, 14, 0, 7, 0, 4, 6)
-        for ox, oy, factor, color in ((87, 31, 1.0, ACCENT), (111, 39, .58, "#97603b"),
-                                      (48, 40, .42, "#ac754a")):
-            points = [value * factor + (ox if index % 2 == 0 else oy)
-                      for index, value in enumerate(oak)]
-            leaves.create_polygon(points, fill=color, outline="")
-            leaves.create_line(ox + 3 * factor, oy + 7 * factor,
-                               ox + 3 * factor, oy - 20 * factor, fill="#71462d")
 
         self.label(outer, "01  /  GAME DIRECTORY", BG).pack(fill="x", pady=(0, 3))
-        row = tk.Frame(outer, bg=BG)
+        row = self.poster.canvas(outer)
         row.pack(fill="x")
         self.path = tk.StringVar()
         self.entry = tk.Entry(
@@ -348,7 +340,7 @@ class App:
             outer, style="KKS.Horizontal.TProgressbar", mode="indeterminate"
         )
         self.progress.pack(fill="x", pady=(0, 6))
-        actions = tk.Frame(outer, bg=BG)
+        actions = self.poster.canvas(outer)
         actions.pack(fill="x")
         self.primary = self.button(actions, "Install content", self.primary_action, True)
         self.primary.pack(side="left")
@@ -356,7 +348,7 @@ class App:
         self.repair.pack(side="left", padx=8)
         self.restore = self.button(actions, "Restore Baseline", lambda: self.start("restore"))
         self.restore.pack(side="left")
-        launch_row = tk.Frame(outer, bg=BG)
+        launch_row = self.poster.canvas(outer)
         launch_row.pack(fill="x", pady=(6, 0))
         self.play = self.button(launch_row, "Play Fallout 76", lambda: self.start("play"))
         self.play.pack(side="right")
@@ -387,13 +379,9 @@ class App:
             pady=8,
             state="disabled",
         )
-        tk.Label(
-            outer,
-            text="Your installation baseline and backups stay with your game.",
-            fg=MUTED,
-            bg=BG,
-            font=("Segoe UI", 9),
-            anchor="w",
+        _PosterLabel(
+            self.poster, outer, "Your installation baseline and backups stay with your game.",
+            fg=MUTED, font=("Segoe UI", 9),
         ).pack(side="bottom", fill="x", pady=(8, 0))
         self.log.pack(fill="both", expand=True)
         self.static_text = []
@@ -452,6 +440,10 @@ class App:
             box.current(max(0, selected))
         for widget, text in self.static_text:
             widget.configure(text=self.t(text))
+        for canvas, item, text in self.canvas_text:
+            canvas.itemconfigure(item, text=self.t(text))
+        for label in self.poster.labels:
+            label.configure(text=self.t(label.text_key))
         self.status_title.configure(text=self.t(self.status_title_key))
         self.primary.configure(text=self.t(self.primary_key))
         self.package_text.set(self.t(self.package_key))
@@ -473,6 +465,8 @@ class App:
         self.package_text.set(self.t(text))
 
     def label(self, parent, text, bg=PANEL):
+        if bg == BG:
+            return _PosterLabel(self.poster, parent, text)
         return tk.Label(
             parent, text=text, font=("Segoe UI", 9, "bold"), fg=MUTED, bg=bg, anchor="w"
         )
