@@ -90,6 +90,53 @@ class App:
         spine = tk.Frame(self.root, bg=DARK, width=170)
         spine.pack(side="left", fill="y")
         spine.pack_propagate(False)
+        # Presentation layers use place, so they never take space from controls.
+        # Native Tk loads the approved artwork once; the wide crop fills the spine.
+        self.spine_texture_canvas = tk.Canvas(
+            spine, bg=DARK, highlightthickness=0, borderwidth=0, takefocus=False,
+        )
+        self.spine_texture_canvas.place(x=0, y=0, relwidth=1, relheight=1)
+        for i in range(150):
+            x = (i * 47 + 11) % 170
+            y = (i * 83 + 17) % 1100
+            self.spine_texture_canvas.create_line(
+                x, y, x + 1 + i % 3, y, fill=("#37382a", "#494331", "#34372a")[i % 3],
+            )
+        artwork = tk.PhotoImage(file=str(Path(__file__).resolve().parent / "assets" / "halloween.png"))
+        scale = max(1, artwork.width() // 256)
+        self.seasonal_art = artwork.subsample(scale, scale)
+        self.seasonal_canvas = tk.Canvas(
+            spine, bg=DARK, width=170, height=self.seasonal_art.height(),
+            highlightthickness=0, borderwidth=0, takefocus=False,
+        )
+        self.seasonal_canvas.place(
+            x=0, rely=1, y=-84, anchor="sw", width=170, height=self.seasonal_art.height(),
+        )
+        self.seasonal_canvas.create_image(85, 0, image=self.seasonal_art, anchor="n")
+        tk.Frame(spine, bg=ACCENT, height=1).place(x=22, rely=1, y=-84, width=126)
+
+        # Worn poster borders stay in the existing margins, clear of all content.
+        top_edge = tk.Canvas(
+            self.root, bg=ACCENT, highlightthickness=0, borderwidth=0, takefocus=False,
+        )
+        top_edge.place(x=170, y=0, relwidth=1, width=-170, height=6)
+        for i in range(95):
+            x = (i * 59) % 1800
+            top_edge.create_rectangle(x, i % 5, x + 2 + i % 6, i % 5 + 1,
+                                      fill=(BG, "#783d24", PANEL2)[i % 3], outline="")
+        for side, color in (("left", BG), ("right", ACCENT)):
+            edge = tk.Canvas(
+                self.root, bg=color, highlightthickness=0, borderwidth=0, takefocus=False,
+            )
+            if side == "left":
+                edge.place(x=170, y=6, width=15, relheight=1, height=-6)
+            else:
+                edge.place(relx=1, y=6, anchor="ne", width=7, relheight=1, height=-6)
+            for i in range(160):
+                x = (i * 7) % (15 if side == "left" else 7)
+                y = (i * 41) % 1400
+                edge.create_line(x, y, x + i % 3, y + 1,
+                                 fill=(LINE, PANEL2, BG)[i % 3])
         tk.Frame(spine, bg=ACCENT, height=9).pack(fill="x")
         tk.Label(
             spine,
@@ -129,7 +176,7 @@ class App:
         tk.Label(
             spine,
             text="FALLOUT 76\nSTEAM\n13 CONTENT LANGUAGES",
-            font=("Consolas", 9),
+            font=("Consolas", 8),
             fg=PANEL2,
             bg=DARK,
             justify="left",
@@ -153,18 +200,6 @@ class App:
         )
         self.language_box.pack(fill="x", padx=18)
         self.language_box.bind("<<ComboboxSelected>>", self.change_language)
-
-        # Decorative only: load once at startup, outside all configuration paths.
-        # Integer subsampling keeps Tk as the only runtime image dependency.
-        artwork = tk.PhotoImage(file=str(Path(__file__).resolve().parent / "assets" / "halloween.png"))
-        scale = max(1, (artwork.width() + 147) // 148)
-        self.seasonal_art = artwork.subsample(scale, scale)
-        self.seasonal_canvas = tk.Canvas(
-            spine, bg=DARK, width=148, height=self.seasonal_art.height(),
-            highlightthickness=0, borderwidth=0, takefocus=False,
-        )
-        self.seasonal_canvas.pack(fill="x", padx=11, pady=(12, 0))
-        self.seasonal_canvas.create_image(74, 0, image=self.seasonal_art, anchor="n")
 
         outer = tk.Frame(self.root, bg=BG)
         outer.pack(side="left", fill="both", expand=True, padx=28, pady=6)
@@ -192,6 +227,22 @@ class App:
             anchor="w",
         ).pack(fill="x")
         tk.Frame(outer, bg=INK, height=2).pack(fill="x", pady=(8, 6))
+        leaves = tk.Canvas(
+            outer, bg=BG, highlightthickness=0, borderwidth=0, takefocus=False,
+        )
+        leaves.place(relx=1, x=0, y=0, anchor="ne", width=126, height=48)
+        leaves.create_line(125, 1, 105, 12, 87, 21, 66, 32, fill="#85502e", width=1)
+        # Small oak leaves echo the print artwork without crossing any text.
+        oak = (0, 0, -5, -6, -3, -10, -10, -11, -13, -17, -6, -16,
+               -5, -23, 0, -19, 5, -26, 8, -19, 14, -19, 12, -12,
+               19, -10, 12, -6, 14, 0, 7, 0, 4, 6)
+        for ox, oy, factor, color in ((87, 31, 1.0, ACCENT), (111, 39, .58, "#97603b"),
+                                      (48, 40, .42, "#ac754a")):
+            points = [value * factor + (ox if index % 2 == 0 else oy)
+                      for index, value in enumerate(oak)]
+            leaves.create_polygon(points, fill=color, outline="")
+            leaves.create_line(ox + 3 * factor, oy + 7 * factor,
+                               ox + 3 * factor, oy - 20 * factor, fill="#71462d")
 
         self.label(outer, "01  /  GAME DIRECTORY", BG).pack(fill="x", pady=(0, 3))
         row = tk.Frame(outer, bg=BG)
