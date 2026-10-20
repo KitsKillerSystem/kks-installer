@@ -1,6 +1,6 @@
 """Application policy. Content packages cannot expand these capabilities."""
 
-APP_VERSION = "1.9.0"
+APP_VERSION = "1.10.0"
 BUILD_LABEL = "Candidate"
 INSTALLER_API = 1
 PROFILE = "fo76-steam-en-fonts-strings-v1"
